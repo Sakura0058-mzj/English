@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3f7f4" />
+    <title>雅思学习助手</title>
+    <style>
+      :root {
+        --ink: #263731;
+        --muted: #71827a;
+        --line: #dce7df;
+        --canvas: #f3f7f4;
+        --paper: #fffefa;
+        --sage: #638a76;
+        --sage-dark: #416853;
+        --sage-light: #e7f0ea;
+        --readonly: #edf1ef;
+        --gold: #e3af4d;
+        --coral: #bd6759;
+        --coral-light: #fff0ec;
+        --blue-light: #eef2f8;
+        --blue: #68748d;
+        --shadow: 0 18px 48px rgba(50, 75, 62, 0.09);
+      }
+
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      body {
+        min-width: 320px;
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 0%, rgba(225, 239, 229, .75), transparent 28rem),
+          var(--canvas);
+        font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button, input, textarea, select { font: inherit; }
+      button { border: 0; cursor: pointer; }
+      button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+        outline: 3px solid rgba(99, 138, 118, .22);
+        outline-offset: 2px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 254, 250, .94);
+        backdrop-filter: blur(12px);
+      }
+      .topbar-inner, .page { width: min(100% - 32px, 1120px); margin: 0 auto; }
+      .topbar-inner {
+        display: flex;
+        min-height: 74px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--ink);
+        background: transparent;
+        text-align: left;
+      }
+      .brand-mark {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        place-items: center;
+        color: #fff;
+        background: var(--sage);
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .brand-name { display: block; font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+      .brand-caption { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+      .global-nav { display: flex; gap: 4px; padding: 4px; background: var(--canvas); border-radius: 12px; }
+      .nav-link {
+        padding: 9px 14px;
+        color: #687871;
+        background: transparent;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .nav-link:hover, .nav-link[aria-current="page"] { color: var(--sage-dark); background: #fff; }
+
+      .page { padding: 44px 0 72px; }
+      .view-panel { animation: panel-in 180ms ease-out; }
+      @keyframes panel-in {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 {
+        margin-bottom: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(38px, 6vw, 62px);
+        font-weight: 500;
+        letter-spacing: -.03em;
+        line-height: 1.1;
+      }
+      .eyebrow, .section-kicker {
+        margin: 0;
+        color: var(--sage-dark);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .18em;
+      }
+      .hero { max-width: 690px; }
+      .hero-copy {
+        max-width: 590px;
+        margin: 20px 0 0;
+        color: #63746c;
+        font-size: 16px;
+        line-height: 1.9;
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 46px;
+      }
+      .feature-card {
+        min-height: 218px;
+        padding: 23px;
+        color: var(--ink);
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        text-align: left;
+        transition: border-color 160ms ease, transform 160ms ease;
+      }
+      .feature-card:hover { border-color: #a9c0b1; transform: translateY(-3px); }
+      .feature-icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: 12px;
+        font-weight: 800;
+      }
+      .feature-icon.sage { color: var(--sage-dark); background: var(--sage-light); }
+      .feature-icon.coral { color: var(--coral); background: var(--coral-light); }
+      .feature-icon.blue { color: var(--blue); background: var(--blue-light); }
+      .feature-card h2 { margin: 25px 0 8px; font-size: 20px; }
+      .feature-card p { min-height: 44px; margin-bottom: 18px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+      .feature-link { color: var(--sage-dark); font-size: 12px; font-weight: 800; }
+
+      .module-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .module-heading h1 { margin-top: 10px; font-size: clamp(34px, 5vw, 50px); }
+      .module-heading p:not(.eyebrow) { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+      .word-tabs {
+        display: flex;
+        gap: 4px;
+        margin-top: 35px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+      }
+      .word-tab {
+        padding: 10px 14px;
+        color: var(--muted);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .word-tab:hover, .word-tab[aria-selected="true"] {
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border-color: #bfd4c5;
+      }
+      .word-tab-count { margin-left: 3px; color: #98a69e; font-size: 11px; }
+      .panel {
+        background: rgba(255, 254, 250, .95);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .query-panel {
+        max-width: 760px;
+        margin: 25px auto 0;
+        padding: 24px;
+      }
+      .query-panel-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+      .query-panel-heading h2 { margin: 8px 0 0; font-size: 21px; }
+      .status-badge {
+        flex: 0 0 auto;
+        padding: 7px 10px;
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .query-box { padding: 15px; background: #f0f5f1; border: 1px solid #d7e5da; border-radius: 12px; }
+      .query-label { display: block; margin-bottom: 8px; color: var(--sage-dark); font-size: 12px; font-weight: 800; }
+      .query-row { display: flex; gap: 9px; }
+      .query-input, .search-input, .sort-select, .mode-select {
+        min-height: 44px;
+        padding: 0 12px;
+        color: var(--ink);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        font-size: 13px;
+      }
+      .query-input { min-width: 0; flex: 1; }
+      .query-input:focus, .search-input:focus, .sort-select:focus, .mode-select:focus,
+      .card-control:not([readonly]):focus {
+        border-color: #91b19e;
+        box-shadow: 0 0 0 3px rgba(99, 138, 118, .11);
+        outline: 0;
+      }
+      .query-button {
+        min-width: 118px;
+        color: #fff;
+        background: var(--sage);
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .query-button:hover { background: var(--sage-dark); }
+      .query-button:disabled { cursor: wait; opacity: .65; }
+      .query-hint, .status { margin: 8px 1px 0; color: var(--muted); font-size: 11px; }
+      .status.error { color: var(--coral); }
+
+      .network-indicator {
+        position: fixed;
+        right: 15px;
+        bottom: 15px;
+        z-index: 30;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 12px;
+        color: var(--sage-dark);
+        background: rgba(231, 240, 234, .95);
+        border: 1px solid #c9ddcf;
+        border-radius: 999px;
+        box-shadow: 0 8px 24px rgba(50, 75, 62, .1);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .network-indicator.offline { color: #9a5c51; background: var(--coral-light); border-color: #f0cfc6; }
+      .network-dot { width: 7px; height: 7px; background: currentColor; border-radius: 50%; }
+
+      .library-panel { margin-top: 25px; padding: 24px; }
+      .library-toolbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 15px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+      .library-toolbar h2 { margin: 7px 0 0; font-size: 22px; }
+      .library-controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+      .search-input { width: 210px; }
+      .sort-select { min-width: 130px; }
+      .library-list {
+        max-height: min(58vh, 520px);
+        margin-top: 7px;
+        overflow-y: auto;
+        scrollbar-color: #c2d2c8 transparent;
+        scrollbar-width: thin;
+      }
+      .library-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 15px 9px;
+        border-bottom: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .library-row:hover, .library-row:focus { background: var(--canvas); outline: 0; }
+      .library-word { font-size: 17px; font-weight: 800; line-height: 1.35; }
+      .library-phonetic { display: inline; margin-left: 8px; color: var(--muted); font-size: 13px; font-weight: 500; white-space: nowrap; }
+      .library-actions { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+      .star-button {
+        display: inline-flex;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        color: var(--gold);
+        background: transparent;
+        border-radius: 7px;
+        font-size: 22px;
+        line-height: 1;
+      }
+      .star-button:hover { background: rgba(227, 175, 77, .1); }
+      .delete-button {
+        padding: 7px 9px;
+        color: #a6b2ab;
+        background: transparent;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .delete-button:hover { color: var(--coral); background: var(--coral-light); }
+      .empty-state { padding: 55px 15px; color: var(--muted); text-align: center; }
+      .empty-state strong { display: block; color: #62736b; font-size: 15px; }
+      .empty-state span { display: block; margin-top: 7px; font-size: 12px; }
+
+      .detail-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        background: rgba(35, 49, 43, .37);
+      }
+      .detail-modal {
+        width: min(100%, 760px);
+        max-height: 90vh;
+        overflow: auto;
+        padding: 28px;
+        background: var(--paper);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+      .detail-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+      .detail-top h2 { margin: 8px 0 0; font-family: Georgia, "Times New Roman", serif; font-size: 36px; font-weight: 500; }
+      .detail-phonetic { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
+      .close-button { width: 34px; height: 34px; color: #829088; background: transparent; border-radius: 8px; font-size: 24px; }
+      .close-button:hover { background: var(--canvas); }
+      .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 25px; }
+      .detail-item { padding: 14px; background: var(--canvas); border-radius: 10px; }
+      .detail-item.wide { grid-column: 1 / -1; }
+      .detail-item.example { background: var(--sage-light); }
+      .detail-label { color: #99a69f; font-size: 10px; font-weight: 800; }
+      .card-control {
+        display: block;
+        width: 100%;
+        min-height: 76px;
+        margin-top: 8px;
+        padding: 0;
+        color: #5e6f67;
+        background: transparent;
+        border: 0;
+        font-size: 13px;
+        line-height: 1.8;
+        resize: vertical;
+      }
+      .card-control:not([readonly]):focus { padding: 5px 7px; background: #fff; border: 1px solid #bcd1c3; border-radius: 7px; outline: 0; }
+      .card-control[readonly] { min-height: auto; resize: none; cursor: not-allowed; }
+      .card-control.example-control { color: var(--sage-dark); font-family: Georgia, "Times New Roman", serif; }
+      .detail-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 22px; padding-top: 17px; border-top: 1px solid var(--line); }
+      .primary-button, .secondary-button {
+        min-height: 43px;
+        padding: 0 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .primary-button { color: #fff; background: var(--sage); }
+      .primary-button:hover { background: var(--sage-dark); }
+      .secondary-button { color: #5f7068; background: #fff; border: 1px solid var(--line); }
+      .secondary-button:hover { color: var(--sage-dark); border-color: #a9c0b1; }
+
+      .placeholder { display: grid; min-height: 60vh; place-items: center; text-align: center; }
+      .placeholder-icon { display: grid; width: 62px; height: 62px; margin: 0 auto 21px; place-items: center; border-radius: 16px; font-weight: 800; }
+      .placeholder-icon.coral { color: var(--coral); background: var(--coral-light); }
+      .placeholder-icon.blue { color: var(--blue); background: var(--blue-light); }
+      .placeholder h1 { font-size: 40px; }
+      .placeholder p:last-of-type { max-width: 330px; margin: 13px auto 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
+
+      .file-input { display: none; }
+      @media (max-width: 760px) {
+        .topbar-inner, .module-heading, .library-toolbar { align-items: stretch; flex-direction: column; }
+        .global-nav { width: 100%; }
+        .nav-link { flex: 1; }
+        .feature-grid { grid-template-columns: 1fr; }
+        .library-controls { justify-content: stretch; }
+        .search-input { flex: 1; width: auto; }
+      }
+      @media (max-width: 560px) {
+        .topbar-inner, .page { width: min(100% - 24px, 1120px); }
+        .page { padding-top: 30px; }
+        .query-row, .mode-row, .library-controls { grid-template-columns: 1fr; flex-direction: column; }
+        .query-button, .search-input, .sort-select, .mode-select { width: 100%; }
+        .detail-grid { grid-template-columns: 1fr; }
+        .detail-item.wide { grid-column: auto; }
+        .detail-actions { flex-direction: column-reverse; }
+        .primary-button, .secondary-button { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="brand" data-route="home" aria-label="返回雅思学习助手首页">
+          <span class="brand-mark">雅</span>
+          <span><span class="brand-name">雅思学习助手</span><span class="brand-caption">把每天的输入，变成稳定的分数</span></span>
+        </button>
+        <nav class="global-nav" aria-label="全局导航">
+          <button class="nav-link" data-route="words">单词</button>
+          <button class="nav-link" data-route="speaking">口语</button>
+          <button class="nav-link" data-route="writing">作文</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="view-panel" data-page="home">
+        <div class="hero">
+          <p class="eyebrow">IELTS STUDY SPACE</p>
+          <h1>每天一点点，<br /><span style="color: var(--sage-dark)">把表达练成习惯。</span></h1>
+          <p class="hero-copy">通过公开网络词典快速查询，把每天遇到的词整理成自己的单词卡。</p>
+        </div>
+        <div class="feature-grid">
+          <button class="feature-card" data-route="words"><span class="feature-icon sage">词</span><h2>单词</h2><p>联网或离线查询，生成并管理你的专属单词卡。</p><span class="feature-link">进入单词模块 →</span></button>
+          <button class="feature-card" data-route="speaking"><span class="feature-icon coral">说</span><h2>口语</h2><p>沉淀你的观点、话题与自然表达。</p><span class="feature-link" style="color: var(--coral)">查看模块状态 →</span></button>
+          <button class="feature-card" data-route="writing"><span class="feature-icon blue">写</span><h2>作文</h2><p>收集论点、句型和写作灵感。</p><span class="feature-link" style="color: var(--blue)">查看模块状态 →</span></button>
+        </div>
+      </section>
+
+      <section class="view-panel" data-page="words" hidden>
+        <div class="module-heading">
+          <div><p class="eyebrow">VOCABULARY</p><h1>单词模块</h1><p>通过免费公开网络词典查询并整理你的单词卡。</p></div>
+        </div>
+        <div class="word-tabs" role="tablist" aria-label="单词子视图">
+          <button class="word-tab" data-word-view="editor" aria-selected="true">编辑单词卡</button>
+          <button class="word-tab" data-word-view="library" aria-selected="false">单词库 <span id="word-count" class="word-tab-count">0</span></button>
+        </div>
+
+        <div class="word-panel" data-word-panel="editor">
+          <section class="panel query-panel">
+            <div class="query-panel-heading">
+              <div><p class="section-kicker">EDIT WORD CARD</p><h2>查询并生成单词卡</h2></div>
+              <span class="status-badge">联网词典</span>
+            </div>
+            <form id="query-form" class="query-box">
+              <label class="query-label" for="query-input">输入英文单词</label>
+              <div class="query-row"><input id="query-input" class="query-input" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="例如 resilient" required /><button id="query-button" class="query-button" type="submit">生成单词卡</button></div>
+              <p class="query-hint">需要网络连接；查询结果生成后可以继续编辑并保存到个人词库。</p>
+              <p id="query-status" class="status" role="status" aria-live="polite"></p>
+            </form>
+          </section>
+        </div>
+
+        <div class="word-panel" data-word-panel="library" hidden>
+          <section class="panel library-panel">
+            <div class="library-toolbar">
+              <div><p class="section-kicker">MY WORD BANK</p><h2>单词库</h2></div>
+              <div class="library-controls">
+                <input id="search-input" class="search-input" type="search" placeholder="搜索单词或音标" />
+                <select id="sort-input" class="sort-select" aria-label="排序规则"><option value="saved">按保存时间</option><option value="alpha">按单词首字母</option></select>
+                <select id="direction-input" class="sort-select" aria-label="排序方向"><option value="asc">正序</option><option value="desc">倒序</option></select>
+                <select id="star-filter-input" class="sort-select" aria-label="星级筛选"><option value="all">全部单词</option><option value="starred">仅显示带星级单词</option></select>
+              </div>
+            </div>
+            <div id="library-list" class="library-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view-panel" data-page="speaking" hidden><div class="placeholder"><div><span class="placeholder-icon coral">说</span><p class="eyebrow">SPEAKING</p><h1>该模块开发中</h1><p>口语练习空间正在准备中，先把今天遇到的好词记下来吧。</p><button class="primary-button" data-route="words" style="margin-top:22px">去记单词</button></div></div></section>
+      <section class="view-panel" data-page="writing" hidden><div class="placeholder"><div><span class="placeholder-icon blue">写</span><p class="eyebrow" style="color:var(--blue)">WRITING</p><h1>该模块开发中</h1><p>作文素材整理空间正在准备中，先用单词卡积累表达吧。</p><button class="primary-button" data-route="words" style="margin-top:22px">去记单词</button></div></div></section>
+    </main>
+
+    <div id="detail-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+        <div class="detail-top"><div><p class="section-kicker">WORD CARD</p><h2 id="detail-title"></h2><p id="detail-phonetic" class="detail-phonetic"></p></div><button class="close-button" data-action="close-detail" aria-label="关闭详情">×</button></div>
+        <form id="detail-form">
+          <div class="detail-grid">
+            <label class="detail-item"><span class="detail-label">中文释义</span><textarea id="detail-meaning" class="card-control" placeholder="可编辑"></textarea></label>
+            <label class="detail-item"><span class="detail-label">近义词</span><textarea id="detail-synonyms" class="card-control" placeholder="最多 3 个"></textarea></label>
+            <label class="detail-item wide"><span class="detail-label">英文释义</span><textarea id="detail-definition" class="card-control" placeholder="可编辑"></textarea></label>
+            <label class="detail-item example wide"><span class="detail-label">例句</span><textarea id="detail-examples" class="card-control example-control" placeholder="最多 2 句"></textarea></label>
+          </div>
+          <div class="detail-actions"><button class="secondary-button" type="button" data-action="close-detail">关闭</button><button id="detail-save" class="primary-button" type="submit">保存到单词库</button></div>
+        </form>
+      </section>
+    </div>
+    <div id="network-indicator" class="network-indicator"><span class="network-dot"></span><span>联网</span></div>
+
+    <script>
+      /* ---------- 常量、状态与本地收藏 ---------- */
+      const STORAGE_KEY = "ielts-study-helper.words.v1";
+      const DICTIONARY_API = "https://api.dictionaryapi.dev/api/v2/entries/en/";
+      const TRANSLATION_API = "https://api.mymemory.translated.net/get";
+      let latestRequestId = 0;
+      const state = {
+        route: "home",
+        wordView: "editor",
+        words: loadSavedWords(),
+        query: "",
+        sort: "saved",
+        direction: "asc",
+        starFilter: "all",
+        detailId: null,
+      };
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+      function loadSavedWords() {
+        try {
+          const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          return Array.isArray(data)
+            ? data.map((item) => ({ ...item, star: Number.isInteger(item.star) ? Math.max(0, Math.min(5, item.star)) : 0 }))
+            : [];
+        } catch {
+          return [];
+        }
+      }
+      function persistSavedWords() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
+      }
+      function createId() { return window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
+      function unique(values) { return [...new Set(values.filter(Boolean).map((value) => String(value).trim()))]; }
+      function normaliseWord(value) { return String(value || "").trim().toLowerCase(); }
+      function isEnglishWord(value) { return /^[a-z]+(?:[-'][a-z]+)*$/i.test(value); }
+
+      /* ---------- 网络状态提示 ---------- */
+      function updateNetworkIndicator() {
+        const indicator = $("#network-indicator");
+        indicator.classList.remove("offline");
+        indicator.querySelector("span:last-child").textContent = "联网查询";
+      }
+      function setStatus(message, type = "") {
+        const element = $("#query-status");
+        element.className = `status${type ? ` ${type}` : ""}`;
+        element.textContent = message;
+      }
+      function setLoading(loading) {
+        const button = $("#query-button");
+        button.disabled = loading;
+        button.textContent = loading ? "查询中..." : "生成单词卡";
+      }
+
+      /* ---------- 联网词典查询与统一数据格式 ---------- */
+      function collectPhonetic(entry) {
+        return (entry.phonetics?.find((item) => item.text)?.text || entry.phonetic || "").trim();
+      }
+      function collectPrimaryDefinition(meanings) {
+        for (const meaning of meanings || []) {
+          const value = meaning?.definitions?.find((item) => item.definition)?.definition;
+          if (value) return value.trim();
+        }
+        return "";
+      }
+      function collectSynonyms(meanings) {
+        const values = [];
+        (meanings || []).forEach((meaning) => {
+          if (Array.isArray(meaning.synonyms)) values.push(...meaning.synonyms);
+          (meaning.definitions || []).forEach((definition) => values.push(...(definition.synonyms || [])));
+        });
+        return unique(values).slice(0, 3).join(", ");
+      }
+      function collectExamples(meanings) {
+        const values = [];
+        (meanings || []).forEach((meaning) => (meaning.definitions || []).forEach((definition) => values.push(definition.example)));
+        return unique(values).slice(0, 2).join("\n");
+      }
+      async function fetchOnlineDictionary(word) {
+        const response = await fetch(`${DICTIONARY_API}${encodeURIComponent(word)}`);
+        if (!response.ok) throw new Error(response.status === 404 ? "NOT_FOUND" : "ONLINE_ERROR");
+        const data = await response.json();
+        const entry = data?.[0];
+        if (!entry) throw new Error("NOT_FOUND");
+        const definition = collectPrimaryDefinition(entry.meanings);
+        let meaning = "";
+        try {
+          const translation = await fetch(`${TRANSLATION_API}?q=${encodeURIComponent(definition)}&langpair=en|zh-CN`);
+          if (translation.ok) meaning = (await translation.json())?.responseData?.translatedText || "";
+        } catch {}
+        return {
+          word: entry.word || word,
+          phonetic: collectPhonetic(entry),
+          meaning: meaning.trim(),
+          definition,
+          synonyms: collectSynonyms(entry.meanings),
+          examples: collectExamples(entry.meanings),
+        };
+      }
+
+      function showCardModal(card, savedId = null) {
+        state.detailId = savedId;
+        $("#detail-title").textContent = card.word;
+        $("#detail-phonetic").textContent = card.phonetic || "未填写音标";
+        $("#detail-meaning").value = card.meaning || "";
+        $("#detail-definition").value = card.definition || "";
+        $("#detail-synonyms").value = card.synonyms || "";
+        $("#detail-examples").value = card.examples || "";
+        $("#detail-save").textContent = savedId ? "保存修改" : "保存到单词库";
+        $("#detail-backdrop").hidden = false;
+      }
+
+      async function generateCard(event) {
+        event.preventDefault();
+        const word = normaliseWord($("#query-input").value);
+        if (!isEnglishWord(word)) {
+          window.alert("请输入一个有效的英文单词，例如 resilient。");
+          setStatus("请输入一个有效的英文单词。", "error");
+          return;
+        }
+        setLoading(true);
+        const requestId = ++latestRequestId;
+        try {
+          const result = await fetchOnlineDictionary(word);
+          if (requestId !== latestRequestId) return;
+          if (!result) {
+            window.alert("未找到该词汇，请检查拼写。");
+            setStatus("没有找到匹配词条。", "error");
+            return;
+          }
+          showCardModal(result);
+          setStatus("已联网生成单词卡，可以继续编辑。");
+        } catch (error) {
+          if (requestId !== latestRequestId) return;
+          window.alert(error.message === "NOT_FOUND" ? "未找到该词汇，请检查拼写。" : "联网查询失败，请检查网络连接后重试。");
+          setStatus(error.message === "NOT_FOUND" ? "未找到该词汇。" : "联网查询失败。", "error");
+        } finally {
+          if (requestId === latestRequestId) setLoading(false);
+        }
+      }
+
+      /* ---------- 弹窗编辑、个人收藏与星级筛选 ---------- */
+      function getDetailData() {
+        return {
+          word: $("#detail-title").textContent.trim(),
+          phonetic: $("#detail-phonetic").textContent.trim(),
+          meaning: $("#detail-meaning").value.trim(),
+          definition: $("#detail-definition").value.trim(),
+          synonyms: unique($("#detail-synonyms").value.split(/[,\n，、;；]+/)).slice(0, 3).join(", "),
+          examples: unique($("#detail-examples").value.split(/\n+/)).slice(0, 2).join("\n"),
+        };
+      }
+      function saveDetail(event) {
+        event.preventDefault();
+        const data = getDetailData();
+        const existing = state.words.find((item) => item.id === state.detailId);
+        if (existing) Object.assign(existing, data, { star: existing.star || 0 });
+        else state.words.push({ id: createId(), createdAt: Date.now(), star: 0, ...data });
+        persistSavedWords();
+        closeDetail();
+        setStatus(existing ? "单词卡已更新。" : "单词卡已保存到个人词库。");
+        renderLibrary();
+      }
+      function getVisibleWords() {
+        const query = state.query.toLocaleLowerCase();
+        const result = state.words.filter((item) => {
+          const matchesText = `${item.word} ${item.phonetic}`.toLocaleLowerCase().includes(query);
+          return matchesText && (state.starFilter !== "starred" || item.star > 0);
+        });
+        result.sort((a, b) => {
+          const comparison = state.sort === "alpha" ? a.word.localeCompare(b.word, "en", { sensitivity: "base" }) : a.createdAt - b.createdAt;
+          return state.direction === "asc" ? comparison : -comparison;
+        });
+        return result;
+      }
+      function renderLibrary() {
+        $("#word-count").textContent = state.words.length;
+        const list = $("#library-list");
+        list.replaceChildren();
+        const words = getVisibleWords();
+        if (!words.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
+          const strong = document.createElement("strong");
+          const note = document.createElement("span");
+          strong.textContent = state.words.length ? "没有匹配的词条" : "你的单词库还是空的";
+          note.textContent = state.words.length ? "换个搜索词或筛选条件试试。" : "生成并保存第一张单词卡吧。";
+          empty.append(strong, note);
+          list.append(empty);
+          return;
+        }
+        words.forEach((word) => {
+          const row = document.createElement("div");
+          row.className = "library-row";
+          row.tabIndex = 0;
+          row.setAttribute("role", "button");
+          const text = document.createElement("div");
+          text.style.minWidth = "0";
+          const title = document.createElement("div");
+          title.className = "library-word";
+          title.textContent = word.word;
+          const phonetic = document.createElement("span");
+          phonetic.className = "library-phonetic";
+          phonetic.textContent = word.phonetic || "未填写音标";
+          title.append(phonetic);
+          text.append(title);
+          const actions = document.createElement("div");
+          actions.className = "library-actions";
+          const star = document.createElement("button");
+          star.className = "star-button";
+          star.type = "button";
+          star.textContent = word.star > 0 ? "★" : "☆";
+          star.title = word.star > 0 ? "取消星级" : "添加星级";
+          star.addEventListener("click", (event) => {
+            event.stopPropagation();
+            word.star = word.star > 0 ? 0 : 1;
+            persistSavedWords();
+            renderLibrary();
+          });
+          const remove = document.createElement("button");
+          remove.className = "delete-button";
+          remove.type = "button";
+          remove.textContent = "删除";
+          remove.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (!window.confirm(`确定删除“${word.word}”吗？`)) return;
+            state.words = state.words.filter((item) => item.id !== word.id);
+            persistSavedWords();
+            renderLibrary();
+          });
+          actions.append(star, remove);
+          row.append(text, actions);
+          row.addEventListener("click", () => showCardModal(word, word.id));
+          row.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              showCardModal(word, word.id);
+            }
+          });
+          list.append(row);
+        });
+      }
+      function closeDetail() { $("#detail-backdrop").hidden = true; state.detailId = null; }
+
+      /* ---------- 事件绑定与初始化 ---------- */
+      $$("[data-route]").forEach((element) => element.addEventListener("click", () => navigate(element.dataset.route)));
+      $$("[data-word-view]").forEach((element) => element.addEventListener("click", () => switchWordView(element.dataset.wordView)));
+      $("#query-form").addEventListener("submit", generateCard);
+      $("#detail-form").addEventListener("submit", saveDetail);
+      $$("[data-action='close-detail']").forEach((button) => button.addEventListener("click", closeDetail));
+      $("#search-input").addEventListener("input", (event) => { state.query = event.target.value.trim(); renderLibrary(); });
+      $("#sort-input").addEventListener("change", (event) => { state.sort = event.target.value; renderLibrary(); });
+      $("#direction-input").addEventListener("change", (event) => { state.direction = event.target.value; renderLibrary(); });
+      $("#star-filter-input").addEventListener("change", (event) => { state.starFilter = event.target.value; renderLibrary(); });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !$("#detail-backdrop").hidden) closeDetail();
+      });
+      $("#detail-backdrop").addEventListener("click", (event) => { if (event.target === $("#detail-backdrop")) closeDetail(); });
+      function navigate(route) {
+        $$("[data-page]").forEach((page) => page.toggleAttribute("hidden", page.dataset.page !== route));
+        $$(".nav-link").forEach((link) => link.setAttribute("aria-current", link.dataset.route === route ? "page" : "false"));
+        if (route === "words") renderLibrary();
+        state.route = route;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function switchWordView(view) {
+        state.wordView = view;
+        $$("[data-word-panel]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.wordPanel !== view));
+        $$("[data-word-view]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.wordView === view)));
+        if (view === "library") renderLibrary();
+      }
+      updateNetworkIndicator();
+      navigate("home");
+    </script>
+  </body>
+</html>

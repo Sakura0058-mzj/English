@@ -1,0 +1,9 @@
+# Local dictionary files can be very large and are selected manually in the browser.
+dict/*.json
+
+# Local editor and operating-system files.
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
