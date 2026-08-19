@@ -91,6 +91,20 @@
         font-weight: 700;
       }
       .nav-link:hover, .nav-link[aria-current="page"] { color: var(--sage-dark); background: #fff; }
+      .settings-button {
+        display: inline-flex;
+        width: 38px;
+        height: 38px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 5px;
+        color: #687871;
+        background: var(--canvas);
+        border-radius: 10px;
+        font-size: 20px;
+        line-height: 1;
+      }
+      .settings-button:hover { color: var(--sage-dark); background: var(--sage-light); }
 
       .page { padding: 44px 0 72px; }
       .view-panel { animation: panel-in 180ms ease-out; }
@@ -163,6 +177,30 @@
       }
       .module-heading h1 { margin-top: 10px; font-size: clamp(34px, 5vw, 50px); }
       .module-heading p:not(.eyebrow) { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+      .writing-task-switch {
+        display: inline-flex;
+        gap: 4px;
+        padding: 4px;
+        background: var(--canvas);
+        border-radius: 12px;
+      }
+      .writing-task-switch-button {
+        min-height: 39px;
+        padding: 0 14px;
+        color: #687871;
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .writing-task-switch-button:hover,
+      .writing-task-switch-button[aria-current="page"] {
+        color: var(--sage-dark);
+        background: #fff;
+      }
+      .writing-task-switch-button[aria-current="page"] { cursor: default; }
       .word-tabs {
         display: flex;
         gap: 4px;
@@ -294,8 +332,40 @@
         padding: 15px 9px;
         border-bottom: 1px solid var(--line);
         cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, opacity 180ms ease;
       }
       .library-row:hover, .library-row:focus { background: var(--canvas); outline: 0; }
+      .library-row.reorder-ready {
+        position: fixed;
+        z-index: 90;
+        cursor: grabbing;
+        user-select: none;
+        touch-action: none;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: 0 16px 34px rgba(50, 75, 62, .22);
+        transform: scale(1.03);
+        pointer-events: none;
+      }
+      .library-list.reordering { user-select: none; }
+      .library-list.reordering .library-row:not(.reorder-ready) { transition: transform 180ms ease, opacity 180ms ease; }
+      .reorder-placeholder {
+        border-bottom: 1px solid var(--line);
+        background: rgba(231, 240, 234, .55);
+        border-radius: 8px;
+        transition: height 180ms ease;
+      }
+      .library-index {
+        flex: 0 0 28px;
+        width: 28px;
+        color: #8fa399;
+        font-size: 12px;
+        font-weight: 800;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+      .library-row-copy, .writing-row-copy { min-width: 0; flex: 1; }
       .library-word { font-size: 17px; font-weight: 800; line-height: 1.35; }
       .library-phonetic { display: inline; margin-left: 8px; color: var(--muted); font-size: 13px; font-weight: 500; white-space: nowrap; }
       .library-actions { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
@@ -344,8 +414,24 @@
         box-shadow: var(--shadow);
       }
       .detail-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+      .detail-title-row { display: flex; align-items: center; gap: 9px; }
       .detail-top h2 { margin: 8px 0 0; font-family: Georgia, "Times New Roman", serif; font-size: 36px; font-weight: 500; }
       .detail-phonetic { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
+      .pronounce-button {
+        display: inline-flex;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border: 1px solid #c9ddcf;
+        border-radius: 50%;
+        font-size: 16px;
+        line-height: 1;
+      }
+      .pronounce-button:hover { background: #dbeadf; }
       .close-button { width: 34px; height: 34px; color: #829088; background: transparent; border-radius: 8px; font-size: 24px; }
       .close-button:hover { background: var(--canvas); }
       .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 25px; }
@@ -389,14 +475,404 @@
       .placeholder h1 { font-size: 40px; }
       .placeholder p:last-of-type { max-width: 330px; margin: 13px auto 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
 
+      .writing-tabs { margin-top: 35px; }
+      .writing-entry-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        max-width: 820px;
+        margin-top: 42px;
+      }
+      .writing-entry-grid .feature-card { min-height: 210px; }
+      .writing-content-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 18px;
+        padding: 4px;
+        background: rgba(231, 240, 234, .7);
+        border-radius: 12px;
+      }
+      .writing-content-tab {
+        padding: 9px 13px;
+        color: var(--muted);
+        background: transparent;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .writing-content-tab:hover,
+      .writing-content-tab[aria-selected="true"] {
+        color: var(--sage-dark);
+        background: #fff;
+      }
+      .writing-smart-panel { max-width: 820px; margin: 23px auto 0; padding: 22px; }
+      .writing-smart-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 16px;
+      }
+      .writing-smart-heading h2 { margin: 8px 0 0; font-size: 21px; }
+      .writing-smart-input {
+        display: block;
+        width: 100%;
+        min-height: 92px;
+        padding: 12px;
+        color: var(--ink);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        font-size: 13px;
+        line-height: 1.75;
+        resize: vertical;
+      }
+      .writing-smart-input:focus {
+        border-color: #91b19e;
+        box-shadow: 0 0 0 3px rgba(99, 138, 118, .11);
+        outline: 0;
+      }
+      .writing-smart-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .writing-status { min-height: 18px; margin: 0; color: var(--muted); font-size: 11px; }
+      .writing-status.error { color: var(--coral); }
+      .writing-library { margin-top: 18px; }
+      .writing-library .library-toolbar { align-items: center; }
+      .writing-library-title { display: flex; align-items: baseline; gap: 8px; }
+      .writing-library-title h2 { margin: 7px 0 0; font-size: 22px; }
+      .writing-list .library-row { align-items: flex-start; }
+      .writing-row-title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--ink);
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.55;
+      }
+      .writing-row-preview {
+        max-width: 760px;
+        margin-top: 5px;
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .category-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 0 8px;
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .category-tag.blue { color: var(--blue); background: var(--blue-light); }
+      .writing-delete { margin-top: -3px; }
+      .writing-note-select {
+        min-width: 70px;
+        min-height: 32px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+      .writing-card-heading { min-width: 0; }
+      .writing-category-select {
+        display: block;
+        min-width: 150px;
+        min-height: 34px;
+        margin-top: 9px;
+        padding: 0 10px;
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border: 1px solid #bfd4c5;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .writing-field-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .writing-field-actions { display: flex; align-items: center; gap: 7px; }
+      .writing-note-inline {
+        min-height: 30px;
+        padding: 0 8px;
+        color: var(--blue);
+        background: var(--blue-light);
+        border: 1px solid #cdd6e7;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .writing-original {
+        min-height: auto;
+        margin-top: 8px;
+        padding: 0;
+        color: var(--sage-dark);
+        background: transparent;
+        border: 0;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.9;
+        white-space: pre-wrap;
+        user-select: text;
+      }
+      .writing-original:focus { outline: 0; }
+      .writing-highlight {
+        padding: 1px 2px;
+        color: inherit;
+        background: #ffe68a;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .writing-highlight:hover { background: #ffd95a; }
+      .writing-floating-highlight {
+        position: fixed;
+        z-index: 80;
+        min-height: 32px;
+        padding: 0 10px;
+        color: #fff;
+        background: var(--sage-dark);
+        border-radius: 8px;
+        box-shadow: 0 8px 22px rgba(50, 75, 62, .18);
+        font-size: 11px;
+        font-weight: 800;
+        transform: translate(-50%, -100%);
+      }
+      .writing-floating-highlight:hover { background: var(--sage); }
+      .writing-annotation-popover {
+        margin-top: 10px;
+        padding: 12px;
+        background: var(--sage-light);
+        border: 1px solid #c9ddcf;
+        border-radius: 9px;
+      }
+      .writing-annotation-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--sage-dark);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .writing-annotation-heading .close-button { width: 26px; height: 26px; font-size: 18px; }
+      .writing-annotation-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .writing-annotation-actions button { min-height: 34px; padding: 0 10px; font-size: 11px; }
+      .modal-star-button { margin-right: auto; }
+      .writing-modal { width: min(100%, 780px); }
+      .writing-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .writing-form-item {
+        display: block;
+        padding: 13px;
+        background: var(--canvas);
+        border-radius: 10px;
+      }
+      .writing-form-item.wide { grid-column: 1 / -1; }
+      .writing-form-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #99a69f;
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .writing-form-control {
+        display: block;
+        width: 100%;
+        min-height: 42px;
+        padding: 9px 10px;
+        color: var(--ink);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      textarea.writing-form-control { min-height: 92px; resize: vertical; }
+      .writing-form-control:focus {
+        border-color: #91b19e;
+        box-shadow: 0 0 0 3px rgba(99, 138, 118, .11);
+        outline: 0;
+      }
+      .writing-empty { padding: 48px 15px; }
+      .speaking-entry-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        max-width: 820px;
+        margin-top: 42px;
+      }
+      .speaking-entry-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .speaking-entry-grid .feature-card { min-height: 210px; }
+      .speaking-switch {
+        display: inline-flex;
+        gap: 4px;
+        padding: 4px;
+        background: var(--canvas);
+        border-radius: 12px;
+      }
+      .speaking-branch-switches {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .speaking-switch-button {
+        min-height: 39px;
+        padding: 0 14px;
+        color: #687871;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .speaking-switch-button:hover,
+      .speaking-switch-button[aria-current="page"] {
+        color: var(--sage-dark);
+        background: #fff;
+      }
+      .speaking-panel { max-width: 820px; margin: 23px auto 0; }
+      .speaking-original {
+        min-height: 60px;
+        margin-top: 8px;
+        padding: 13px 14px;
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border: 1px solid #c9ddcf;
+        border-radius: 9px;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.9;
+        white-space: pre-wrap;
+        user-select: text;
+      }
+      .speaking-original:focus { outline: 0; }
+      .speaking-original .writing-highlight { color: var(--sage-dark); }
+      .speaking-library-title { display: flex; align-items: baseline; gap: 8px; }
+      .speaking-library-title h2 { margin: 7px 0 0; font-size: 22px; }
+      .speaking-library .library-toolbar { align-items: center; }
+      .speaking-list .library-row { align-items: flex-start; }
+      .speaking-row-copy { min-width: 0; flex: 1; }
+      .speaking-row-title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--ink);
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.55;
+      }
+      .speaking-row-preview {
+        max-width: 760px;
+        margin-top: 5px;
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .speaking-modal { width: min(100%, 780px); }
+      .speaking-original-card { margin-top: 24px; padding: 13px; background: var(--canvas); border-radius: 10px; }
+      .speaking-original-card .writing-form-label { margin-bottom: 0; }
+      .speaking-substitution-list { display: grid; gap: 9px; margin-top: 12px; }
+      .speaking-substitution-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .speaking-substitution-input {
+        min-width: 0;
+        flex: 1;
+        min-height: 40px;
+        padding: 8px 10px;
+        color: var(--ink);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 13px;
+      }
+      .speaking-substitution-input:focus {
+        border-color: #91b19e;
+        box-shadow: 0 0 0 3px rgba(99, 138, 118, .11);
+        outline: 0;
+      }
+      .speaking-substitution-remove { flex: 0 0 auto; }
+      .speaking-add-substitution {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        margin: 13px auto 0;
+        place-items: center;
+        color: var(--sage-dark);
+        background: var(--sage-light);
+        border: 1px solid #c9ddcf;
+        border-radius: 50%;
+        font-size: 25px;
+        line-height: 1;
+      }
+      .speaking-add-substitution:hover { background: #dbeadf; }
+      .speaking-add-form {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .speaking-add-form .speaking-substitution-input { min-width: 0; }
+      .speaking-add-form button { min-height: 40px; padding: 0 12px; font-size: 11px; }
+      .speaking-substitution-empty { padding: 18px 0; color: var(--muted); font-size: 12px; text-align: center; }
+      .settings-modal { width: min(100%, 700px); }
+      .settings-tabs { margin-top: 18px; }
+      .settings-area-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .settings-area-row label { color: var(--muted); font-size: 12px; font-weight: 800; }
+      .settings-category-list { display: grid; gap: 9px; margin-top: 14px; }
+      .settings-category-row { display: flex; align-items: center; gap: 8px; }
+      .settings-category-input { min-width: 0; flex: 1; }
+      .settings-add-row { display: flex; gap: 8px; margin-top: 14px; }
+      .settings-add-row input { min-width: 0; flex: 1; }
+      .settings-hint { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+
       .file-input { display: none; }
       @media (max-width: 760px) {
         .topbar-inner, .module-heading, .library-toolbar { align-items: stretch; flex-direction: column; }
         .global-nav { width: 100%; }
         .nav-link { flex: 1; }
+        .settings-button { position: absolute; top: 18px; right: 16px; }
         .feature-grid { grid-template-columns: 1fr; }
+        .writing-entry-grid { grid-template-columns: 1fr; }
+        .speaking-entry-grid, .speaking-entry-grid.three { grid-template-columns: 1fr; }
         .library-controls { justify-content: stretch; }
         .search-input { flex: 1; width: auto; }
+        .writing-smart-actions { align-items: stretch; flex-direction: column; }
       }
       @media (max-width: 560px) {
         .topbar-inner, .page { width: min(100% - 24px, 1120px); }
@@ -405,8 +881,18 @@
         .query-button, .search-input, .sort-select, .mode-select { width: 100%; }
         .detail-grid { grid-template-columns: 1fr; }
         .detail-item.wide { grid-column: auto; }
+        .writing-content-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+        .writing-form-grid { grid-template-columns: 1fr; }
+        .writing-form-item.wide { grid-column: auto; }
         .detail-actions { flex-direction: column-reverse; }
         .primary-button, .secondary-button { width: 100%; }
+        .writing-task-switch { width: 100%; }
+        .writing-task-switch-button { flex: 1; }
+        .speaking-switch { width: 100%; }
+        .speaking-switch-button { flex: 1; }
+        .speaking-branch-switches { width: 100%; }
+        .speaking-add-form { align-items: stretch; flex-direction: column; }
+        .settings-area-row, .settings-add-row { align-items: stretch; flex-direction: column; }
       }
     </style>
   </head>
@@ -422,6 +908,7 @@
           <button class="nav-link" data-route="speaking">口语</button>
           <button class="nav-link" data-route="writing">作文</button>
         </nav>
+        <button id="settings-button" class="settings-button" type="button" title="设置" aria-label="设置">⚙</button>
       </div>
     </header>
 
@@ -479,19 +966,212 @@
         </div>
       </section>
 
-      <section class="view-panel" data-page="speaking" hidden><div class="placeholder"><div><span class="placeholder-icon coral">说</span><p class="eyebrow">SPEAKING</p><h1>该模块开发中</h1><p>口语练习空间正在准备中，先把今天遇到的好词记下来吧。</p><button class="primary-button" data-route="words" style="margin-top:22px">去记单词</button></div></div></section>
-      <section class="view-panel" data-page="writing" hidden><div class="placeholder"><div><span class="placeholder-icon blue">写</span><p class="eyebrow" style="color:var(--blue)">WRITING</p><h1>该模块开发中</h1><p>作文素材整理空间正在准备中，先用单词卡积累表达吧。</p><button class="primary-button" data-route="words" style="margin-top:22px">去记单词</button></div></div></section>
+      <section class="view-panel" data-page="speaking" hidden>
+        <section class="speaking-screen" data-speaking-screen="speaking-home">
+          <div class="module-heading">
+            <div><p class="eyebrow" style="color:var(--coral)">SPEAKING</p><h1>口语模块</h1><p>选择结构化表达或同义替换，整理你的口语素材。</p></div>
+          </div>
+          <div class="speaking-entry-grid">
+            <button class="feature-card" data-speaking-screen-target="speaking-structure-home"><span class="feature-icon coral">句</span><h2>结构化表达</h2><p>按 Part 1、Part 2 和 Part 3 整理自然表达。</p><span class="feature-link" style="color:var(--coral)">进入结构化表达 →</span></button>
+            <button class="feature-card" data-speaking-screen-target="speaking-synonyms"><span class="feature-icon sage">换</span><h2>同义替换</h2><p>收藏更自然、更丰富的口语替换表达。</p><span class="feature-link">进入同义替换 →</span></button>
+          </div>
+        </section>
+
+        <section class="speaking-screen" data-speaking-screen="speaking-structure-home" hidden>
+          <div class="module-heading">
+            <div><p class="eyebrow">STRUCTURED SPEAKING</p><h1>结构化表达</h1><p>选择 Part，进入对应的短语卡和短语库。</p></div>
+            <div class="speaking-switch" aria-label="口语素材类型切换">
+              <button class="speaking-switch-button" type="button" aria-current="page">结构化表达</button>
+              <button class="speaking-switch-button" type="button" data-speaking-screen-target="speaking-synonyms">同义替换</button>
+            </div>
+          </div>
+          <div class="speaking-entry-grid three">
+            <button class="feature-card" data-speaking-structure-part="part1"><span class="feature-icon coral">1</span><h2>Part 1</h2><p>整理日常话题、偏好和个人经历表达。</p><span class="feature-link" style="color:var(--coral)">进入 Part 1 →</span></button>
+            <button class="feature-card" data-speaking-structure-part="part2"><span class="feature-icon coral">2</span><h2>Part 2</h2><p>整理人物、地点、经历和事件描述表达。</p><span class="feature-link" style="color:var(--coral)">进入 Part 2 →</span></button>
+            <button class="feature-card" data-speaking-structure-part="part3"><span class="feature-icon coral">3</span><h2>Part 3</h2><p>整理观点、原因、举例和对比表达。</p><span class="feature-link" style="color:var(--coral)">进入 Part 3 →</span></button>
+          </div>
+        </section>
+
+        <section class="speaking-screen" data-speaking-screen="speaking-structure-branch" hidden>
+          <div class="module-heading">
+            <div><p id="speaking-branch-eyebrow" class="eyebrow">SPEAKING · STRUCTURED</p><h1 id="speaking-branch-title">Part 1</h1><p id="speaking-branch-description">整理你的结构化口语表达。</p></div>
+            <div class="speaking-branch-switches">
+              <div class="speaking-switch" aria-label="口语素材类型切换">
+                <button class="speaking-switch-button" type="button" aria-current="page">结构化表达</button>
+                <button class="speaking-switch-button" type="button" data-speaking-screen-target="speaking-synonyms">同义替换</button>
+              </div>
+              <div class="speaking-switch" aria-label="口语 Part 切换">
+                <button id="speaking-part1" class="speaking-switch-button" type="button" data-speaking-structure-part="part1">Part 1</button>
+                <button id="speaking-part2" class="speaking-switch-button" type="button" data-speaking-structure-part="part2">Part 2</button>
+                <button id="speaking-part3" class="speaking-switch-button" type="button" data-speaking-structure-part="part3">Part 3</button>
+              </div>
+            </div>
+          </div>
+          <div class="word-tabs writing-tabs" role="tablist" aria-label="口语素材视图">
+            <button id="speaking-editor-tab" class="word-tab" data-speaking-panel="editor" aria-selected="true">编辑短语卡</button>
+            <button id="speaking-library-tab" class="word-tab" data-speaking-panel="library" aria-selected="false">短语库 <span id="speaking-count-tab" class="word-tab-count">0</span></button>
+          </div>
+
+          <div class="word-panel" data-speaking-panel-view="editor">
+            <section class="panel writing-smart-panel speaking-panel">
+              <div class="writing-smart-heading">
+                <div><p class="section-kicker">SMART ADD</p><h2>智能添加口语短语卡</h2></div>
+                <span class="status-badge">联网识别</span>
+              </div>
+              <textarea id="speaking-structure-input" class="writing-smart-input" placeholder="粘贴英文句子或段落，生成当前 Part 下的口语短语卡"></textarea>
+              <div class="writing-smart-actions">
+                <p id="speaking-structure-status" class="writing-status" role="status" aria-live="polite">生成后可调整左上角分类，再确认收藏。</p>
+                <button id="speaking-structure-button" class="primary-button" type="button">生成短语卡</button>
+              </div>
+            </section>
+          </div>
+
+          <div class="word-panel" data-speaking-panel-view="library" hidden>
+            <section class="panel library-panel writing-library speaking-library">
+              <div class="library-toolbar">
+                <div class="speaking-library-title"><div><p class="section-kicker">SPEAKING BANK</p><h2>短语库</h2></div><span id="speaking-count" class="word-tab-count">0</span></div>
+                <div class="library-controls">
+                  <select id="speaking-category-filter" class="sort-select" aria-label="口语分类"></select>
+                  <select id="speaking-star-filter" class="sort-select" aria-label="星级筛选"><option value="all">全部句子</option><option value="starred">仅显示带星级句子</option></select>
+                </div>
+              </div>
+              <div id="speaking-structure-list" class="library-list speaking-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="speaking-screen" data-speaking-screen="speaking-synonyms" hidden>
+          <div class="module-heading">
+            <div><p class="eyebrow">SPEAKING · SYNONYMS</p><h1>同义替换</h1><p>收藏原始表达和更自然的英文替换词。</p></div>
+            <div class="speaking-switch" aria-label="口语素材类型切换">
+              <button class="speaking-switch-button" type="button" data-speaking-screen-target="speaking-structure-home">结构化表达</button>
+              <button class="speaking-switch-button" type="button" aria-current="page">同义替换</button>
+            </div>
+          </div>
+          <div class="word-tabs writing-tabs" role="tablist" aria-label="同义替换视图">
+            <button class="word-tab" data-speaking-synonym-panel="editor" aria-selected="true">添加替换</button>
+            <button class="word-tab" data-speaking-synonym-panel="library" aria-selected="false">替换库 <span id="speaking-synonym-count-tab" class="word-tab-count">0</span></button>
+          </div>
+
+          <div class="word-panel" data-speaking-synonym-panel-view="editor">
+            <section class="panel writing-smart-panel speaking-panel">
+              <div class="writing-smart-heading">
+                <div><p class="section-kicker">SMART ADD</p><h2>添加同义替换卡</h2></div>
+                <span class="status-badge">联网翻译</span>
+              </div>
+              <textarea id="speaking-synonym-input" class="writing-smart-input" placeholder="输入需要替换的英文表达"></textarea>
+              <div class="writing-smart-actions">
+                <p id="speaking-synonym-status" class="writing-status" role="status" aria-live="polite">生成后可以继续添加多个替换表达。</p>
+                <button id="speaking-synonym-button" class="primary-button" type="button">生成替换卡</button>
+              </div>
+            </section>
+          </div>
+
+          <div class="word-panel" data-speaking-synonym-panel-view="library" hidden>
+            <section class="panel library-panel writing-library speaking-library">
+              <div class="library-toolbar">
+                <div class="speaking-library-title"><div><p class="section-kicker">SPEAKING BANK</p><h2>替换库</h2></div><span id="speaking-synonym-count" class="word-tab-count">0</span></div>
+                <div class="library-controls">
+                  <select id="speaking-synonym-star-filter" class="sort-select" aria-label="替换库星级筛选"><option value="all">全部替换</option><option value="starred">仅显示带星级替换</option></select>
+                </div>
+              </div>
+              <div id="speaking-synonym-list" class="library-list speaking-list"></div>
+            </section>
+          </div>
+        </section>
+      </section>
+      <section class="view-panel" data-page="writing" hidden>
+        <section class="writing-screen" data-writing-screen="writing-home">
+          <div class="module-heading">
+            <div><p class="eyebrow" style="color:var(--blue)">WRITING</p><h1>作文模块</h1><p>选择小作文或大作文，进入对应的写作素材空间。</p></div>
+          </div>
+          <div class="writing-entry-grid">
+            <button class="feature-card" data-writing-screen-target="task1"><span class="feature-icon sage">小</span><h2>小作文</h2><p>整理图表结构句型与范文素材。</p><span class="feature-link">进入小作文 →</span></button>
+            <button class="feature-card" data-writing-screen-target="task2"><span class="feature-icon blue">大</span><h2>大作文</h2><p>整理结构句型与话题观点素材。</p><span class="feature-link" style="color:var(--blue)">进入大作文 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="task1" hidden>
+          <div class="module-heading">
+            <div><p class="eyebrow">TASK 1</p><h1>小作文</h1><p>选择你要整理的素材类型。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换">
+              <button class="writing-task-switch-button" type="button" aria-current="page">小作文</button>
+              <button class="writing-task-switch-button" type="button" data-writing-screen-target="task2">大作文</button>
+            </div>
+          </div>
+          <div class="writing-entry-grid">
+            <button class="feature-card" data-writing-branch="task1-structures"><span class="feature-icon sage">句</span><h2>结构句型</h2><p>按开头、概述、细节和结尾整理句型。</p><span class="feature-link">进入结构句型 →</span></button>
+            <button class="feature-card" data-writing-branch="task1-samples"><span class="feature-icon blue">范</span><h2>范文收藏</h2><p>按线图、柱状图、饼图等图表类型整理范文。</p><span class="feature-link" style="color:var(--blue)">进入范文收藏 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="task2" hidden>
+          <div class="module-heading">
+            <div><p class="eyebrow">TASK 2</p><h1>大作文</h1><p>选择结构句型或话题素材空间。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换">
+              <button class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button>
+              <button class="writing-task-switch-button" type="button" aria-current="page">大作文</button>
+            </div>
+          </div>
+          <div class="writing-entry-grid">
+            <button class="feature-card" data-writing-branch="task2-structures"><span class="feature-icon sage">句</span><h2>结构句型</h2><p>按开头段、论点提出、论证展开等位置整理句型。</p><span class="feature-link">进入结构句型 →</span></button>
+            <button class="feature-card" data-writing-branch="task2-topics"><span class="feature-icon blue">题</span><h2>话题收藏</h2><p>按教育、科技、环境、社会等话题整理观点。</p><span class="feature-link" style="color:var(--blue)">进入话题收藏 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="branch" hidden>
+          <div class="module-heading">
+            <div><p id="writing-branch-eyebrow" class="eyebrow">WRITING BANK</p><h1 id="writing-branch-title">结构句型</h1><p id="writing-branch-description">整理你的写作素材。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换">
+              <button id="writing-branch-task1" class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button>
+              <button id="writing-branch-task2" class="writing-task-switch-button" type="button" data-writing-screen-target="task2">大作文</button>
+            </div>
+          </div>
+          <div class="word-tabs writing-tabs" role="tablist" aria-label="素材视图">
+            <button id="writing-editor-tab" class="word-tab" data-writing-panel="editor" aria-selected="true">编辑短语卡</button>
+            <button id="writing-library-tab" class="word-tab" data-writing-panel="library" aria-selected="false">短语库 <span id="writing-count-tab" class="word-tab-count">0</span></button>
+          </div>
+
+          <div class="word-panel" data-writing-panel-view="editor">
+            <section class="panel writing-smart-panel">
+              <div class="writing-smart-heading">
+                <div><p class="section-kicker">SMART ADD</p><h2 id="smart-writing-title">智能添加短语卡</h2></div>
+                <span class="status-badge">联网识别</span>
+              </div>
+              <textarea id="smart-writing-input" class="writing-smart-input" placeholder="粘贴英文句子或段落，生成当前分类下的短语卡"></textarea>
+              <div class="writing-smart-actions">
+                <p id="writing-status" class="writing-status" role="status" aria-live="polite">生成后可调整左上角分类，再确认收藏。</p>
+                <button id="smart-writing-button" class="primary-button" type="button">生成短语卡</button>
+              </div>
+            </section>
+          </div>
+
+          <div class="word-panel" data-writing-panel-view="library" hidden>
+            <section class="panel library-panel writing-library">
+              <div class="library-toolbar">
+                <div class="writing-library-title"><div><p class="section-kicker">WRITING BANK</p><h2 id="writing-library-heading">短语库</h2></div><span id="writing-count" class="word-tab-count">0</span></div>
+                <div class="library-controls">
+                  <select id="writing-category-filter" class="sort-select" aria-label="作文分类"></select>
+                  <select id="writing-star-filter" class="sort-select" aria-label="星级筛选"><option value="all">全部句子</option><option value="starred">仅显示带星级句子</option></select>
+                </div>
+              </div>
+              <div id="writing-list" class="library-list writing-list"></div>
+            </section>
+          </div>
+        </section>
+      </section>
     </main>
 
     <div id="detail-backdrop" class="detail-backdrop" hidden>
       <section class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
-        <div class="detail-top"><div><p class="section-kicker">WORD CARD</p><h2 id="detail-title"></h2><p id="detail-phonetic" class="detail-phonetic"></p></div><button class="close-button" data-action="close-detail" aria-label="关闭详情">×</button></div>
+        <div class="detail-top"><div><p class="section-kicker">WORD CARD</p><div class="detail-title-row"><h2 id="detail-title"></h2><button id="detail-pronounce" class="pronounce-button" type="button" title="朗读单词" aria-label="朗读单词">🔊</button></div><p id="detail-phonetic" class="detail-phonetic"></p></div><button class="close-button" data-action="close-detail" aria-label="关闭详情">×</button></div>
         <form id="detail-form">
           <div class="detail-grid">
             <label class="detail-item"><span class="detail-label">中文释义</span><textarea id="detail-meaning" class="card-control" placeholder="可编辑"></textarea></label>
             <label class="detail-item"><span class="detail-label">近义词</span><textarea id="detail-synonyms" class="card-control" placeholder="最多 3 个"></textarea></label>
+            <label class="detail-item"><span class="detail-label">常见搭配</span><textarea id="detail-collocations" class="card-control" placeholder="例如：reduce carbon emissions"></textarea></label>
             <label class="detail-item wide"><span class="detail-label">英文释义</span><textarea id="detail-definition" class="card-control" placeholder="可编辑"></textarea></label>
-            <label class="detail-item example wide"><span class="detail-label">例句</span><textarea id="detail-examples" class="card-control example-control" placeholder="最多 2 句"></textarea></label>
+            <label class="detail-item example wide"><span class="detail-label">雅思语境例句（含中文翻译）</span><textarea id="detail-examples" class="card-control example-control" placeholder="英文例句&#10;中文翻译"></textarea></label>
           </div>
           <div class="detail-actions"><button class="secondary-button" type="button" data-action="close-detail">关闭</button><button id="detail-save" class="primary-button" type="submit">保存到单词库</button></div>
         </form>
@@ -499,11 +1179,407 @@
     </div>
     <div id="network-indicator" class="network-indicator"><span class="network-dot"></span><span>联网</span></div>
 
+    <div id="writing-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal writing-modal" role="dialog" aria-modal="true" aria-labelledby="writing-modal-title">
+        <div class="detail-top">
+          <div class="writing-card-heading">
+            <p class="section-kicker">WRITING CARD</p>
+            <select id="writing-category" class="writing-category-select" aria-label="写作分类"></select>
+            <h2 id="writing-modal-title">确认智能添加</h2>
+            <p id="writing-modal-subtitle" class="detail-phonetic"></p>
+          </div>
+          <button class="close-button" data-action="close-writing" aria-label="关闭写作素材弹窗">×</button>
+        </div>
+        <form id="writing-form">
+          <input id="writing-task" type="hidden" />
+          <input id="writing-collection" type="hidden" />
+          <div class="writing-form-grid">
+            <label class="writing-form-item" id="writing-title-field"><span class="writing-form-label">标题 / 话题名称</span><input id="writing-title" class="writing-form-control" type="text" placeholder="可选"></label>
+            <div class="writing-form-item wide writing-original-item">
+              <div class="writing-field-heading"><span class="writing-form-label" id="writing-content-label">英文原句</span><div class="writing-field-actions"><select id="writing-note-type-inline" class="writing-note-inline" aria-label="观点分类" hidden><option value="benefit">优点</option><option value="drawback">缺点</option><option value="other">其他</option></select></div></div>
+              <div id="writing-content-display" class="writing-original" tabindex="0" aria-label="英文原句，只读，可选择文字添加高亮"></div>
+              <textarea id="writing-content" hidden></textarea>
+              <div id="writing-annotation-popover" class="writing-annotation-popover" hidden>
+                <div class="writing-annotation-heading"><span>高亮注释</span><button id="writing-annotation-close" class="close-button" type="button" aria-label="关闭注释">×</button></div>
+                <textarea id="writing-annotation-input" class="writing-form-control" placeholder="输入这段高亮的用法、替换词或提醒"></textarea>
+                <div class="writing-annotation-actions"><button id="writing-annotation-delete" class="secondary-button" type="button">删除高亮</button><button id="writing-annotation-save" class="primary-button" type="button">保存注释</button></div>
+              </div>
+            </div>
+            <label class="writing-form-item wide"><span class="writing-form-label">中文翻译 / 素材说明</span><textarea id="writing-translation" class="writing-form-control" placeholder="可选"></textarea></label>
+            <label class="writing-form-item wide"><span class="writing-form-label">备注</span><textarea id="writing-note" class="writing-form-control" placeholder="记录使用场景、替换词或个人提醒"></textarea></label>
+          </div>
+          <div class="detail-actions">
+            <button id="writing-star-button" class="star-button modal-star-button" type="button" title="添加星级" aria-label="添加星级">☆</button>
+            <button class="secondary-button" type="button" data-action="close-writing">取消</button>
+            <button id="writing-save-button" class="primary-button" type="submit">确认收藏</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div id="speaking-phrase-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal speaking-modal" role="dialog" aria-modal="true" aria-labelledby="speaking-phrase-modal-title">
+        <div class="detail-top">
+          <div class="writing-card-heading">
+            <p class="section-kicker">SPEAKING CARD</p>
+            <select id="speaking-phrase-category" class="writing-category-select" aria-label="口语分类"></select>
+            <h2 id="speaking-phrase-modal-title">确认口语短语卡</h2>
+            <p id="speaking-phrase-modal-subtitle" class="detail-phonetic"></p>
+          </div>
+          <button class="close-button" data-action="close-speaking-phrase" aria-label="关闭口语短语卡">×</button>
+        </div>
+        <form id="speaking-phrase-form">
+          <div class="speaking-original-card">
+            <span class="writing-form-label">英文原句（只读）</span>
+            <div id="speaking-phrase-content-display" class="speaking-original" tabindex="0" aria-label="英文原句，只读，可选择文字添加高亮"></div>
+            <textarea id="speaking-phrase-content" hidden></textarea>
+            <div id="speaking-annotation-popover" class="writing-annotation-popover" hidden>
+              <div class="writing-annotation-heading"><span>高亮注释</span><button id="speaking-annotation-close" class="close-button" type="button" aria-label="关闭注释">×</button></div>
+              <textarea id="speaking-annotation-input" class="writing-form-control" placeholder="输入这段高亮的用法、替换词或提醒"></textarea>
+              <div class="writing-annotation-actions"><button id="speaking-annotation-delete" class="secondary-button" type="button">删除高亮</button><button id="speaking-annotation-save" class="primary-button" type="button">保存注释</button></div>
+            </div>
+          </div>
+          <div class="writing-form-grid">
+            <label class="writing-form-item wide"><span class="writing-form-label">中文翻译</span><textarea id="speaking-phrase-translation" class="writing-form-control" placeholder="联网获取后可手动修改"></textarea></label>
+            <label class="writing-form-item wide"><span class="writing-form-label">备注</span><textarea id="speaking-phrase-note" class="writing-form-control" placeholder="记录使用场景、替换词或个人提醒"></textarea></label>
+          </div>
+          <div class="detail-actions">
+            <button id="speaking-phrase-star-button" class="star-button modal-star-button" type="button" title="添加星级" aria-label="添加星级">☆</button>
+            <button class="secondary-button" type="button" data-action="close-speaking-phrase">取消</button>
+            <button id="speaking-phrase-save" class="primary-button" type="submit">确认收藏</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div id="speaking-synonym-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal speaking-modal" role="dialog" aria-modal="true" aria-labelledby="speaking-synonym-modal-title">
+        <div class="detail-top">
+          <div>
+            <p class="section-kicker">SPEAKING CARD</p>
+            <h2 id="speaking-synonym-modal-title">同义替换卡</h2>
+            <p id="speaking-synonym-modal-subtitle" class="detail-phonetic"></p>
+          </div>
+          <button class="close-button" data-action="close-speaking-synonym" aria-label="关闭同义替换卡">×</button>
+        </div>
+        <form id="speaking-synonym-form">
+          <div class="speaking-original-card">
+            <span class="writing-form-label">原始表达（只读）</span>
+            <div id="speaking-synonym-original" class="speaking-original" aria-label="原始表达，只读"></div>
+          </div>
+          <label class="writing-form-item wide" style="display:block;margin-top:12px"><span class="writing-form-label">中文翻译</span><textarea id="speaking-synonym-translation" class="writing-form-control" placeholder="联网获取后可手动修改"></textarea></label>
+          <div class="speaking-original-card">
+            <span class="writing-form-label">同义替换表达</span>
+            <div id="speaking-substitution-list" class="speaking-substitution-list"></div>
+            <button id="speaking-add-substitution" class="speaking-add-substitution" type="button" title="添加替换表达" aria-label="添加替换表达">+</button>
+            <div id="speaking-add-substitution-form" class="speaking-add-form" hidden>
+              <input id="speaking-new-substitution" class="speaking-substitution-input" type="text" placeholder="输入新的英文替换表达" autocomplete="off" />
+              <button id="speaking-save-substitution" class="primary-button" type="button">保存</button>
+            </div>
+          </div>
+          <div class="detail-actions">
+            <button class="secondary-button" type="button" data-action="close-speaking-synonym">取消</button>
+            <button id="speaking-synonym-save" class="primary-button" type="submit">确认收藏</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div id="settings-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="detail-top">
+          <div>
+            <p class="section-kicker">PERSONAL SETTINGS</p>
+            <h2 id="settings-title">词库设置</h2>
+            <p class="detail-phonetic">编辑口语和作文的分类名称，也可以添加自己的分类。</p>
+          </div>
+          <button id="settings-close" class="close-button" type="button" aria-label="关闭设置">×</button>
+        </div>
+        <div class="settings-tabs speaking-switch" aria-label="设置模块切换">
+          <button class="speaking-switch-button" type="button" data-settings-module="speaking" aria-current="page">口语</button>
+          <button class="speaking-switch-button" type="button" data-settings-module="writing" aria-current="false">作文</button>
+        </div>
+        <div class="settings-area-row">
+          <label for="settings-library-select">正在编辑的词库分类</label>
+          <select id="settings-library-select" class="sort-select" aria-label="选择词库"></select>
+        </div>
+        <div id="settings-category-list" class="settings-category-list"></div>
+        <div class="settings-add-row">
+          <input id="settings-new-category" class="writing-form-control" type="text" maxlength="30" placeholder="输入新的分类名称" autocomplete="off" />
+          <button id="settings-add-category" class="secondary-button" type="button">添加分类</button>
+        </div>
+        <p class="settings-hint">删除分类时，该分类下的内容会自动移动到当前词库的第一个分类。单词模块分类和顺序保持不变。</p>
+        <div class="detail-actions">
+          <button id="settings-cancel" class="secondary-button" type="button">取消</button>
+          <button id="settings-save" class="primary-button" type="button">保存设置</button>
+        </div>
+      </section>
+    </div>
+    <button id="writing-floating-highlight" class="writing-floating-highlight" type="button" hidden>标记高亮</button>
+    <button id="speaking-floating-highlight" class="writing-floating-highlight" type="button" hidden>标记高亮</button>
+
     <script>
       /* ---------- 常量、状态与本地收藏 ---------- */
       const STORAGE_KEY = "ielts-study-helper.words.v1";
+      const CAMBRIDGE5_IMPORT_KEY = "ielts-study-helper.cambridge5-imported.v1";
+      const WRITING_STORAGE_KEY = "ielts-study-helper.writing.v1";
+      const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
+      const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
+      const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
+      const LONG_PRESS_DURATION = 500;
       const DICTIONARY_API = "https://api.dictionaryapi.dev/api/v2/entries/en/";
       const TRANSLATION_API = "https://api.mymemory.translated.net/get";
+      const WRITING_CONFIG = {
+        task1: {
+          label: "小作文",
+          collections: {
+            structures: {
+              label: "结构句型",
+              categories: {
+                intro: "开头",
+                overview: "概述",
+                detail: "细节",
+                conclusion: "结尾",
+              },
+            },
+            samples: {
+              label: "范文收藏",
+              categories: {
+                line: "线图",
+                bar: "柱状图",
+                pie: "饼图",
+                table: "表格",
+                process: "流程图",
+                map: "地图",
+              },
+            },
+          },
+        },
+        task2: {
+          label: "大作文",
+          collections: {
+            topics: {
+              label: "话题收藏",
+              categories: {
+                education: "教育",
+                technology: "科技",
+                environment: "环境",
+                society: "社会",
+                government: "政府",
+                media: "媒体",
+                health: "健康",
+                economy: "经济",
+                other: "其他",
+              },
+            },
+            structures: {
+              label: "结构句型",
+              categories: {
+                intro: "开头段",
+                thesis: "论点提出",
+                development: "论证展开",
+                concession: "让步转折",
+                conclusion: "结尾段",
+              },
+            },
+          },
+        },
+      };
+      const WRITING_NOTE_TYPES = {
+        benefit: "优点",
+        drawback: "缺点",
+        other: "其他",
+      };
+      const SPEAKING_CONFIG = {
+        part1: {
+          label: "Part 1",
+          description: "按日常话题、偏好和个人经历整理自然表达。",
+          categories: {
+            intro: "开头引入",
+            preference: "偏好观点",
+            frequency: "频率表达",
+            past: "过去经历",
+            change: "对比变化",
+            elaboration: "补充说明",
+            closing: "收尾总结",
+          },
+        },
+        part2: {
+          label: "Part 2",
+          description: "按人物、地点、经历和事件描述整理表达。",
+          categories: {
+            intro: "开头介绍",
+            background: "背景说明",
+            details: "细节展开",
+            feelings: "感受观点",
+            ending: "结尾收束",
+          },
+        },
+        part3: {
+          label: "Part 3",
+          description: "按观点、原因、举例和对比整理讨论表达。",
+          categories: {
+            opinion: "观点表达",
+            reason: "原因解释",
+            example: "举例说明",
+            comparison: "对比分析",
+            conclusion: "总结收束",
+          },
+        },
+      };
+      const DEFAULT_CATEGORY_SETTINGS = buildDefaultCategorySettings();
+      let categorySettings = loadCategorySettings();
+      applyCategorySettings(categorySettings);
+      const SPEAKING_PART1_PHRASE_SEED = [
+        ["intro", "Well, to be honest, I would say that...", "老实说，我会说……", "回答多数 Part 1 问题的自然开场。"],
+        ["intro", "That's an interesting question. I suppose...", "这是个挺有意思的问题。我想……", "需要一点思考时间时使用。"],
+        ["intro", "If I had to choose, I'd probably say...", "如果必须选择的话，我可能会说……", "回答偏好或选择类问题。"],
+        ["preference", "I'm really into... because it helps me relax.", "我真的很喜欢……因为它能让我放松。", "表达喜欢某活动或爱好。"],
+        ["preference", "I'm quite fond of..., especially when I have some free time.", "我挺喜欢……尤其是在我有空的时候。", "温和表达喜欢。"],
+        ["preference", "I'm not a big fan of..., mainly because I find it a bit boring.", "我不是很喜欢……主要因为我觉得它有点无聊。", "表达不喜欢但语气自然。"],
+        ["frequency", "I do it quite often, probably a few times a week.", "我挺经常做这件事，可能一周几次。", "回答 How often。"],
+        ["frequency", "I don't do it as often as I used to.", "我不像以前那样经常做了。", "频率变化回答。"],
+        ["frequency", "Every now and then, I do it when I need a break.", "我偶尔会做，通常是在需要休息的时候。", "表达偶尔。"],
+        ["past", "When I was younger, I used to... quite a lot.", "我小时候经常……", "回答童年习惯。"],
+        ["past", "I remember doing that when I was at school.", "我记得上学时做过那件事。", "回答过去经历。"],
+        ["past", "Back then, I didn't really care much about it.", "那时候我其实不太在意它。", "表达过去态度。"],
+        ["change", "These days, I tend to..., whereas in the past I used to...", "现在我倾向于……而过去我常常……", "对比过去和现在。"],
+        ["change", "My attitude towards it has changed quite a bit over time.", "随着时间推移，我对它的态度变化挺大。", "表达观点变化。"],
+        ["change", "It has become much more common than it was before.", "它比以前常见多了。", "描述社会变化。"],
+        ["elaboration", "The main reason is that...", "主要原因是……", "展开理由。"],
+        ["elaboration", "For example, when I..., I usually...", "例如，当我……时，我通常……", "举例展开。"],
+        ["elaboration", "Another thing worth mentioning is that...", "另一个值得一提的是……", "添加补充信息。"],
+        ["closing", "So overall, I'd say it's something I enjoy.", "所以总的来说，我会说这是我喜欢的事情。", "自然结束正面回答。"],
+        ["closing", "That's probably why I don't do it very often.", "这可能就是我不常做它的原因。", "结束负面或低频回答。"],
+        ["closing", "So yes, it's definitely a part of my daily life.", "所以是的，它确实是我日常生活的一部分。", "总结日常相关回答。"],
+      ].map(([category, content, translation, note]) => ({ category, content, translation, note }));
+      const SPEAKING_SYNONYM_SEED = [
+        ["I like", "我喜欢", ["I'm into", "I'm fond of", "I'm keen on", "I'm a big fan of", "I'm passionate about"]],
+        ["I don't like", "我不喜欢", ["I'm not a fan of", "I'm not keen on", "I can't stand", "I'm not really into", "It doesn't appeal to me"]],
+        ["I think", "我认为", ["I believe", "I suppose", "I reckon", "In my view", "I'd say"]],
+        ["usually", "通常；经常", ["often", "tend to", "most of the time", "on a regular basis", "as a rule"]],
+        ["sometimes", "有时", ["occasionally", "from time to time", "every now and then", "once in a while", "at times"]],
+        ["rarely", "很少", ["seldom", "hardly ever", "not very often", "once in a blue moon", "on rare occasions"]],
+        ["important", "重要的", ["crucial", "essential", "vital", "significant", "a key factor"]],
+        ["relax", "放松", ["unwind", "chill out", "take it easy", "recharge", "let off steam"]],
+      ].map(([original, translation, substitutions]) => ({ original, translation, substitutions }));
+      const CAMBRIDGE5_SEED = [
+        ["minibus", "/ˈmɪnibʌs/", "小型公共汽车", "a small bus that carries a limited number of passengers", "minibus service; airport minibus", "shuttle bus, small bus", "The city could reduce traffic by expanding its minibus service.", "城市可以通过扩大小型公交服务来缓解交通。"],
+        ["reptile", "/ˈreptaɪl/", "爬行动物", "an animal such as a snake, lizard, or turtle with cold blood", "reptile species; marine reptile", "cold-blooded animal", "The loss of wetlands threatens many reptile species.", "湿地减少威胁着许多爬行动物物种。"],
+        ["module", "/ˈmɒdjuːl/", "模块；组成部分；课程单元", "one part of a larger system, course, or machine", "course module; teaching module", "unit, component", "This module examines how cities can respond to climate change.", "本课程单元探讨城市如何应对气候变化。"],
+        ["modular", "/ˈmɒdjələr/", "模块化的；由独立单元组成的", "designed as separate units that can be combined or changed", "modular course; modular design", "flexible, sectional", "A modular course allows students to choose subjects that match their goals.", "模块化课程允许学生选择符合自己目标的科目。"],
+        ["nursery", "/ˈnɜːsəri/", "托儿所；幼儿园；苗圃", "a place where young children or plants are cared for", "nursery school; plant nursery", "kindergarten, childcare centre", "Affordable nursery care can help more parents return to work.", "价格可负担的托儿服务可以帮助更多父母重返工作岗位。"],
+        ["synthesis", "/ˈsɪnθəsɪs/", "综合；合成", "the process of combining separate ideas or materials into a whole", "synthesis of evidence; research synthesis", "combination, integration", "The report provides a synthesis of evidence from several countries.", "这份报告综合了来自多个国家的证据。"],
+        ["vicissitude", "/vɪˈsɪsɪtjuːd/", "变迁；兴衰；盛衰", "a change in circumstances, especially one that is difficult or unpleasant", "the vicissitudes of life; economic vicissitudes", "change, fluctuation", "The study explores how families cope with the vicissitudes of migration.", "这项研究探讨家庭如何应对移民生活的变迁。"],
+        ["obscurity", "/əbˈskjʊərəti/", "晦涩；默默无闻；不清楚", "the state of being difficult to understand or not well known", "fall into obscurity; relative obscurity", "uncertainty, anonymity", "The writer moved from obscurity to international recognition.", "这位作家从默默无闻走向了国际认可。"],
+        ["analogy", "/əˈnælədʒi/", "类比；相似", "a comparison between two things used to explain an idea", "draw an analogy; close analogy", "comparison, parallel", "The lecturer used an analogy to explain how the immune system works.", "讲师用类比解释免疫系统如何运作。"],
+        ["folklore", "/ˈfəʊklɔːr/", "民间传说；民俗", "the traditional stories, beliefs, and customs of a people", "local folklore; popular folklore", "legend, tradition", "Local folklore plays an important role in preserving cultural identity.", "当地民间传说在维护文化认同方面发挥重要作用。"],
+        ["nurture", "/ˈnɜːtʃər/", "养育；培养；滋养", "to care for and encourage the growth or development of someone or something", "nurture talent; nurture creativity", "foster, develop", "Schools should nurture creativity rather than reward memorisation alone.", "学校应该培养创造力，而不只是奖励死记硬背。"],
+        ["repetition", "/ˌrepəˈtɪʃən/", "重复；反复", "the act of doing or saying something again", "constant repetition; repetition of a pattern", "reiteration, recurrence", "Repetition can help learners remember new vocabulary, but meaningful use is also essential.", "重复可以帮助学习者记住新词，但有意义的使用同样重要。"],
+        ["discrepancy", "/dɪˈskrepənsi/", "差异；矛盾；不一致之处", "a difference between two facts, amounts, or descriptions that should be the same", "a discrepancy between; explain a discrepancy", "difference, inconsistency", "The researchers found a discrepancy between reported income and household spending.", "研究人员发现申报收入与家庭支出之间存在差异。"],
+        ["remnant", "/ˈremnənt/", "残余；剩余部分；残留物", "a small remaining part of something that once existed in greater amount", "remnant of; surviving remnant", "remainder, residue", "Only a small remnant of the original forest remains near the city.", "城市附近只剩下一小片原始森林。"],
+        ["benevolent", "/bəˈnevələnt/", "仁慈的；善意的", "kind and willing to help other people", "benevolent organisation; benevolent fund", "kind, charitable", "A benevolent policy should protect vulnerable groups without creating dependence.", "仁慈的政策应该保护弱势群体，同时避免造成依赖。"],
+        ["malevolent", "/məˈlevələnt/", "恶意的；恶毒的", "having or showing a desire to cause harm", "malevolent intent; malevolent force", "malicious, spiteful", "The evidence did not support the claim that the campaign had malevolent intent.", "证据不支持这场活动带有恶意的说法。"],
+        ["forgo", "/fɔːˈɡəʊ/", "放弃；摒弃", "to decide not to have or do something that you would normally choose", "forgo a benefit; forgo the opportunity", "give up, waive", "Some consumers are willing to forgo convenience in order to reduce plastic waste.", "一些消费者愿意放弃便利，以减少塑料垃圾。"],
+        ["transient", "/ˈtrænziənt/", "短暂的；临时的", "lasting for only a short time", "transient population; transient effect", "temporary, short-lived", "The economic benefits of the event may be transient unless investment continues.", "除非持续投资，否则这项活动带来的经济收益可能是短暂的。"],
+        ["lobby", "/ˈlɒbi/", "大厅；游说；游说团体", "to try to influence politicians, or a group that does this", "lobby for reform; corporate lobby", "campaign, foyer", "Environmental groups are lobbying for stricter controls on industrial emissions.", "环保组织正在游说政府加强对工业排放的控制。"],
+        ["trash", "/træʃ/", "垃圾；废物", "waste material that people no longer want", "household trash; reduce trash", "rubbish, waste", "Reducing household trash requires changes in both production and consumption.", "减少家庭垃圾需要改变生产和消费方式。"],
+        ["trashcan", "/ˈtræʃkæn/", "垃圾桶", "a container used for unwanted waste", "public trashcan; empty the trashcan", "bin, wastebasket", "More public trashcans could encourage visitors to keep the park clean.", "增加公共垃圾桶可以鼓励游客保持公园整洁。"],
+        ["considerable", "/kənˈsɪdərəbəl/", "相当大的；重要的", "large in amount, size, or importance", "considerable amount; considerable impact", "substantial, significant", "The project requires a considerable amount of public funding.", "这个项目需要大量公共资金。"],
+        ["carbon dioxide", "/ˌkɑːbən daɪˈɒksaɪd/", "二氧化碳", "a gas produced by burning carbon and by living organisms", "carbon dioxide emissions; reduce carbon dioxide", "CO2", "Governments must reduce carbon dioxide emissions from transport and power generation.", "各国政府必须减少交通和发电产生的二氧化碳排放。"],
+        ["drastic", "/ˈdræstɪk/", "激烈的；极端的；彻底的", "very severe or extreme and likely to have a strong effect", "drastic action; drastic reduction", "radical, extreme", "Drastic action may be needed if water shortages become more serious.", "如果缺水问题变得更加严重，可能需要采取激烈措施。"],
+        ["diminish", "/dɪˈmɪnɪʃ/", "减少；减弱", "to become or make something smaller, weaker, or less important", "diminish the impact; diminish rapidly", "decrease, lessen", "Public trust may diminish when official information is delayed.", "当官方信息发布延迟时，公众信任可能会减弱。"],
+        ["sanitation", "/ˌsænɪˈteɪʃən/", "卫生设施；环境卫生", "systems for protecting health through clean water and waste disposal", "basic sanitation; sanitation facilities", "hygiene, public health", "Investment in sanitation is one of the most effective ways to prevent disease.", "投资卫生设施是预防疾病最有效的方式之一。"],
+        ["overhead", "/ˈəʊvəhed/", "在头顶上方的；管理费用", "above your head, or the regular costs of operating a business", "overhead costs; overhead lighting", "operating cost, above", "Online businesses can reduce overhead costs by using smaller offices.", "网络企业可以通过使用更小的办公室来降低管理费用。"],
+        ["Antarctica", "/ænˈtɑːktɪkə/", "南极洲", "the continent around the South Pole", "Antarctica research; Antarctic ice", "the Antarctic", "Melting ice in Antarctica could contribute to a long-term rise in sea levels.", "南极洲冰层融化可能导致海平面长期上升。"],
+        ["sledge", "/sledʒ/", "雪橇", "a vehicle with runners used for travelling over snow", "sledge dogs; pull a sledge", "sled", "Researchers used a sledge to transport equipment across the frozen landscape.", "研究人员用雪橇在冰冻地貌上运输设备。"],
+        ["dwindle", "/ˈdwɪndl/", "逐渐减少；变小", "to become gradually less in size, amount, or importance", "dwindling resources; dwindle away", "decline, diminish", "If current trends continue, the supply of fresh water will dwindle.", "如果当前趋势持续，淡水供应将逐渐减少。"],
+        ["ivory", "/ˈaɪvəri/", "象牙；象牙色", "a hard white material from the tusks of elephants and some other animals", "ivory trade; ivory tusk", "tusk material", "An international ban on the ivory trade has helped protect elephants.", "国际象牙贸易禁令帮助保护了大象。"],
+        ["hollow", "/ˈhɒləʊ/", "空的；中空的；凹陷处", "having an empty space inside, or a low area in the land", "hollow tube; hollow promise", "empty, sunken", "The report criticised the policy as a hollow promise without funding.", "报告批评这项政策是没有资金支持的空洞承诺。"],
+        ["taper", "/ˈteɪpər/", "逐渐变细；逐渐减少", "to become gradually narrower or less in amount", "taper off; taper to a point", "narrow, decrease", "Demand for the product began to taper off after the initial publicity.", "最初宣传过后，对该产品的需求开始逐渐下降。"],
+        ["disdain", "/dɪsˈdeɪn/", "鄙视；蔑视", "a feeling that someone or something is unworthy of respect", "treat with disdain; show disdain", "contempt, scorn", "Some young people view traditional careers with disdain, although this attitude is changing.", "一些年轻人鄙视传统职业，尽管这种态度正在改变。"],
+        ["flavor", "/ˈfleɪvər/", "味道；风味；特色", "the particular taste of food or the distinctive quality of something", "local flavor; add flavor", "taste, character", "Tourism can bring income while allowing communities to preserve their local flavor.", "旅游业可以带来收入，同时让社区保留地方特色。"],
+        ["drab", "/dræb/", "单调的；乏味的；暗淡的", "dull, boring, or lacking colour", "drab surroundings; drab uniform", "dull, monotonous", "The redevelopment transformed a drab industrial area into a lively public space.", "改造把一个单调的工业区变成了充满活力的公共空间。"],
+        ["versatile", "/ˈvɜːsətaɪl/", "多才多艺的；用途广泛的", "able to do many different things or be used in many ways", "versatile skill; versatile tool", "adaptable, flexible", "Digital skills are versatile and can improve employment opportunities in many sectors.", "数字技能用途广泛，可以改善许多行业的就业机会。"],
+        ["punchline", "/ˈpʌntʃlaɪn/", "妙语；笑话的关键句", "the final part of a joke that makes it funny", "deliver a punchline; unexpected punchline", "payoff, final joke", "The speaker used a humorous punchline to make the presentation memorable.", "演讲者用一个幽默的妙语让演讲令人难忘。"],
+        ["astronomy", "/əˈstrɒnəmi/", "天文学", "the scientific study of stars, planets, and space", "astronomy research; observational astronomy", "space science", "Astronomy can inspire students to study physics and other sciences.", "天文学可以激发学生学习物理和其他科学。"],
+        ["encyclopedia", "/ɪnˌsaɪkləˈpiːdiə/", "百科全书", "a book or website containing information about many subjects", "online encyclopedia; reference encyclopedia", "reference book", "Students should compare an online encyclopedia with academic sources before citing information.", "学生在引用信息前应该将网络百科全书与学术资料进行比较。"],
+        ["session", "/ˈseʃən/", "一场；一节；会议", "a period of time used for a particular activity", "training session; discussion session", "meeting, period", "The university offers a weekly discussion session for international students.", "这所大学为国际学生每周提供一次讨论课。"],
+        ["landfill", "/ˈlændfɪl/", "垃圾填埋场", "a site where waste is buried under the ground", "landfill site; landfill waste", "waste dump, disposal site", "Reducing the amount of waste sent to landfill should be a national priority.", "减少送往填埋场的垃圾量应该成为国家优先事项。"],
+        ["facilitator", "/fəˈsɪlɪteɪtər/", "促进者；协调人；帮助者", "a person who helps a group discuss or achieve something effectively", "group facilitator; trained facilitator", "coordinator, mediator", "An experienced facilitator can help a community reach agreement.", "有经验的协调人可以帮助社区达成共识。"],
+        ["sensory", "/ˈsensəri/", "感觉的；感官的", "connected with the physical senses such as sight, hearing, or smell", "sensory experience; sensory information", "perceptual, tactile", "Museums are using sensory activities to make science more accessible to children.", "博物馆正在使用感官活动，让科学更容易被儿童理解。"],
+        ["handicap", "/ˈhændikæp/", "障碍；不利条件；残障", "a condition that makes progress or success more difficult", "physical handicap; financial handicap", "disadvantage, impairment", "Limited access to transport can be a serious handicap for rural residents.", "交通不便可能是农村居民面临的严重障碍。"],
+        ["vital", "/ˈvaɪtl/", "极其重要的；必不可少的", "necessary for the success or continued existence of something", "vital role; vital information", "essential, crucial", "Public trust is vital to the success of a vaccination programme.", "公众信任对疫苗接种计划的成功至关重要。"],
+        ["reasoning", "/ˈriːzənɪŋ/", "推理；论证", "the process of thinking carefully in order to reach a conclusion", "logical reasoning; line of reasoning", "logic, thought", "The essay presents clear reasoning for investing in public transport.", "这篇文章清楚论证了投资公共交通的理由。"],
+        ["sedimentation", "/ˌsedɪmenˈteɪʃən/", "沉淀；沉积", "the process in which solid material settles at the bottom of a liquid or on land", "sedimentation process; river sedimentation", "deposition, settling", "Sedimentation can reduce the capacity of reservoirs and increase water-treatment costs.", "沉积会降低水库容量并增加水处理成本。"],
+        ["astounding", "/əˈstaʊndɪŋ/", "令人震惊的；惊人的", "very surprising or impressive", "astounding result; astounding growth", "astonishing, remarkable", "The research revealed an astounding increase in online learning during the pandemic.", "研究显示疫情期间在线学习出现了惊人的增长。"],
+        ["Nile", "/naɪl/", "尼罗河", "the major river that flows through north-eastern Africa", "the Nile River; Nile delta", "Nile", "Millions of people depend on the Nile for agriculture and drinking water.", "数百万人依靠尼罗河进行农业生产和获取饮用水。"],
+        ["delta", "/ˈdeltə/", "三角洲", "an area of low land where a river divides before entering the sea", "river delta; delta region", "river mouth", "Rising sea levels place densely populated delta regions at particular risk.", "海平面上升使人口稠密的三角洲地区面临特别大的风险。"],
+        ["scour", "/ˈskaʊər/", "冲刷；彻底搜寻", "to remove or damage something by strong water, or search thoroughly", "scour the riverbed; scour for evidence", "erode, search", "Heavy floods can scour riverbanks and destroy nearby farmland.", "严重洪水会冲刷河岸并毁坏附近农田。"],
+        ["sediment", "/ˈsedɪmənt/", "沉淀物；沉积物", "solid material that settles at the bottom of a liquid or is carried by water", "river sediment; sediment deposits", "deposit, silt", "The dam has changed the movement of sediment through the river system.", "大坝改变了沉积物在河流系统中的运动。"],
+        ["fertilizer", "/ˈfɜːtəlaɪzər/", "肥料", "a substance added to soil to help plants grow", "chemical fertilizer; organic fertilizer", "plant food, manure", "Excessive use of chemical fertilizer can pollute rivers and groundwater.", "过度使用化肥会污染河流和地下水。"],
+        ["canal", "/kəˈnæl/", "运河；渠道", "an artificial waterway built for boats or for carrying water", "irrigation canal; shipping canal", "waterway, channel", "The canal improved trade by connecting inland farms with the port.", "这条运河通过连接内陆农场和港口改善了贸易。"],
+        ["Mediterranean", "/ˌmedɪtəˈreɪniən/", "地中海的；地中海", "relating to the Mediterranean Sea or its surrounding region", "Mediterranean climate; Mediterranean coast", "Mediterranean region", "A Mediterranean climate is generally characterised by hot, dry summers.", "地中海气候通常以炎热干燥的夏季为特征。"],
+        ["erosion", "/ɪˈrəʊʒən/", "侵蚀；削弱", "the gradual destruction of soil, rock, or strength by natural or human forces", "soil erosion; coastal erosion", "wear, deterioration", "Planting trees is an effective way to control soil erosion on hillsides.", "植树是控制山坡土壤侵蚀的有效方法。"],
+        ["comeback", "/ˈkʌmbæk/", "复苏；恢复；东山再起", "a return to a successful or strong condition after a period of decline", "make a comeback; economic comeback", "recovery, revival", "The town made an economic comeback after investing in renewable energy.", "这个城镇投资可再生能源后实现了经济复苏。"],
+        ["launch", "/lɔːntʃ/", "发起；推出；发射", "to start an activity or introduce a new product or service", "launch a campaign; product launch", "start, introduce", "The government plans to launch a campaign encouraging people to save water.", "政府计划发起一项鼓励人们节约用水的活动。"],
+        ["reckon", "/ˈrekən/", "认为；估计；计算", "to think or believe something, or to calculate an amount", "reckon that; be reckoned to be", "estimate, consider", "Experts reckon that the policy could create thousands of green jobs.", "专家估计这项政策可以创造数千个绿色工作岗位。"],
+        ["transcribe", "/trænˈskraɪb/", "转录；抄写；记录", "to write or type a spoken recording or text in another form", "transcribe an interview; transcribe speech", "record, copy", "Researchers transcribed the interviews before analysing the participants' responses.", "研究人员在分析参与者回答前先转录了访谈。"],
+        ["aspiration", "/ˌæspəˈreɪʃən/", "抱负；愿望；志向", "a strong desire to achieve something", "career aspiration; educational aspiration", "ambition, aim", "Access to higher education can help young people achieve their aspirations.", "接受高等教育可以帮助年轻人实现抱负。"],
+        ["inspiration", "/ˌɪnspəˈreɪʃən/", "灵感；鼓舞", "a feeling or idea that encourages someone to do or create something", "source of inspiration; draw inspiration from", "motivation, stimulus", "Public libraries remain a valuable source of inspiration for creative work.", "公共图书馆仍然是创作的重要灵感来源。"],
+        ["contaminate", "/kənˈtæmɪneɪt/", "污染；弄脏", "to make something harmful or dirty by adding a dangerous substance", "contaminate water; contaminated soil", "pollute, taint", "Industrial chemicals can contaminate soil for decades if they are not controlled.", "如果不加以控制，工业化学品可能会污染土壤数十年。"],
+        ["trigger", "/ˈtrɪɡər/", "引发；触发；诱因", "to cause an event or reaction to happen", "trigger a debate; trigger a reaction", "cause, provoke", "A sudden rise in prices may trigger public concern about food security.", "价格突然上涨可能引发公众对粮食安全的担忧。"],
+        ["tango", "/ˈtæŋɡəʊ/", "探戈舞", "a formal dance from Argentina with strong, sharp movements", "tango dancing; learn the tango", "dance", "The cultural festival offered visitors the chance to learn the tango.", "文化节让游客有机会学习探戈舞。"],
+        ["verdict", "/ˈvɜːdɪkt/", "裁决；判决；结论", "a decision made by a court or a considered judgement about something", "reach a verdict; jury verdict", "judgement, decision", "The committee reached a positive verdict on the proposed transport plan.", "委员会对拟议的交通计划作出了积极评价。"],
+        ["pretension", "/prɪˈtenʃən/", "自负；自命不凡；假装", "a claim or attitude suggesting that someone is more important or capable than they are", "artistic pretension; without pretension", "affectation, claim", "The museum presents its collection without pretension and welcomes a wide audience.", "这家博物馆不故作高深地展示藏品，欢迎广大观众。"],
+        ["finance", "/ˈfaɪnæns/", "财政；金融；资金", "the management of money, or the money needed for a project", "public finance; finance a project", "funding, money", "Stable public finance is essential for maintaining basic services.", "稳定的公共财政对维持基本服务至关重要。"],
+        ["incineration", "/ɪnˌsɪnəˈreɪʃən/", "焚化；焚烧处理", "the process of destroying waste by burning it", "waste incineration; incineration plant", "burning, combustion", "Waste incineration can reduce landfill use but may produce harmful emissions.", "垃圾焚烧可以减少填埋需求，但可能产生有害排放。"],
+        ["fluctuate", "/ˈflʌktʃueɪt/", "波动；起伏", "to change frequently in size, amount, quality, or level", "prices fluctuate; fluctuate widely", "vary, oscillate", "Food prices tend to fluctuate because of weather and transport costs.", "食品价格往往会因天气和运输成本而波动。"],
+        ["proportion", "/prəˈpɔːʃən/", "比例；部分", "the relationship between the size of one part and the whole", "a high proportion; in proportion to", "ratio, share", "A large proportion of the population now lives in urban areas.", "如今很大一部分人口生活在城市地区。"],
+        ["approximate", "/əˈprɒksɪmət/", "大约的；接近的", "almost correct or exact, but not completely so", "approximate figure; approximate cost", "rough, estimated", "The approximate cost of the project is difficult to predict at this stage.", "现阶段很难预测该项目的大致成本。"],
+        ["dramatically", "/drəˈmætɪkli/", "戏剧性地；显著地", "in a sudden, striking, or very noticeable way", "change dramatically; rise dramatically", "sharply, markedly", "The number of online shoppers increased dramatically over the past decade.", "过去十年网上购物者的数量大幅增加。"],
+        ["consistency", "/kənˈsɪstənsi/", "一致性；连贯性；稳定性", "the quality of staying the same or being logically compatible", "maintain consistency; consistency in quality", "uniformity, stability", "Consistency in teaching quality is important for reducing educational inequality.", "教学质量的一致性对于减少教育不平等很重要。"],
+        ["conditioner", "/kənˈdɪʃənər/", "护发素；调节器；空调设备", "a substance or device that improves the condition of something", "hair conditioner; air conditioner", "treatment, softener", "Energy-efficient air conditioners can reduce electricity use during hot summers.", "节能空调可以减少炎热夏季的用电量。"],
+        ["detail", "/ˈdiːteɪl/", "细节；详细说明", "a small individual fact or feature of something", "in detail; attention to detail", "particular, point", "The report describes in detail how the survey was conducted.", "报告详细说明了调查是如何进行的。"],
+        ["definite", "/ˈdefɪnət/", "明确的；确定的", "clear, certain, or unlikely to change", "definite evidence; definite answer", "certain, clear", "There is no definite evidence that the scheme will reduce congestion.", "没有确凿证据表明这项计划会减少拥堵。"],
+        ["intermediate", "/ˌɪntəˈmiːdiət/", "中级的；中间的；调解人", "between two levels, stages, or places", "intermediate level; intermediate stage", "mid-level, middle", "The college offers intermediate courses for students who already know the basics.", "这所大学为已经掌握基础知识的学生提供中级课程。"],
+        ["vegetarian", "/ˌvedʒəˈteəriən/", "素食者；素食的", "a person who does not eat meat, or relating to such a diet", "vegetarian diet; vegetarian meal", "meat-free", "A balanced vegetarian diet can provide sufficient protein when planned carefully.", "合理规划的均衡素食饮食可以提供足够的蛋白质。"],
+        ["facility", "/fəˈsɪləti/", "设施；场所；便利条件", "a building, service, or equipment provided for a particular purpose", "public facility; sports facility", "amenity, installation", "Improved sports facilities could encourage young people to exercise more often.", "改善体育设施可以鼓励年轻人更经常锻炼。"],
+        ["clubhouse", "/ˈklʌbhaʊs/", "俱乐部会所", "a building used by members of a club for social or recreational activities", "community clubhouse; clubhouse facilities", "club building, social centre", "The new community clubhouse provides a safe place for residents to meet.", "新的社区会所为居民提供了安全的交流场所。"],
+        ["supervise", "/ˈsuːpəvaɪz/", "监督；管理；指导", "to watch a person or activity to make sure it is done correctly", "supervise students; closely supervise", "oversee, monitor", "Teachers should supervise online activities when children use educational platforms.", "儿童使用教育平台时，教师应该监督其网络活动。"],
+        ["newsletter", "/ˈnjuːzletər/", "通讯；简报", "a regular publication containing news and information for a particular group", "monthly newsletter; company newsletter", "bulletin, circular", "The university newsletter keeps students informed about volunteering opportunities.", "大学通讯让学生了解志愿服务机会。"],
+        ["capital", "/ˈkæpɪtl/", "资本；资金；首都；大写字母", "money used to start or develop a business, or the main city of a country", "human capital; capital investment", "funds, wealth", "Investment in human capital is essential for long-term economic growth.", "对人力资本的投资对长期经济增长至关重要。"],
+        ["invest", "/ɪnˈvest/", "投资；投入", "to put money, time, or effort into something to gain a useful result", "invest in education; invest heavily", "fund, put into", "Governments should invest in public transport rather than relying only on road expansion.", "政府应该投资公共交通，而不是只依赖道路扩张。"],
+        ["interest", "/ˈɪntrəst/", "兴趣；利益；利息", "a feeling of wanting to know about something, or an advantage or financial return", "public interest; take an interest in", "concern, curiosity", "There is growing public interest in how artificial intelligence will affect employment.", "公众越来越关注人工智能将如何影响就业。"],
+        ["boost", "/buːst/", "促进；提高；推动", "to increase or improve something", "boost the economy; boost confidence", "increase, enhance", "Improving rural internet access could boost local businesses.", "改善农村网络接入可以促进当地企业发展。"],
+        ["bibliography", "/ˌbɪbliˈɒɡrəfi/", "参考书目", "a list of books and other sources used in or related to a piece of work", "annotated bibliography; bibliography section", "reference list, works cited", "Students should include a bibliography to show the sources used in their essays.", "学生应该列出参考书目，说明文章使用的资料来源。"],
+        ["reference", "/ˈrefrəns/", "参考；参考资料；推荐信；提及", "a source of information or a mention of someone or something", "reference source; make reference to", "citation, mention", "The researcher made reference to several studies on climate adaptation.", "研究人员提到了几项关于气候适应的研究。"],
+        ["razor", "/ˈreɪzər/", "剃须刀；刮刀", "a sharp tool used for cutting hair close to the skin", "electric razor; razor blade", "shaver, blade", "The design of the reusable razor aims to reduce plastic waste.", "这款可重复使用的剃须刀旨在减少塑料垃圾。"],
+        ["interior", "/ɪnˈtɪəriər/", "内部的；室内的", "the inside part of something, especially a building or vehicle", "interior design; interior space", "inside, inner", "Natural light can make the interior of public buildings more welcoming.", "自然光可以让公共建筑的内部更加宜人。"],
+        ["exterior", "/ɪkˈstɪəriər/", "外部的；外观", "the outside surface or appearance of something", "building exterior; exterior wall", "outside, outer", "The building's exterior was redesigned to improve energy efficiency.", "这栋建筑的外部经过重新设计，以提高能源效率。"],
+        ["solidify", "/səˈlɪdɪfaɪ/", "使凝固；使巩固；变得稳固", "to become solid, or to make an idea, agreement, or position stronger", "solidify an agreement; solidify support", "strengthen, harden", "The agreement helped solidify cooperation between the two countries.", "这项协议帮助巩固了两国之间的合作。"],
+        ["iceberg", "/ˈaɪsbɜːɡ/", "冰山", "a large mass of ice floating in the sea with most of it below the surface", "iceberg melting; tip of the iceberg", "ice mass", "The visible damage was only the tip of the iceberg in the wider environmental crisis.", "可见的损害只是更大环境危机的冰山一角。"],
+        ["profound", "/prəˈfaʊnd/", "深远的；深刻的；深厚的", "very great, serious, or having a strong effect on thoughts or feelings", "profound impact; profound change", "deep, far-reaching", "Digital technology has had a profound impact on the way people communicate.", "数字技术对人们交流的方式产生了深远影响。"],
+        ["sufficient", "/səˈfɪʃənt/", "足够的；充分的", "enough for a particular purpose", "sufficient evidence; sufficient funds", "enough, adequate", "The programme will succeed only if it receives sufficient funding.", "只有获得足够资金，这项计划才会成功。"],
+        ["insufficient", "/ˌɪnsəˈfɪʃənt/", "不足的；不够的", "not enough for a particular purpose", "insufficient evidence; insufficient resources", "inadequate, lacking", "Insufficient public transport forces many residents to rely on private cars.", "公共交通不足迫使许多居民依赖私家车。"],
+        ["output", "/ˈaʊtpʊt/", "产出；输出；产量", "the amount produced by a person, organisation, or machine", "economic output; agricultural output", "production, yield", "Technological improvements increased agricultural output without expanding farmland.", "技术改进提高了农业产量，却没有扩大耕地。"],
+        ["pottery", "/ˈpɒtəri/", "陶器；陶艺", "objects made from clay and hardened by heat", "pottery workshop; pottery production", "ceramics, earthenware", "Traditional pottery can provide income while preserving local cultural skills.", "传统陶艺可以在保留当地文化技能的同时带来收入。"],
+        ["adequate", "/ˈædɪkwət/", "足够的；适当的", "enough in quantity or good enough in quality for a particular purpose", "adequate access; adequate protection", "sufficient, suitable", "Every child should have adequate access to healthcare and education.", "每个儿童都应该获得足够的医疗和教育机会。"],
+        ["offspring", "/ˈɒfsprɪŋ/", "子孙；后代；幼崽", "a person's child or the young of an animal", "human offspring; offspring survival", "children, descendants", "Some species invest considerable energy in protecting their offspring.", "一些物种会投入大量精力保护幼崽。"],
+        ["breed", "/briːd/", "繁殖；品种；培育", "to produce young animals or develop a particular type of animal or plant", "breed animals; selective breeding", "reproduce, raise", "Selective breeding has changed the characteristics of many agricultural crops.", "选择性繁育改变了许多农作物的特征。"],
+        ["reproduction", "/ˌriːprəˈdʌkʃən/", "繁殖；复制；再生产", "the process by which living things produce young, or something is copied", "sexual reproduction; reproduction rate", "breeding, copying", "Habitat loss can affect the reproduction of endangered species.", "栖息地减少会影响濒危物种的繁殖。"],
+        ["germinate", "/ˈdʒɜːməneɪt/", "发芽；萌发；开始发展", "to begin to grow from a seed, or to begin to develop", "germinate quickly; germinate seeds", "sprout, develop", "Seeds germinate more successfully when they receive enough moisture and warmth.", "种子在获得足够水分和温度时更容易发芽。"],
+        ["fertilization", "/ˌfɜːtəlaɪˈzeɪʃən/", "施肥；受精", "the process of adding a substance to soil or joining male and female reproductive cells", "fertilization process; artificial fertilization", "fertilising, conception", "Careful fertilization can improve crop yields without damaging the soil.", "合理施肥可以提高作物产量，同时避免破坏土壤。"],
+        ["comfortable", "/ˈkʌmftəbəl/", "舒适的；感到自在的", "providing physical ease or making someone feel relaxed and confident", "comfortable environment; feel comfortable", "cosy, at ease", "Students learn more effectively in a comfortable and supportive environment.", "学生在舒适且有支持的环境中学习效率更高。"],
+        ["annual", "/ˈænjuəl/", "每年的；一年生的；年度的", "happening once every year or relating to a year", "annual report; annual budget", "yearly, yearly", "The annual report shows a steady increase in renewable energy use.", "年度报告显示可再生能源使用量稳步增加。"],
+        ["destination", "/ˌdestɪˈneɪʃən/", "目的地；去处", "the place to which someone or something is going", "tourist destination; final destination", "endpoint, goal", "The island has become a popular tourist destination despite its limited infrastructure.", "尽管基础设施有限，这座岛仍成为热门旅游目的地。"],
+        ["dissertation", "/ˌdɪsəˈteɪʃən/", "专题论文；学位论文", "a long piece of academic writing based on original research", "write a dissertation; dissertation topic", "thesis, research paper", "Her dissertation examines the relationship between urban design and public health.", "她的学位论文研究城市设计与公共健康之间的关系。"],
+      ].map(([word, phonetic, meaning, definition, collocations, synonyms, english, chinese]) => ({
+        word,
+        phonetic,
+        meaning,
+        definition,
+        collocations,
+        synonyms,
+        examples: `${english}\n${chinese}`,
+      }));
       let latestRequestId = 0;
       const state = {
         route: "home",
@@ -514,22 +1590,554 @@
         direction: "asc",
         starFilter: "all",
         detailId: null,
+        writing: loadWritingData(),
+        writingScreen: "writing-home",
+        writingPanelView: "editor",
+        writingView: "task1",
+        writingCollection: "structures",
+        writingCategory: "all",
+        writingStarFilter: "all",
+        writingDetailId: null,
+        writingSmartMode: false,
+        writingDraftHighlights: [],
+        writingAnnotationId: null,
+        writingPendingSelection: null,
+        speaking: loadSpeakingData(),
+        speakingScreen: "speaking-home",
+        speakingPanelView: "editor",
+        speakingPart: "part1",
+        speakingCategory: "all",
+        speakingStarFilter: "all",
+        speakingPhraseDetailId: null,
+        speakingPhraseDraftHighlights: [],
+        speakingAnnotationId: null,
+        speakingPendingSelection: null,
+        speakingSynonymPanelView: "editor",
+        speakingSynonymStarFilter: "all",
+        speakingSynonymDetailId: null,
+        speakingSynonymDraft: null,
+        speakingSynonymAddOpen: false,
+        settingsModule: "speaking",
+        settingsLibraryId: "part1",
+        settingsDraft: null,
       };
       const $ = (selector) => document.querySelector(selector);
       const $$ = (selector) => [...document.querySelectorAll(selector)];
 
+      /* ---------- 口语 / 作文分类设置 ---------- */
+      function buildDefaultCategorySettings() {
+        return {
+          speaking: Object.fromEntries(
+            Object.entries(SPEAKING_CONFIG).map(([part, config]) => [part, { ...config.categories }])
+          ),
+          writing: Object.fromEntries(
+            Object.entries(WRITING_CONFIG).map(([task, taskConfig]) => [
+              task,
+              Object.fromEntries(
+                Object.entries(taskConfig.collections).map(([collection, config]) => [collection, { ...config.categories }])
+              ),
+            ])
+          ),
+        };
+      }
+      function cloneCategorySettings(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+      function sanitiseCategoryMap(source, fallback) {
+        if (!source || typeof source !== "object" || Array.isArray(source)) return { ...fallback };
+        const categories = {};
+        Object.entries(source).forEach(([id, label]) => {
+          const safeId = String(id || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 36);
+          const safeLabel = String(label || "").trim().slice(0, 30);
+          if (safeId && safeLabel && !categories[safeId]) categories[safeId] = safeLabel;
+        });
+        return Object.keys(categories).length ? categories : { ...fallback };
+      }
+      function loadCategorySettings() {
+        const defaults = cloneCategorySettings(DEFAULT_CATEGORY_SETTINGS);
+        try {
+          const saved = JSON.parse(localStorage.getItem(CATEGORY_STORAGE_KEY));
+          for (const part of Object.keys(defaults.speaking)) {
+            defaults.speaking[part] = sanitiseCategoryMap(saved?.speaking?.[part], defaults.speaking[part]);
+          }
+          for (const task of Object.keys(defaults.writing)) {
+            for (const collection of Object.keys(defaults.writing[task])) {
+              defaults.writing[task][collection] = sanitiseCategoryMap(
+                saved?.writing?.[task]?.[collection],
+                defaults.writing[task][collection]
+              );
+            }
+          }
+        } catch {}
+        return defaults;
+      }
+      function applyCategorySettings(settings) {
+        Object.entries(settings.speaking).forEach(([part, categories]) => {
+          if (SPEAKING_CONFIG[part]) SPEAKING_CONFIG[part].categories = { ...categories };
+        });
+        Object.entries(settings.writing).forEach(([task, collections]) => {
+          Object.entries(collections).forEach(([collection, categories]) => {
+            if (WRITING_CONFIG[task]?.collections?.[collection]) {
+              WRITING_CONFIG[task].collections[collection].categories = { ...categories };
+            }
+          });
+        });
+      }
+      function persistCategorySettings() {
+        localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(categorySettings));
+      }
+      function getSettingsLibraries(module) {
+        if (module === "speaking") {
+          return Object.entries(SPEAKING_CONFIG).map(([part, config]) => ({ id: part, label: `${config.label} · 结构化表达` }));
+        }
+        return Object.entries(WRITING_CONFIG).flatMap(([task, taskConfig]) =>
+          Object.entries(taskConfig.collections).map(([collection, config]) => ({
+            id: `${task}:${collection}`,
+            label: `${taskConfig.label} · ${config.label}`,
+          }))
+        );
+      }
+      function getSettingsCategoryMap(settings, module, libraryId) {
+        if (module === "speaking") return settings.speaking[libraryId];
+        const [task, collection] = libraryId.split(":");
+        return settings.writing[task]?.[collection];
+      }
+      function createCategoryId(label, categories) {
+        const base = String(label)
+          .trim()
+          .toLocaleLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || "custom";
+        let id = `custom-${base}`.slice(0, 32);
+        let index = 2;
+        while (categories[id]) {
+          id = `custom-${base}-${index}`.slice(0, 36);
+          index += 1;
+        }
+        return id;
+      }
+      function getFirstCategoryId(categories) {
+        return Object.keys(categories || {})[0] || "";
+      }
+      function normaliseCollectionOrder(items) {
+        return [...items]
+          .sort((a, b) => {
+            const aOrder = Number.isFinite(Number(a.order)) ? Number(a.order) : -Number(a.createdAt || 0);
+            const bOrder = Number.isFinite(Number(b.order)) ? Number(b.order) : -Number(b.createdAt || 0);
+            return aOrder - bOrder;
+          })
+          .map((item, index) => ({ ...item, order: index + 1 }));
+      }
+      function getNextNewItemOrder(items) {
+        const ordered = normaliseCollectionOrder(items);
+        return ordered.length ? ordered[0].order - 1 : 1;
+      }
+      function getOrderedItems(items) {
+        return [...items].sort((a, b) => {
+          const aOrder = Number.isFinite(Number(a.order)) ? Number(a.order) : -Number(a.createdAt || 0);
+          const bOrder = Number.isFinite(Number(b.order)) ? Number(b.order) : -Number(b.createdAt || 0);
+          return aOrder - bOrder;
+        });
+      }
+      function applyVisibleOrder(allItems, orderedVisibleIds) {
+        const visibleSet = new Set(orderedVisibleIds);
+        const visibleById = new Map(getOrderedItems(allItems).filter((item) => visibleSet.has(item.id)).map((item) => [item.id, item]));
+        const movedVisible = orderedVisibleIds.map((id) => visibleById.get(id)).filter(Boolean);
+        const merged = getOrderedItems(allItems).map((item) => visibleSet.has(item.id) ? movedVisible.shift() || item : item);
+        return merged.map((item, index) => ({ ...item, order: index + 1 }));
+      }
+      function attachLongPressReorder(row, list, onCommit) {
+        let timer = null;
+        let active = false;
+        let pointerId = null;
+        let startX = 0;
+        let startY = 0;
+        let grabOffsetX = 0;
+        let grabOffsetY = 0;
+        let placeholder = null;
+        let originalRect = null;
+        const clearTimer = () => {
+          if (timer) window.clearTimeout(timer);
+          timer = null;
+        };
+        const moveDraggedRow = (clientX, clientY) => {
+          if (!originalRect) return;
+          row.style.left = `${clientX - grabOffsetX}px`;
+          row.style.top = `${clientY - grabOffsetY}px`;
+        };
+        const updatePlaceholder = (clientY) => {
+          if (!placeholder) return;
+          const rows = [...list.querySelectorAll(".library-row[data-reorder-id]:not(.reorder-ready)")];
+          const target = rows.find((item) => {
+            const rect = item.getBoundingClientRect();
+            return clientY < rect.top + rect.height / 2;
+          });
+          if (target) {
+            list.insertBefore(placeholder, target);
+          } else {
+            list.append(placeholder);
+          }
+        };
+        const startDrag = () => {
+          originalRect = row.getBoundingClientRect();
+          placeholder = document.createElement("div");
+          placeholder.className = "reorder-placeholder";
+          placeholder.style.height = `${originalRect.height}px`;
+          row.parentNode.insertBefore(placeholder, row.nextSibling);
+          row.classList.add("reorder-ready");
+          list.classList.add("reordering");
+          row.style.width = `${originalRect.width}px`;
+          row.style.height = `${originalRect.height}px`;
+          row.style.left = `${originalRect.left}px`;
+          row.style.top = `${originalRect.top}px`;
+          active = true;
+          row.setPointerCapture?.(pointerId);
+        };
+        const finish = (commit) => {
+          clearTimer();
+          if (active) {
+            if (placeholder?.parentNode) placeholder.parentNode.insertBefore(row, placeholder);
+            placeholder?.remove();
+            row.classList.remove("reorder-ready");
+            list.classList.remove("reordering");
+            row.style.width = "";
+            row.style.height = "";
+            row.style.left = "";
+            row.style.top = "";
+            row.dataset.reorderSuppress = "1";
+            if (commit) {
+              const orderedIds = [...list.querySelectorAll(".library-row[data-reorder-id]")].map((item) => item.dataset.reorderId);
+              onCommit(orderedIds);
+            }
+            window.setTimeout(() => delete row.dataset.reorderSuppress, 350);
+          }
+          active = false;
+          pointerId = null;
+          placeholder = null;
+          originalRect = null;
+        };
+        row.addEventListener("pointerdown", (event) => {
+          if (event.button !== undefined && event.button !== 0) return;
+          if (event.target.closest("button, select, input, textarea, a")) return;
+          pointerId = event.pointerId;
+          startX = event.clientX;
+          startY = event.clientY;
+          const rect = row.getBoundingClientRect();
+          grabOffsetX = event.clientX - rect.left;
+          grabOffsetY = event.clientY - rect.top;
+          clearTimer();
+          timer = window.setTimeout(() => {
+            startDrag();
+          }, LONG_PRESS_DURATION);
+        });
+        row.addEventListener("pointermove", (event) => {
+          if (event.pointerId !== pointerId) return;
+          if (!active && (Math.abs(event.clientX - startX) > 8 || Math.abs(event.clientY - startY) > 8)) {
+            clearTimer();
+            return;
+          }
+          if (!active) return;
+          event.preventDefault();
+          moveDraggedRow(event.clientX, event.clientY);
+          updatePlaceholder(event.clientY);
+        });
+        row.addEventListener("pointerup", (event) => {
+          if (event.pointerId !== pointerId) return;
+          finish(active);
+        });
+        row.addEventListener("pointercancel", () => finish(false));
+        row.addEventListener("lostpointercapture", () => finish(false));
+      }
+      function openSettings() {
+        state.settingsModule = state.route === "writing" ? "writing" : "speaking";
+        if (state.settingsModule === "writing" && state.writingScreen === "branch") {
+          state.settingsLibraryId = `${state.writingView}:${state.writingCollection}`;
+        } else if (state.settingsModule === "speaking" && state.speakingScreen === "speaking-structure-branch") {
+          state.settingsLibraryId = state.speakingPart;
+        } else {
+          state.settingsLibraryId = getSettingsLibraries(state.settingsModule)[0]?.id || "";
+        }
+        state.settingsDraft = cloneCategorySettings(categorySettings);
+        renderSettings();
+        $("#settings-backdrop").hidden = false;
+      }
+      function closeSettings() {
+        $("#settings-backdrop").hidden = true;
+        state.settingsDraft = null;
+      }
+      function renderSettings() {
+        if (!state.settingsDraft) return;
+        $$("[data-settings-module]").forEach((button) => {
+          button.setAttribute("aria-current", String(button.dataset.settingsModule === state.settingsModule ? "page" : "false"));
+        });
+        const libraries = getSettingsLibraries(state.settingsModule);
+        if (!libraries.some((library) => library.id === state.settingsLibraryId)) {
+          state.settingsLibraryId = libraries[0]?.id || "";
+        }
+        const select = $("#settings-library-select");
+        select.replaceChildren();
+        libraries.forEach((library) => {
+          const option = document.createElement("option");
+          option.value = library.id;
+          option.textContent = library.label;
+          select.append(option);
+        });
+        select.value = state.settingsLibraryId;
+
+        const list = $("#settings-category-list");
+        const categories = getSettingsCategoryMap(state.settingsDraft, state.settingsModule, state.settingsLibraryId) || {};
+        list.replaceChildren();
+        Object.entries(categories).forEach(([id, label]) => {
+          const row = document.createElement("div");
+          row.className = "settings-category-row";
+          const input = document.createElement("input");
+          input.className = "writing-form-control settings-category-input";
+          input.type = "text";
+          input.value = label;
+          input.maxLength = 30;
+          input.setAttribute("aria-label", `分类名称：${label}`);
+          input.addEventListener("input", (event) => {
+            const nextLabel = event.target.value.trim().slice(0, 30);
+            if (nextLabel) categories[id] = nextLabel;
+          });
+          input.addEventListener("blur", () => {
+            if (!input.value.trim()) {
+              input.value = categories[id];
+            }
+          });
+          const remove = document.createElement("button");
+          remove.className = "delete-button";
+          remove.type = "button";
+          remove.textContent = "删除";
+          remove.title = Object.keys(categories).length === 1 ? "至少保留一个分类" : "删除分类";
+          remove.disabled = Object.keys(categories).length === 1;
+          remove.addEventListener("click", () => {
+            if (Object.keys(categories).length === 1) return;
+            delete categories[id];
+            renderSettings();
+          });
+          row.append(input, remove);
+          list.append(row);
+        });
+        $("#settings-new-category").value = "";
+      }
+      function addSettingsCategory() {
+        if (!state.settingsDraft) return;
+        const input = $("#settings-new-category");
+        const label = input.value.trim().slice(0, 30);
+        if (!label) return;
+        const categories = getSettingsCategoryMap(state.settingsDraft, state.settingsModule, state.settingsLibraryId);
+        const id = createCategoryId(label, categories);
+        categories[id] = label;
+        renderSettings();
+      }
+      function reassignRemovedCategories(previous, next) {
+        let writingChanged = false;
+        let speakingChanged = false;
+        Object.entries(next.speaking).forEach(([part, categories]) => {
+          const fallback = getFirstCategoryId(categories);
+          state.speaking.structures[part].forEach((item) => {
+            if (!categories[item.category]) {
+              item.category = fallback;
+              speakingChanged = true;
+            }
+          });
+        });
+        Object.entries(next.writing).forEach(([task, collections]) => {
+          Object.entries(collections).forEach(([collection, categories]) => {
+            const fallback = getFirstCategoryId(categories);
+            state.writing[task][collection].forEach((item) => {
+              if (!categories[item.category]) {
+                item.category = fallback;
+                writingChanged = true;
+              }
+            });
+          });
+        });
+        if (writingChanged) persistWritingData();
+        if (speakingChanged) persistSpeakingData();
+      }
+      function saveSettings() {
+        if (!state.settingsDraft) return;
+        const next = cloneCategorySettings(state.settingsDraft);
+        for (const part of Object.keys(next.speaking)) {
+          next.speaking[part] = sanitiseCategoryMap(next.speaking[part], categorySettings.speaking[part]);
+        }
+        for (const task of Object.keys(next.writing)) {
+          for (const collection of Object.keys(next.writing[task])) {
+            next.writing[task][collection] = sanitiseCategoryMap(
+              next.writing[task][collection],
+              categorySettings.writing[task][collection]
+            );
+          }
+        }
+        reassignRemovedCategories(categorySettings, next);
+        categorySettings = next;
+        applyCategorySettings(categorySettings);
+        persistCategorySettings();
+        closeSettings();
+        if (state.writingScreen === "branch") renderWritingBranch();
+        if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
+        if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+      }
+
       function loadSavedWords() {
+        let items = [];
         try {
           const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
-          return Array.isArray(data)
-            ? data.map((item) => ({ ...item, star: Number.isInteger(item.star) ? Math.max(0, Math.min(5, item.star)) : 0 }))
+          items = Array.isArray(data)
+            ? data.map((item) => ({ ...item, collocations: String(item.collocations || ""), star: Number.isInteger(item.star) ? Math.max(0, Math.min(5, item.star)) : 0 }))
             : [];
-        } catch {
-          return [];
-        }
+        } catch {}
+        try {
+          if (!localStorage.getItem(CAMBRIDGE5_IMPORT_KEY)) {
+            const existingWords = new Set(items.map((item) => normaliseWord(item.word)));
+            CAMBRIDGE5_SEED.forEach((card, index) => {
+              if (existingWords.has(normaliseWord(card.word))) return;
+              items.push({ id: createId(), createdAt: Date.now() + index, star: 0, ...card });
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            localStorage.setItem(CAMBRIDGE5_IMPORT_KEY, "1");
+          }
+        } catch {}
+        return items;
+      }
+      function clearCambridge5ImportFlag() {
+        try {
+          localStorage.removeItem(CAMBRIDGE5_IMPORT_KEY);
+        } catch {}
       }
       function persistSavedWords() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
+        } catch {
+          setStatus("单词库保存失败，请检查浏览器本地存储权限。", "error");
+        }
+      }
+      function loadWritingData() {
+        const blank = { task1: { structures: [], samples: [] }, task2: { topics: [], structures: [] } };
+        try {
+          const data = JSON.parse(localStorage.getItem(WRITING_STORAGE_KEY));
+          for (const task of Object.keys(blank)) {
+            for (const collection of Object.keys(blank[task])) {
+              blank[task][collection] = normaliseCollectionOrder(Array.isArray(data?.[task]?.[collection])
+                ? data[task][collection].map((item) => ({
+                    id: item.id || createId(),
+                    createdAt: Number(item.createdAt) || Date.now(),
+                    order: Number(item.order),
+                    category: (() => {
+                      const requested = task === "task2" && collection === "structures" && item.category === "body"
+                        ? "development"
+                        : item.category;
+                      const categories = WRITING_CONFIG[task].collections[collection].categories;
+                      return categories[requested] ? requested : Object.keys(categories)[0];
+                    })(),
+                    title: String(item.title || ""),
+                    content: String(item.content || ""),
+                    translation: String(item.translation || ""),
+                    note: String(item.note || ""),
+                    noteType: WRITING_NOTE_TYPES[item.noteType] ? item.noteType : "other",
+                    star: item.star > 0 ? 1 : 0,
+                    highlights: Array.isArray(item.highlights)
+                      ? item.highlights
+                          .filter((highlight) => Number.isInteger(highlight.start) && Number.isInteger(highlight.end) && highlight.end > highlight.start)
+                          .map((highlight) => ({
+                            id: highlight.id || createId(),
+                            start: highlight.start,
+                            end: highlight.end,
+                            text: String(highlight.text || ""),
+                            note: String(highlight.note || ""),
+                          }))
+                      : [],
+                  }))
+                : []);
+            }
+          }
+        } catch {}
+        return blank;
+      }
+      function persistWritingData() {
+        localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(state.writing));
+      }
+      function loadSpeakingData() {
+        const blank = { structures: { part1: [], part2: [], part3: [] }, synonyms: [] };
+        try {
+          const data = JSON.parse(localStorage.getItem(SPEAKING_STORAGE_KEY));
+          for (const part of Object.keys(blank.structures)) {
+            blank.structures[part] = normaliseCollectionOrder(Array.isArray(data?.structures?.[part])
+              ? data.structures[part].map((item) => ({
+                  id: item.id || createId(),
+                  createdAt: Number(item.createdAt) || Date.now(),
+                  order: Number(item.order),
+                  category: SPEAKING_CONFIG[part].categories[item.category] ? item.category : Object.keys(SPEAKING_CONFIG[part].categories)[0],
+                  content: String(item.content || ""),
+                  translation: String(item.translation || ""),
+                  note: String(item.note || ""),
+                  star: item.star > 0 ? 1 : 0,
+                  highlights: Array.isArray(item.highlights)
+                    ? item.highlights
+                        .filter((highlight) => Number.isInteger(highlight.start) && Number.isInteger(highlight.end) && highlight.end > highlight.start)
+                        .map((highlight) => ({
+                          id: highlight.id || createId(),
+                          start: highlight.start,
+                          end: highlight.end,
+                          text: String(highlight.text || ""),
+                          note: String(highlight.note || ""),
+                        }))
+                    : [],
+                }))
+              : []);
+          }
+          blank.synonyms = normaliseCollectionOrder(Array.isArray(data?.synonyms)
+            ? data.synonyms.map((item) => ({
+                id: item.id || createId(),
+                createdAt: Number(item.createdAt) || Date.now(),
+                order: Number(item.order),
+                original: String(item.original || ""),
+                translation: String(item.translation || ""),
+                star: item.star > 0 ? 1 : 0,
+                substitutions: Array.isArray(item.substitutions)
+                  ? item.substitutions
+                      .map((substitution) => ({
+                        id: substitution.id || createId(),
+                        content: String(substitution.content || ""),
+                      }))
+                      .filter((substitution) => substitution.content)
+                  : [],
+              }))
+            : []);
+        } catch {}
+        try {
+          if (!localStorage.getItem(SPEAKING_PART1_SEED_KEY)) {
+            const now = Date.now();
+            blank.structures.part1 = SPEAKING_PART1_PHRASE_SEED.map((item, index) => ({
+              id: createId(),
+              createdAt: now + SPEAKING_PART1_PHRASE_SEED.length - index,
+              order: index + 1,
+              category: item.category,
+              content: item.content,
+              translation: item.translation,
+              note: item.note,
+              star: 0,
+              highlights: [],
+            }));
+            blank.synonyms = SPEAKING_SYNONYM_SEED.map((item, index) => ({
+              id: createId(),
+              createdAt: now + 1000 + SPEAKING_SYNONYM_SEED.length - index,
+              order: index + 1,
+              original: item.original,
+              translation: item.translation,
+              star: 0,
+              substitutions: item.substitutions.map((content) => ({ id: createId(), content, star: 0 })),
+            }));
+            localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(blank));
+            localStorage.setItem(SPEAKING_PART1_SEED_KEY, "1");
+          }
+        } catch {}
+        return blank;
+      }
+      function persistSpeakingData() {
+        localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(state.speaking));
       }
       function createId() { return window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
       function unique(values) { return [...new Set(values.filter(Boolean).map((value) => String(value).trim()))]; }
@@ -595,6 +2203,7 @@
           meaning: meaning.trim(),
           definition,
           synonyms: collectSynonyms(entry.meanings),
+          collocations: "",
           examples: collectExamples(entry.meanings),
         };
       }
@@ -606,9 +2215,25 @@
         $("#detail-meaning").value = card.meaning || "";
         $("#detail-definition").value = card.definition || "";
         $("#detail-synonyms").value = card.synonyms || "";
+        $("#detail-collocations").value = card.collocations || "";
         $("#detail-examples").value = card.examples || "";
         $("#detail-save").textContent = savedId ? "保存修改" : "保存到单词库";
         $("#detail-backdrop").hidden = false;
+      }
+      function speakDetailWord() {
+        const word = $("#detail-title").textContent.trim();
+        if (!word) return;
+        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+          window.alert("当前浏览器不支持单词朗读功能。");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = "en-GB";
+        utterance.rate = 0.86;
+        const voices = window.speechSynthesis.getVoices();
+        utterance.voice = voices.find((voice) => /^en-GB/i.test(voice.lang)) || voices.find((voice) => /^en/i.test(voice.lang)) || null;
+        window.speechSynthesis.speak(utterance);
       }
 
       async function generateCard(event) {
@@ -648,6 +2273,7 @@
           meaning: $("#detail-meaning").value.trim(),
           definition: $("#detail-definition").value.trim(),
           synonyms: unique($("#detail-synonyms").value.split(/[,\n，、;；]+/)).slice(0, 3).join(", "),
+          collocations: $("#detail-collocations").value.trim(),
           examples: unique($("#detail-examples").value.split(/\n+/)).slice(0, 2).join("\n"),
         };
       }
@@ -690,13 +2316,17 @@
           list.append(empty);
           return;
         }
-        words.forEach((word) => {
+        words.forEach((word, index) => {
           const row = document.createElement("div");
           row.className = "library-row";
           row.tabIndex = 0;
           row.setAttribute("role", "button");
+          const number = document.createElement("span");
+          number.className = "library-index";
+          number.textContent = index + 1;
+          number.setAttribute("aria-hidden", "true");
           const text = document.createElement("div");
-          text.style.minWidth = "0";
+          text.className = "library-row-copy";
           const title = document.createElement("div");
           title.className = "library-word";
           title.textContent = word.word;
@@ -730,7 +2360,7 @@
             renderLibrary();
           });
           actions.append(star, remove);
-          row.append(text, actions);
+          row.append(number, text, actions);
           row.addEventListener("click", () => showCardModal(word, word.id));
           row.addEventListener("keydown", (event) => {
             if (event.key === "Enter" || event.key === " ") {
@@ -741,26 +2371,1423 @@
           list.append(row);
         });
       }
-      function closeDetail() { $("#detail-backdrop").hidden = true; state.detailId = null; }
+      function closeDetail() {
+        window.speechSynthesis?.cancel?.();
+        $("#detail-backdrop").hidden = true;
+        state.detailId = null;
+      }
+
+      /* ---------- 写作资料库与智能分类 ---------- */
+      function getWritingConfig(task = state.writingView, collection = state.writingCollection) {
+        return WRITING_CONFIG[task]?.collections?.[collection] || null;
+      }
+      function getWritingCategoryLabel(task, collection, category) {
+        return getWritingConfig(task, collection)?.categories?.[category] || category;
+      }
+      function getWritingItems(task = state.writingView, collection = state.writingCollection) {
+        return state.writing?.[task]?.[collection] || [];
+      }
+      function isWritingTopicCollection(task = state.writingView, collection = state.writingCollection) {
+        return task === "task2" && collection === "topics";
+      }
+      function setWritingStatus(message, type = "") {
+        const element = $("#writing-status");
+        element.className = `writing-status${type ? ` ${type}` : ""}`;
+        element.textContent = message;
+      }
+      const WRITING_BRANCHES = {
+        "task1-structures": {
+          task: "task1",
+          collection: "structures",
+          parent: "task1",
+          eyebrow: "TASK 1 · STRUCTURES",
+          title: "小作文 · 结构句型",
+          description: "按开头、概述、细节和结尾整理结构句型。",
+          editorTitle: "编辑短语卡",
+          libraryTitle: "短语库",
+          smartTitle: "智能添加短语卡",
+          buttonTitle: "生成短语卡",
+        },
+        "task1-samples": {
+          task: "task1",
+          collection: "samples",
+          parent: "task1",
+          eyebrow: "TASK 1 · SAMPLES",
+          title: "小作文 · 范文收藏",
+          description: "按线图、柱状图、饼图、表格、流程图和地图整理范文。",
+          editorTitle: "添加范文",
+          libraryTitle: "范文库",
+          smartTitle: "智能添加范文",
+          buttonTitle: "生成范文卡",
+        },
+        "task2-structures": {
+          task: "task2",
+          collection: "structures",
+          parent: "task2",
+          eyebrow: "TASK 2 · STRUCTURES",
+          title: "大作文 · 结构句型",
+          description: "按开头段、论点提出、论证展开、让步转折和结尾段整理句型。",
+          editorTitle: "编辑短语卡",
+          libraryTitle: "短语库",
+          smartTitle: "智能添加短语卡",
+          buttonTitle: "生成短语卡",
+        },
+        "task2-topics": {
+          task: "task2",
+          collection: "topics",
+          parent: "task2",
+          eyebrow: "TASK 2 · TOPICS",
+          title: "大作文 · 话题收藏",
+          description: "按常见话题和优点、缺点、其他观点整理素材。",
+          editorTitle: "编辑短语卡",
+          libraryTitle: "短语库",
+          smartTitle: "智能添加短语卡",
+          buttonTitle: "生成短语卡",
+        },
+      };
+      function getWritingBranchId() {
+        return `${state.writingView}-${state.writingCollection}`;
+      }
+      function getWritingBranchMeta() {
+        return WRITING_BRANCHES[getWritingBranchId()];
+      }
+      function openWritingScreen(screen) {
+        if (screen === "branch") screen = getWritingBranchId();
+        if (!$("#writing-backdrop").hidden) closeWritingModal();
+        if (screen === "task1" || screen === "task2" || screen === "writing-home") {
+          state.writingScreen = screen;
+        } else if (WRITING_BRANCHES[screen]) {
+          const branch = WRITING_BRANCHES[screen];
+          state.writingView = branch.task;
+          state.writingCollection = branch.collection;
+          state.writingScreen = "branch";
+          state.writingCategory = "all";
+          state.writingPanelView = "editor";
+        } else {
+          return;
+        }
+        $$("[data-writing-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.writingScreen !== state.writingScreen));
+        if (state.writingScreen === "branch") renderWritingBranch();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function renderWritingBranch() {
+        const meta = getWritingBranchMeta();
+        if (!meta) return;
+        $("#writing-branch-eyebrow").textContent = meta.eyebrow;
+        $("#writing-branch-title").textContent = meta.title;
+        $("#writing-branch-description").textContent = meta.description;
+        $("#writing-branch-task1").setAttribute("aria-current", String(meta.task === "task1" ? "page" : "false"));
+        $("#writing-branch-task2").setAttribute("aria-current", String(meta.task === "task2" ? "page" : "false"));
+        $("#writing-editor-tab").textContent = meta.editorTitle;
+        $("#writing-library-tab").firstChild.textContent = `${meta.libraryTitle} `;
+        $("#smart-writing-title").textContent = meta.smartTitle;
+        $("#smart-writing-button").textContent = meta.buttonTitle;
+        $("#smart-writing-input").placeholder = meta.collection === "samples"
+          ? "粘贴英文范文或段落，生成当前图表分类下的范文卡"
+          : "粘贴英文句子或段落，生成当前分类下的短语卡";
+        $$("[data-writing-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.writingPanelView !== state.writingPanelView));
+        $$("[data-writing-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.writingPanel === state.writingPanelView)));
+        renderWritingCategoryFilter();
+        renderWritingStarFilter();
+        renderWritingList();
+      }
+      function renderWritingCategoryFilter() {
+        const select = $("#writing-category-filter");
+        const config = getWritingConfig();
+        const categories = Object.entries(config.categories);
+        if (state.writingCategory !== "all" && !config.categories[state.writingCategory]) state.writingCategory = "all";
+        select.replaceChildren();
+        const all = document.createElement("option");
+        all.value = "all";
+        all.textContent = "全部分类";
+        select.append(all);
+        categories.forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          select.append(option);
+        });
+        select.value = state.writingCategory;
+      }
+      function renderWritingStarFilter() {
+        $("#writing-star-filter").value = state.writingStarFilter;
+      }
+      function getWritingCollectionTitle() {
+        return `${WRITING_CONFIG[state.writingView].label}${getWritingConfig().label}`;
+      }
+      function renderWritingList() {
+        const list = $("#writing-list");
+        const items = getOrderedItems(getWritingItems()).filter((item) => {
+          const matchesCategory = state.writingCategory === "all" || item.category === state.writingCategory;
+          const matchesStar = state.writingStarFilter !== "starred" || item.star > 0;
+          return matchesCategory && matchesStar;
+        });
+        $("#writing-count").textContent = items.length;
+        $("#writing-count-tab").textContent = items.length;
+        $("#writing-library-heading").textContent = getWritingBranchMeta()?.libraryTitle || getWritingCollectionTitle();
+        list.replaceChildren();
+        if (!items.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state writing-empty";
+          const strong = document.createElement("strong");
+          const note = document.createElement("span");
+          strong.textContent = state.writingStarFilter === "starred" ? "还没有带星级的句子" : state.writingCategory === "all" ? "这里还没有收藏内容" : "这个分类还没有收藏内容";
+          note.textContent = "粘贴句子或段落，使用“生成短语卡”收藏。";
+          empty.append(strong, note);
+          list.append(empty);
+          return;
+        }
+        items.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className = "library-row";
+          row.tabIndex = 0;
+          row.setAttribute("role", "button");
+          row.dataset.reorderId = item.id;
+          const number = document.createElement("span");
+          number.className = "library-index";
+          number.textContent = index + 1;
+          number.setAttribute("aria-hidden", "true");
+
+          const copy = document.createElement("div");
+          copy.className = "writing-row-copy";
+          const title = document.createElement("div");
+          title.className = "writing-row-title";
+          const titleText = document.createElement("span");
+          const isTopic = isWritingTopicCollection();
+          titleText.textContent = isTopic
+            ? item.content.split(/\r?\n/)[0].slice(0, 160) || "未命名话题句"
+            : item.title || item.content.split(/\r?\n/)[0].slice(0, 80) || "未命名素材";
+          const tag = document.createElement("span");
+          tag.className = `category-tag${state.writingView === "task2" ? " blue" : ""}`;
+          tag.textContent = getWritingCategoryLabel(state.writingView, state.writingCollection, item.category);
+          title.append(titleText, tag);
+          if (isTopic) {
+            const noteTag = document.createElement("span");
+            noteTag.className = "category-tag";
+            noteTag.textContent = WRITING_NOTE_TYPES[item.noteType] || WRITING_NOTE_TYPES.other;
+            title.append(noteTag);
+          }
+          const preview = document.createElement("div");
+          preview.className = "writing-row-preview";
+          preview.textContent = item.content || item.translation || item.note || "暂无内容";
+          copy.append(title, preview);
+
+          const actions = document.createElement("div");
+          actions.className = "library-actions";
+          const star = document.createElement("button");
+          star.className = "star-button";
+          star.type = "button";
+          star.textContent = item.star > 0 ? "★" : "☆";
+          star.title = item.star > 0 ? "取消星级" : "添加星级";
+          star.setAttribute("aria-label", star.title);
+          star.addEventListener("click", (event) => {
+            event.stopPropagation();
+            item.star = item.star > 0 ? 0 : 1;
+            persistWritingData();
+            renderWritingList();
+          });
+          actions.append(star);
+          if (isWritingTopicCollection()) {
+            const noteType = document.createElement("select");
+            noteType.className = "sort-select writing-note-select";
+            noteType.setAttribute("aria-label", "备注分类");
+            Object.entries(WRITING_NOTE_TYPES).forEach(([value, label]) => {
+              const option = document.createElement("option");
+              option.value = value;
+              option.textContent = label;
+              noteType.append(option);
+            });
+            noteType.value = WRITING_NOTE_TYPES[item.noteType] ? item.noteType : "other";
+            noteType.addEventListener("click", (event) => event.stopPropagation());
+            noteType.addEventListener("change", (event) => {
+              event.stopPropagation();
+              item.noteType = event.target.value;
+              persistWritingData();
+              renderWritingList();
+              setWritingStatus("备注分类已更新。");
+            });
+            actions.append(noteType);
+          }
+          const remove = document.createElement("button");
+          remove.className = "delete-button writing-delete";
+          remove.type = "button";
+          remove.textContent = "删除";
+          remove.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (!window.confirm(`确定删除“${titleText.textContent}”吗？`)) return;
+            state.writing[state.writingView][state.writingCollection] = getWritingItems().filter((entry) => entry.id !== item.id);
+            persistWritingData();
+            renderWritingList();
+            setWritingStatus("素材已删除。");
+          });
+          actions.append(remove);
+          row.append(number, copy, actions);
+          row.addEventListener("click", () => {
+            if (row.dataset.reorderSuppress) return;
+            openWritingModal({ item });
+          });
+          row.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openWritingModal({ item });
+            }
+          });
+          attachLongPressReorder(row, list, (orderedIds) => {
+            state.writing[state.writingView][state.writingCollection] = applyVisibleOrder(getWritingItems(), orderedIds);
+            persistWritingData();
+            renderWritingList();
+          });
+          list.append(row);
+        });
+      }
+      function renderWriting() {
+        if (state.writingScreen === "branch") renderWritingBranch();
+      }
+      function populateWritingModalCategories(preferred = "") {
+        const task = $("#writing-task").value;
+        const collection = $("#writing-collection").value;
+        const config = getWritingConfig(task, collection);
+        const select = $("#writing-category");
+        select.replaceChildren();
+        Object.entries(config.categories).forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          select.append(option);
+        });
+        select.value = config.categories[preferred] ? preferred : Object.keys(config.categories)[0];
+      }
+      function updateWritingModalFields(preferredCategory = "") {
+        const task = $("#writing-task").value;
+        const collection = $("#writing-collection").value;
+        populateWritingModalCategories(preferredCategory);
+        const isStructure = collection === "structures";
+        $("#writing-title-field").hidden = isStructure || isWritingTopicCollection(task, collection);
+        $("#writing-content-label").textContent = isStructure
+          ? "英文原文"
+          : collection === "topics" ? "话题句" : "范文内容";
+        $("#writing-title").placeholder = collection === "topics" ? "例如：在线教育的利弊" : "可选，例如：折线图范文 01";
+        $("#writing-content").placeholder = isStructure
+          ? "输入英文结构句型"
+          : collection === "topics" ? "记录英文观点、论据或可用表达" : "粘贴或输入英文范文";
+        $("#writing-note-type-inline").hidden = !isWritingTopicCollection(task, collection);
+      }
+      function getNormalizedWritingHighlights() {
+        const content = $("#writing-content").value || "";
+        const result = [];
+        [...state.writingDraftHighlights]
+          .map((highlight) => ({
+            ...highlight,
+            start: Math.max(0, Math.min(content.length, Number(highlight.start) || 0)),
+            end: Math.max(0, Math.min(content.length, Number(highlight.end) || 0)),
+          }))
+          .filter((highlight) => highlight.end > highlight.start)
+          .sort((a, b) => a.start - b.start || a.end - b.end)
+          .forEach((highlight) => {
+            const previous = result[result.length - 1];
+            if (previous && highlight.start < previous.end) return;
+            result.push({
+              id: highlight.id || createId(),
+              start: highlight.start,
+              end: highlight.end,
+              text: content.slice(highlight.start, highlight.end),
+              note: String(highlight.note || ""),
+            });
+          });
+        state.writingDraftHighlights = result;
+        return result;
+      }
+      function renderWritingOriginal() {
+        const display = $("#writing-content-display");
+        if (!display) return;
+        const content = $("#writing-content").value || "";
+        display.replaceChildren();
+        let cursor = 0;
+        getNormalizedWritingHighlights().forEach((highlight) => {
+          if (highlight.start > cursor) display.append(document.createTextNode(content.slice(cursor, highlight.start)));
+          const mark = document.createElement("span");
+          mark.className = "writing-highlight";
+          mark.textContent = content.slice(highlight.start, highlight.end);
+          mark.dataset.highlightId = highlight.id;
+          mark.title = highlight.note || "点击添加或编辑注释";
+          mark.addEventListener("click", (event) => {
+            event.stopPropagation();
+            openWritingAnnotation(highlight.id);
+          });
+          display.append(mark);
+          cursor = highlight.end;
+        });
+        if (cursor < content.length) display.append(document.createTextNode(content.slice(cursor)));
+      }
+      function getSelectedWritingOffsets() {
+        const display = $("#writing-content-display");
+        const selection = window.getSelection();
+        if (!display || !selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
+        const range = selection.getRangeAt(0);
+        if (!display.contains(range.startContainer) || !display.contains(range.endContainer)) return null;
+        const startRange = document.createRange();
+        startRange.selectNodeContents(display);
+        startRange.setEnd(range.startContainer, range.startOffset);
+        const endRange = document.createRange();
+        endRange.selectNodeContents(display);
+        endRange.setEnd(range.endContainer, range.endOffset);
+        const start = startRange.toString().length;
+        const end = endRange.toString().length;
+        return end > start ? { start, end } : null;
+      }
+      function addWritingHighlight() {
+        const offsets = getSelectedWritingOffsets() || state.writingPendingSelection;
+        if (!offsets) {
+          return;
+        }
+        const highlights = getNormalizedWritingHighlights();
+        const selectedHighlight = highlights.find((highlight) => offsets.start >= highlight.start && offsets.end <= highlight.end);
+        if (selectedHighlight) {
+          state.writingDraftHighlights = highlights.filter((highlight) => highlight.id !== selectedHighlight.id);
+          renderWritingOriginal();
+          window.getSelection()?.removeAllRanges();
+          $("#writing-floating-highlight").hidden = true;
+          state.writingPendingSelection = null;
+          setWritingStatus("高亮已取消。");
+          return;
+        }
+        const conflict = highlights.some((highlight) => offsets.start < highlight.end && offsets.end > highlight.start);
+        if (conflict) {
+          setWritingStatus("这段文字已经高亮，请点击高亮内容编辑注释。", "error");
+          return;
+        }
+        const content = $("#writing-content").value || "";
+        state.writingDraftHighlights.push({
+          id: createId(),
+          start: offsets.start,
+          end: offsets.end,
+          text: content.slice(offsets.start, offsets.end),
+          note: "",
+        });
+        renderWritingOriginal();
+        window.getSelection()?.removeAllRanges();
+        $("#writing-floating-highlight").hidden = true;
+        state.writingPendingSelection = null;
+        setWritingStatus("高亮已添加，点击高亮部分可填写注释。");
+      }
+      function updateWritingFloatingHighlightButton() {
+        const button = $("#writing-floating-highlight");
+        if (!button || $("#writing-backdrop").hidden) return;
+        const offsets = getSelectedWritingOffsets();
+        if (!offsets) {
+          button.hidden = true;
+          return;
+        }
+        state.writingPendingSelection = offsets;
+        const selectedHighlight = getNormalizedWritingHighlights().find((highlight) => offsets.start >= highlight.start && offsets.end <= highlight.end);
+        const range = window.getSelection()?.getRangeAt(0);
+        const rect = range?.getBoundingClientRect();
+        if (!rect || (!rect.width && !rect.height)) {
+          button.hidden = true;
+          return;
+        }
+        button.textContent = selectedHighlight ? "取消高亮" : "标记高亮";
+        button.style.left = `${Math.max(54, Math.min(window.innerWidth - 54, rect.left + rect.width / 2))}px`;
+        button.style.top = `${Math.max(42, rect.top - 8)}px`;
+        button.hidden = false;
+      }
+      function openWritingAnnotation(id) {
+        const highlight = state.writingDraftHighlights.find((item) => item.id === id);
+        if (!highlight) return;
+        state.writingAnnotationId = id;
+        $("#writing-annotation-input").value = highlight.note || "";
+        $("#writing-annotation-popover").hidden = false;
+        $("#writing-annotation-input").focus();
+      }
+      function closeWritingAnnotation() {
+        $("#writing-annotation-popover").hidden = true;
+        state.writingAnnotationId = null;
+      }
+      function saveWritingAnnotation() {
+        const highlight = state.writingDraftHighlights.find((item) => item.id === state.writingAnnotationId);
+        if (!highlight) return;
+        highlight.note = $("#writing-annotation-input").value.trim();
+        renderWritingOriginal();
+        closeWritingAnnotation();
+        setWritingStatus("高亮注释已保存。");
+      }
+      function deleteWritingAnnotation() {
+        if (!state.writingAnnotationId) return;
+        state.writingDraftHighlights = state.writingDraftHighlights.filter((item) => item.id !== state.writingAnnotationId);
+        renderWritingOriginal();
+        closeWritingAnnotation();
+        setWritingStatus("高亮已取消。");
+      }
+      function updateWritingStarButton() {
+        const button = $("#writing-star-button");
+        const starred = Number(button.dataset.star) > 0;
+        button.textContent = starred ? "★" : "☆";
+        button.title = starred ? "取消星级" : "添加星级";
+        button.setAttribute("aria-label", button.title);
+      }
+      async function fetchWritingTranslation(text) {
+        if (!text) return "";
+        try {
+          const response = await fetch(`${TRANSLATION_API}?q=${encodeURIComponent(text.slice(0, 4500))}&langpair=en|zh-CN`);
+          if (!response.ok) return "";
+          return String((await response.json())?.responseData?.translatedText || "").trim();
+        } catch {
+          return "";
+        }
+      }
+      function openWritingModal({ task = state.writingView, collection = state.writingCollection, category = "", item = null, smart = false } = {}) {
+        state.writingDetailId = item?.id || null;
+        state.writingSmartMode = smart;
+        state.writingDraftHighlights = item?.highlights?.map((highlight) => ({ ...highlight })) || [];
+        state.writingAnnotationId = null;
+        $("#writing-task").value = task;
+        $("#writing-collection").value = collection;
+        updateWritingModalFields(category || item?.category || "");
+        $("#writing-title").value = item?.title || "";
+        $("#writing-content").value = item?.content || "";
+        $("#writing-translation").value = item?.translation || "";
+        $("#writing-note").value = item?.note || "";
+        $("#writing-note-type-inline").value = WRITING_NOTE_TYPES[item?.noteType] ? item.noteType : "other";
+        $("#writing-star-button").dataset.star = item?.star > 0 ? "1" : "0";
+        renderWritingOriginal();
+        closeWritingAnnotation();
+        updateWritingStarButton();
+        $("#writing-modal-title").textContent = item ? "编辑写作素材" : smart ? "确认智能添加" : "添加写作素材";
+        $("#writing-modal-subtitle").textContent = smart ? "分类已根据当前模块自动选择，左上角可以调整。" : "保存后会出现在当前作文资料库。";
+        $("#writing-save-button").textContent = item ? "保存修改" : "确认收藏";
+        $("#writing-backdrop").hidden = false;
+      }
+      function closeWritingModal() {
+        $("#writing-backdrop").hidden = true;
+        state.writingDetailId = null;
+        state.writingSmartMode = false;
+        state.writingDraftHighlights = [];
+        state.writingPendingSelection = null;
+        closeWritingAnnotation();
+        $("#writing-floating-highlight").hidden = true;
+      }
+      function findWritingItem(id) {
+        if (!id) return null;
+        for (const task of Object.keys(state.writing)) {
+          for (const collection of Object.keys(state.writing[task])) {
+            const item = state.writing[task][collection].find((entry) => entry.id === id);
+            if (item) return { item, task, collection };
+          }
+        }
+        return null;
+      }
+      function saveWritingItem(event) {
+        event.preventDefault();
+        const task = $("#writing-task").value;
+        const collection = $("#writing-collection").value;
+        const title = $("#writing-title").value.trim();
+        const content = $("#writing-content").value.trim();
+        if (!content) {
+          setWritingStatus("请先填写英文内容或素材。", "error");
+          return;
+        }
+        const existingLocation = findWritingItem(state.writingDetailId);
+        if (existingLocation) {
+          state.writing[existingLocation.task][existingLocation.collection] = state.writing[existingLocation.task][existingLocation.collection].filter((item) => item.id !== state.writingDetailId);
+        }
+        const item = {
+          id: state.writingDetailId || createId(),
+          createdAt: existingLocation?.item.createdAt || Date.now(),
+          order: existingLocation?.item.order ?? getNextNewItemOrder(state.writing[task][collection]),
+          category: $("#writing-category").value,
+          title,
+          content,
+          translation: $("#writing-translation").value.trim(),
+          note: $("#writing-note").value.trim(),
+          noteType: isWritingTopicCollection(task, collection) ? $("#writing-note-type-inline").value : "other",
+          star: Number($("#writing-star-button").dataset.star) > 0 ? 1 : 0,
+          highlights: getNormalizedWritingHighlights(),
+        };
+        state.writing[task][collection].push(item);
+        persistWritingData();
+        closeWritingModal();
+        renderWriting();
+        setWritingStatus(existingLocation ? "写作素材已更新。" : "写作素材已收藏。");
+      }
+      function detectWritingRecommendation(text, task = state.writingView, collection = state.writingCollection) {
+        const value = text.toLocaleLowerCase();
+        if (task === "task1" && collection === "samples") {
+          const categories = getWritingConfig(task, collection).categories;
+          const sampleTypes = [
+            ["line", ["line graph", "line chart"]],
+            ["bar", ["bar chart", "bar graph"]],
+            ["pie", ["pie chart"]],
+            ["table", ["table"]],
+            ["process", ["process", "stages", "cycle"]],
+            ["map", ["map", "location", "layout"]],
+          ];
+          const detected = sampleTypes.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0];
+          const sampleType = categories[detected] ? detected : getFirstCategoryId(categories);
+          return {
+            category: sampleType,
+            reason: "已按当前小作文范文收藏识别图表类型。",
+          };
+        }
+        if (task === "task1" && collection === "structures") {
+          const categories = getWritingConfig(task, collection).categories;
+          const structureMarkers = [
+            ["conclusion", ["in conclusion", "to sum up", "overall,"]],
+            ["overview", ["overall", "in general", "generally", "it is clear that"]],
+            ["detail", ["rose", "fell", "increased", "decreased", "from", "to", "%", "highest", "lowest"]],
+            ["intro", ["the chart", "the graph", "the table", "illustrates", "shows"]],
+          ];
+          const detected = structureMarkers.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0];
+          return {
+            category: categories[detected] ? detected : getFirstCategoryId(categories),
+            reason: "已按当前小作文结构句收藏识别句型位置。",
+          };
+        }
+        if (task === "task2" && collection === "topics") {
+          const categories = getWritingConfig(task, collection).categories;
+          const topicMarkers = [
+            ["education", ["education", "school", "university", "student", "teacher", "课程"]],
+            ["technology", ["technology", "artificial intelligence", "internet", "digital", "手机"]],
+            ["environment", ["environment", "climate", "pollution", "carbon", "recycle"]],
+            ["government", ["government", "policy", "tax", "law", "public service"]],
+            ["media", ["media", "news", "advertising", "television", "social media"]],
+            ["health", ["health", "disease", "exercise", "hospital", "diet"]],
+            ["economy", ["economy", "employment", "salary", "money", "business"]],
+            ["society", ["society", "crime", "family", "community", "children"]],
+          ];
+          const viewpointMarkers = [
+            ["benefit", ["benefit", "benefits", "advantage", "advantages", "positive", "improve", "opportunity"]],
+            ["drawback", ["drawback", "drawbacks", "disadvantage", "disadvantages", "negative", "problem", "harm", "risk", "cost"]],
+          ];
+          const detected = topicMarkers.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0];
+          const category = categories[detected] ? detected : getFirstCategoryId(categories);
+          return {
+            category,
+            noteType: viewpointMarkers.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0] || "other",
+            reason: `已按当前大作文话题收藏识别${getWritingCategoryLabel("task2", "topics", category)}话题。`,
+          };
+        }
+        const structureMarkers = [
+          ["conclusion", ["in conclusion", "to sum up", "finally"]],
+          ["concession", ["however", "although", "while", "despite", "on the other hand"]],
+          ["development", ["firstly", "moreover", "one reason", "another reason", "because", "for example"]],
+          ["thesis", ["i believe", "i argue", "in my view", "should", "must"]],
+        ];
+        const categories = getWritingConfig(task, collection).categories;
+        const detected = structureMarkers.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0];
+        return {
+          category: categories[detected] ? detected : getFirstCategoryId(categories),
+          reason: "已按当前大作文结构句收藏识别段落位置。",
+        };
+      }
+      async function smartAddWriting() {
+        const input = $("#smart-writing-input").value.trim();
+        if (!input) {
+          setWritingStatus("请先粘贴句子或段落。", "error");
+          return;
+        }
+        const button = $("#smart-writing-button");
+        button.disabled = true;
+        button.textContent = "生成中...";
+        const task = state.writingView;
+        const collection = state.writingCollection;
+        const recommendation = detectWritingRecommendation(input, task, collection);
+        try {
+          const translation = await fetchWritingTranslation(input);
+          openWritingModal({
+            task,
+            collection,
+            category: recommendation.category,
+            smart: true,
+          });
+          $("#writing-content").value = input;
+          $("#writing-translation").value = translation;
+          if (collection === "topics") $("#writing-note-type-inline").value = recommendation.noteType || "other";
+          renderWritingOriginal();
+          setWritingStatus(`${recommendation.reason}${translation ? "中文翻译已获取。" : "中文翻译暂未获取，可手动填写。"}`);
+        } finally {
+          button.disabled = false;
+          button.textContent = getWritingBranchMeta()?.buttonTitle || "生成短语卡";
+        }
+      }
+
+      /* ---------- 口语资料库与同义替换 ---------- */
+      function getSpeakingConfig(part = state.speakingPart) {
+        return SPEAKING_CONFIG[part] || SPEAKING_CONFIG.part1;
+      }
+      function getSpeakingItems(part = state.speakingPart) {
+        return state.speaking.structures[part] || [];
+      }
+      function setSpeakingStatus(message, type = "") {
+        const element = $("#speaking-structure-status");
+        if (!element) return;
+        element.className = `writing-status${type ? ` ${type}` : ""}`;
+        element.textContent = message;
+      }
+      function setSpeakingSynonymStatus(message, type = "") {
+        const element = $("#speaking-synonym-status");
+        if (!element) return;
+        element.className = `writing-status${type ? ` ${type}` : ""}`;
+        element.textContent = message;
+      }
+      function openSpeakingScreen(screen) {
+        if (!$("#speaking-phrase-backdrop").hidden) closeSpeakingPhraseModal();
+        if (!$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
+        if (screen === "speaking-home" || screen === "speaking-structure-home" || screen === "speaking-synonyms") {
+          state.speakingScreen = screen;
+          if (screen === "speaking-structure-home") {
+            state.speakingPanelView = "editor";
+            state.speakingCategory = "all";
+          }
+          if (screen === "speaking-synonyms") state.speakingSynonymPanelView = "editor";
+        } else if (screen === "speaking-structure-branch") {
+          state.speakingScreen = screen;
+          state.speakingPanelView = "editor";
+          state.speakingCategory = "all";
+        } else {
+          return;
+        }
+        $$("[data-speaking-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingScreen !== state.speakingScreen));
+        if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
+        if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function openSpeakingStructurePart(part) {
+        if (!SPEAKING_CONFIG[part]) return;
+        state.speakingPart = part;
+        openSpeakingScreen("speaking-structure-branch");
+      }
+      function renderSpeakingStructureBranch() {
+        const config = getSpeakingConfig();
+        $("#speaking-branch-eyebrow").textContent = `SPEAKING · ${config.label.toUpperCase()}`;
+        $("#speaking-branch-title").textContent = config.label;
+        $("#speaking-branch-description").textContent = config.description;
+        ["part1", "part2", "part3"].forEach((part) => {
+          $(`#speaking-${part}`).setAttribute("aria-current", String(part === state.speakingPart ? "page" : "false"));
+        });
+        $$("[data-speaking-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingPanelView !== state.speakingPanelView));
+        $$("[data-speaking-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.speakingPanel === state.speakingPanelView)));
+        renderSpeakingCategoryFilter();
+        $("#speaking-star-filter").value = state.speakingStarFilter;
+        renderSpeakingStructureList();
+      }
+      function renderSpeakingCategoryFilter() {
+        const select = $("#speaking-category-filter");
+        const config = getSpeakingConfig();
+        if (state.speakingCategory !== "all" && !config.categories[state.speakingCategory]) state.speakingCategory = "all";
+        select.replaceChildren();
+        const all = document.createElement("option");
+        all.value = "all";
+        all.textContent = "全部分类";
+        select.append(all);
+        Object.entries(config.categories).forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          select.append(option);
+        });
+        select.value = state.speakingCategory;
+      }
+      function renderSpeakingStructureList() {
+        const list = $("#speaking-structure-list");
+        const items = getOrderedItems(getSpeakingItems()).filter((item) => {
+          const matchesCategory = state.speakingCategory === "all" || item.category === state.speakingCategory;
+          const matchesStar = state.speakingStarFilter !== "starred" || item.star > 0;
+          return matchesCategory && matchesStar;
+        });
+        $("#speaking-count").textContent = items.length;
+        $("#speaking-count-tab").textContent = items.length;
+        list.replaceChildren();
+        if (!items.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state writing-empty";
+          const strong = document.createElement("strong");
+          const note = document.createElement("span");
+          strong.textContent = state.speakingStarFilter === "starred" ? "还没有带星级的句子" : state.speakingCategory === "all" ? "这里还没有收藏内容" : "这个分类还没有收藏内容";
+          note.textContent = "粘贴句子或段落，使用“生成短语卡”收藏。";
+          empty.append(strong, note);
+          list.append(empty);
+          return;
+        }
+        items.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className = "library-row";
+          row.tabIndex = 0;
+          row.setAttribute("role", "button");
+          row.dataset.reorderId = item.id;
+          const number = document.createElement("span");
+          number.className = "library-index";
+          number.textContent = index + 1;
+          number.setAttribute("aria-hidden", "true");
+          const copy = document.createElement("div");
+          copy.className = "speaking-row-copy";
+          const title = document.createElement("div");
+          title.className = "speaking-row-title";
+          const titleText = document.createElement("span");
+          titleText.textContent = item.content.split(/\r?\n/)[0].slice(0, 160) || "未命名口语句";
+          const tag = document.createElement("span");
+          tag.className = "category-tag";
+          tag.textContent = getSpeakingConfig().categories[item.category] || item.category;
+          title.append(titleText, tag);
+          const preview = document.createElement("div");
+          preview.className = "speaking-row-preview";
+          preview.textContent = item.translation || item.note || item.content;
+          copy.append(title, preview);
+
+          const actions = document.createElement("div");
+          actions.className = "library-actions";
+          const star = document.createElement("button");
+          star.className = "star-button";
+          star.type = "button";
+          star.textContent = item.star > 0 ? "★" : "☆";
+          star.title = item.star > 0 ? "取消星级" : "添加星级";
+          star.setAttribute("aria-label", star.title);
+          star.addEventListener("click", (event) => {
+            event.stopPropagation();
+            item.star = item.star > 0 ? 0 : 1;
+            persistSpeakingData();
+            renderSpeakingStructureList();
+          });
+          const remove = document.createElement("button");
+          remove.className = "delete-button writing-delete";
+          remove.type = "button";
+          remove.textContent = "删除";
+          remove.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (!window.confirm(`确定删除“${titleText.textContent}”吗？`)) return;
+            state.speaking.structures[state.speakingPart] = getSpeakingItems().filter((entry) => entry.id !== item.id);
+            persistSpeakingData();
+            renderSpeakingStructureList();
+            setSpeakingStatus("口语短语已删除。");
+          });
+          actions.append(star, remove);
+          row.append(number, copy, actions);
+          row.addEventListener("click", () => {
+            if (row.dataset.reorderSuppress) return;
+            openSpeakingPhraseModal({ item });
+          });
+          row.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openSpeakingPhraseModal({ item });
+            }
+          });
+          attachLongPressReorder(row, list, (orderedIds) => {
+            state.speaking.structures[state.speakingPart] = applyVisibleOrder(getSpeakingItems(), orderedIds);
+            persistSpeakingData();
+            renderSpeakingStructureList();
+          });
+          list.append(row);
+        });
+      }
+      function populateSpeakingPhraseCategories(preferred = "") {
+        const select = $("#speaking-phrase-category");
+        const config = getSpeakingConfig();
+        select.replaceChildren();
+        Object.entries(config.categories).forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          select.append(option);
+        });
+        select.value = config.categories[preferred] ? preferred : Object.keys(config.categories)[0];
+      }
+      function getNormalizedSpeakingHighlights() {
+        const content = $("#speaking-phrase-content").value || "";
+        const result = [];
+        [...state.speakingPhraseDraftHighlights]
+          .map((highlight) => ({
+            ...highlight,
+            start: Math.max(0, Math.min(content.length, Number(highlight.start) || 0)),
+            end: Math.max(0, Math.min(content.length, Number(highlight.end) || 0)),
+          }))
+          .filter((highlight) => highlight.end > highlight.start)
+          .sort((a, b) => a.start - b.start || a.end - b.end)
+          .forEach((highlight) => {
+            const previous = result[result.length - 1];
+            if (previous && highlight.start < previous.end) return;
+            result.push({
+              id: highlight.id || createId(),
+              start: highlight.start,
+              end: highlight.end,
+              text: content.slice(highlight.start, highlight.end),
+              note: String(highlight.note || ""),
+            });
+          });
+        state.speakingPhraseDraftHighlights = result;
+        return result;
+      }
+      function renderSpeakingPhraseOriginal() {
+        const display = $("#speaking-phrase-content-display");
+        if (!display) return;
+        const content = $("#speaking-phrase-content").value || "";
+        display.replaceChildren();
+        let cursor = 0;
+        getNormalizedSpeakingHighlights().forEach((highlight) => {
+          if (highlight.start > cursor) display.append(document.createTextNode(content.slice(cursor, highlight.start)));
+          const mark = document.createElement("span");
+          mark.className = "writing-highlight";
+          mark.textContent = content.slice(highlight.start, highlight.end);
+          mark.dataset.highlightId = highlight.id;
+          mark.title = highlight.note || "点击添加或编辑注释";
+          mark.addEventListener("click", (event) => {
+            event.stopPropagation();
+            openSpeakingAnnotation(highlight.id);
+          });
+          display.append(mark);
+          cursor = highlight.end;
+        });
+        if (cursor < content.length) display.append(document.createTextNode(content.slice(cursor)));
+      }
+      function getSelectedSpeakingOffsets() {
+        const display = $("#speaking-phrase-content-display");
+        const selection = window.getSelection();
+        if (!display || !selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
+        const range = selection.getRangeAt(0);
+        if (!display.contains(range.startContainer) || !display.contains(range.endContainer)) return null;
+        const startRange = document.createRange();
+        startRange.selectNodeContents(display);
+        startRange.setEnd(range.startContainer, range.startOffset);
+        const endRange = document.createRange();
+        endRange.selectNodeContents(display);
+        endRange.setEnd(range.endContainer, range.endOffset);
+        const start = startRange.toString().length;
+        const end = endRange.toString().length;
+        return end > start ? { start, end } : null;
+      }
+      function addSpeakingHighlight() {
+        const offsets = getSelectedSpeakingOffsets() || state.speakingPendingSelection;
+        if (!offsets) return;
+        const highlights = getNormalizedSpeakingHighlights();
+        const selectedHighlight = highlights.find((highlight) => offsets.start >= highlight.start && offsets.end <= highlight.end);
+        if (selectedHighlight) {
+          state.speakingPhraseDraftHighlights = highlights.filter((highlight) => highlight.id !== selectedHighlight.id);
+          renderSpeakingPhraseOriginal();
+          window.getSelection()?.removeAllRanges();
+          $("#speaking-floating-highlight").hidden = true;
+          state.speakingPendingSelection = null;
+          setSpeakingStatus("高亮已取消。");
+          return;
+        }
+        if (highlights.some((highlight) => offsets.start < highlight.end && offsets.end > highlight.start)) {
+          setSpeakingStatus("这段文字已经高亮，请点击高亮内容编辑注释。", "error");
+          return;
+        }
+        const content = $("#speaking-phrase-content").value || "";
+        state.speakingPhraseDraftHighlights.push({ id: createId(), start: offsets.start, end: offsets.end, text: content.slice(offsets.start, offsets.end), note: "" });
+        renderSpeakingPhraseOriginal();
+        window.getSelection()?.removeAllRanges();
+        $("#speaking-floating-highlight").hidden = true;
+        state.speakingPendingSelection = null;
+        setSpeakingStatus("高亮已添加，点击高亮部分可填写注释。");
+      }
+      function updateSpeakingFloatingHighlightButton() {
+        const button = $("#speaking-floating-highlight");
+        if (!button || $("#speaking-phrase-backdrop").hidden) return;
+        const offsets = getSelectedSpeakingOffsets();
+        if (!offsets) {
+          button.hidden = true;
+          return;
+        }
+        state.speakingPendingSelection = offsets;
+        const selectedHighlight = getNormalizedSpeakingHighlights().find((highlight) => offsets.start >= highlight.start && offsets.end <= highlight.end);
+        const range = window.getSelection()?.getRangeAt(0);
+        const rect = range?.getBoundingClientRect();
+        if (!rect || (!rect.width && !rect.height)) {
+          button.hidden = true;
+          return;
+        }
+        button.textContent = selectedHighlight ? "取消高亮" : "标记高亮";
+        button.style.left = `${Math.max(54, Math.min(window.innerWidth - 54, rect.left + rect.width / 2))}px`;
+        button.style.top = `${Math.max(42, rect.top - 8)}px`;
+        button.hidden = false;
+      }
+      function openSpeakingAnnotation(id) {
+        const highlight = state.speakingPhraseDraftHighlights.find((item) => item.id === id);
+        if (!highlight) return;
+        state.speakingAnnotationId = id;
+        $("#speaking-annotation-input").value = highlight.note || "";
+        $("#speaking-annotation-popover").hidden = false;
+        $("#speaking-annotation-input").focus();
+      }
+      function closeSpeakingAnnotation() {
+        $("#speaking-annotation-popover").hidden = true;
+        state.speakingAnnotationId = null;
+      }
+      function saveSpeakingAnnotation() {
+        const highlight = state.speakingPhraseDraftHighlights.find((item) => item.id === state.speakingAnnotationId);
+        if (!highlight) return;
+        highlight.note = $("#speaking-annotation-input").value.trim();
+        renderSpeakingPhraseOriginal();
+        closeSpeakingAnnotation();
+        setSpeakingStatus("高亮注释已保存。");
+      }
+      function deleteSpeakingAnnotation() {
+        if (!state.speakingAnnotationId) return;
+        state.speakingPhraseDraftHighlights = state.speakingPhraseDraftHighlights.filter((item) => item.id !== state.speakingAnnotationId);
+        renderSpeakingPhraseOriginal();
+        closeSpeakingAnnotation();
+        setSpeakingStatus("高亮已取消。");
+      }
+      function updateSpeakingPhraseStarButton() {
+        const button = $("#speaking-phrase-star-button");
+        const starred = Number(button.dataset.star) > 0;
+        button.textContent = starred ? "★" : "☆";
+        button.title = starred ? "取消星级" : "添加星级";
+        button.setAttribute("aria-label", button.title);
+      }
+      function openSpeakingPhraseModal({ item = null, smart = false, category = "" } = {}) {
+        state.speakingPhraseDetailId = item?.id || null;
+        state.speakingPhraseDraftHighlights = item?.highlights?.map((highlight) => ({ ...highlight })) || [];
+        state.speakingAnnotationId = null;
+        state.speakingPendingSelection = null;
+        populateSpeakingPhraseCategories(category || item?.category || "");
+        $("#speaking-phrase-content").value = item?.content || "";
+        $("#speaking-phrase-translation").value = item?.translation || "";
+        $("#speaking-phrase-note").value = item?.note || "";
+        $("#speaking-phrase-star-button").dataset.star = item?.star > 0 ? "1" : "0";
+        renderSpeakingPhraseOriginal();
+        closeSpeakingAnnotation();
+        updateSpeakingPhraseStarButton();
+        $("#speaking-phrase-modal-title").textContent = item ? "编辑口语短语卡" : "确认口语短语卡";
+        $("#speaking-phrase-modal-subtitle").textContent = smart ? "分类已根据当前 Part 自动推荐，可以在左上角调整。" : "保存后会出现在当前 Part 的短语库。";
+        $("#speaking-phrase-save").textContent = item ? "保存修改" : "确认收藏";
+        $("#speaking-phrase-backdrop").hidden = false;
+      }
+      function closeSpeakingPhraseModal() {
+        $("#speaking-phrase-backdrop").hidden = true;
+        state.speakingPhraseDetailId = null;
+        state.speakingPhraseDraftHighlights = [];
+        state.speakingAnnotationId = null;
+        state.speakingPendingSelection = null;
+        closeSpeakingAnnotation();
+        $("#speaking-floating-highlight").hidden = true;
+      }
+      function saveSpeakingPhrase(event) {
+        event.preventDefault();
+        const content = $("#speaking-phrase-content").value.trim();
+        if (!content) {
+          setSpeakingStatus("请先填写英文内容。", "error");
+          return;
+        }
+        const entries = getSpeakingItems();
+        const existing = entries.find((item) => item.id === state.speakingPhraseDetailId);
+        const item = {
+          id: state.speakingPhraseDetailId || createId(),
+          createdAt: existing?.createdAt || Date.now(),
+          order: existing?.order ?? getNextNewItemOrder(entries),
+          category: $("#speaking-phrase-category").value,
+          content,
+          translation: $("#speaking-phrase-translation").value.trim(),
+          note: $("#speaking-phrase-note").value.trim(),
+          star: Number($("#speaking-phrase-star-button").dataset.star) > 0 ? 1 : 0,
+          highlights: getNormalizedSpeakingHighlights(),
+        };
+        state.speaking.structures[state.speakingPart] = existing
+          ? entries.map((entry) => entry.id === existing.id ? item : entry)
+          : [...entries, item];
+        persistSpeakingData();
+        closeSpeakingPhraseModal();
+        renderSpeakingStructureBranch();
+        setSpeakingStatus(existing ? "口语短语已更新。" : "口语短语已收藏。");
+      }
+      function detectSpeakingRecommendation(text, part = state.speakingPart) {
+        const value = text.toLocaleLowerCase();
+        const markers = {
+          part1: [
+            ["closing", ["overall", "so yes", "that's probably why", "definitely", "总的来说"]],
+            ["elaboration", ["the main reason", "for example", "another thing", "because", "比如"]],
+            ["change", ["these days", "whereas", "in the past", "changed", "before", "现在"]],
+            ["past", ["when i was younger", "used to", "remember", "back then", "曾经", "小时候"]],
+            ["frequency", ["how often", "quite often", "every now and then", "usually", "often", "频率"]],
+            ["preference", ["prefer", "like", "love", "enjoy", "favorite", "favourite", "喜欢"]],
+            ["intro", ["to be honest", "interesting question", "if i had to choose", "i would say", "开场"]],
+          ],
+          part2: [
+            ["feelings", ["felt", "feeling", "happy", "excited", "proud", "感到"]],
+            ["details", ["which", "where", "when", "because", "with", "具体"]],
+            ["background", ["years ago", "last summer", "when i was", "背景"]],
+            ["ending", ["overall", "since then", "ever since", "总的来说"]],
+            ["intro", ["i would like to talk", "i'm going to describe", "today i want"]],
+          ],
+          part3: [
+            ["comparison", ["whereas", "while", "compared", "difference", "unlike", "相比"]],
+            ["example", ["for example", "for instance", "such as", "比如"]],
+            ["reason", ["because", "therefore", "as a result", "reason", "原因"]],
+            ["conclusion", ["overall", "in conclusion", "to sum up", "总的来说"]],
+            ["opinion", ["i think", "i believe", "in my view", "personally", "should", "认为"]],
+          ],
+        };
+        const category = markers[part].find(([, words]) => words.some((word) => value.includes(word)))?.[0];
+        const categories = getSpeakingConfig(part).categories;
+        const safeCategory = categories[category] ? category : getFirstCategoryId(categories);
+        return {
+          category: safeCategory,
+          reason: categories[category] ? `已推荐为${categories[category]}。` : `已按${getSpeakingConfig(part).label}默认分类推荐。`,
+        };
+      }
+      async function smartAddSpeakingPhrase() {
+        const input = $("#speaking-structure-input").value.trim();
+        if (!input) {
+          setSpeakingStatus("请先粘贴句子或段落。", "error");
+          return;
+        }
+        const button = $("#speaking-structure-button");
+        button.disabled = true;
+        button.textContent = "生成中...";
+        const recommendation = detectSpeakingRecommendation(input);
+        try {
+          const translation = await fetchWritingTranslation(input);
+          openSpeakingPhraseModal({ category: recommendation.category, smart: true });
+          $("#speaking-phrase-content").value = input;
+          $("#speaking-phrase-translation").value = translation;
+          renderSpeakingPhraseOriginal();
+          setSpeakingStatus(`${recommendation.reason}${translation ? "中文翻译已获取。" : "中文翻译暂未获取，可手动填写。"}`);
+        } finally {
+          button.disabled = false;
+          button.textContent = "生成短语卡";
+        }
+      }
+      function renderSpeakingSynonyms() {
+        $$("[data-speaking-synonym-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingSynonymPanelView !== state.speakingSynonymPanelView));
+        $$("[data-speaking-synonym-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.speakingSynonymPanel === state.speakingSynonymPanelView)));
+        $("#speaking-synonym-star-filter").value = state.speakingSynonymStarFilter;
+        renderSpeakingSynonymList();
+      }
+      function renderSpeakingSynonymList() {
+        const list = $("#speaking-synonym-list");
+        const items = getOrderedItems(state.speaking.synonyms)
+          .filter((item) => state.speakingSynonymStarFilter !== "starred" || item.star > 0);
+        $("#speaking-synonym-count").textContent = items.length;
+        $("#speaking-synonym-count-tab").textContent = items.length;
+        list.replaceChildren();
+        if (!items.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state writing-empty";
+          const strong = document.createElement("strong");
+          strong.textContent = state.speakingSynonymStarFilter === "starred" ? "还没有带星级的替换卡" : "这里还没有替换卡";
+          const note = document.createElement("span");
+          note.textContent = "输入一个英文表达，使用“生成替换卡”收藏。";
+          empty.append(strong, note);
+          list.append(empty);
+          return;
+        }
+        items.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className = "library-row";
+          row.tabIndex = 0;
+          row.setAttribute("role", "button");
+          row.dataset.reorderId = item.id;
+          const number = document.createElement("span");
+          number.className = "library-index";
+          number.textContent = index + 1;
+          number.setAttribute("aria-hidden", "true");
+          const copy = document.createElement("div");
+          copy.className = "speaking-row-copy";
+          const title = document.createElement("div");
+          title.className = "speaking-row-title";
+          title.textContent = item.original || "未命名表达";
+          const preview = document.createElement("div");
+          preview.className = "speaking-row-preview speaking-synonym-preview";
+          preview.textContent = item.translation || `${item.substitutions.length} 个替换表达`;
+          copy.append(title, preview);
+          const actions = document.createElement("div");
+          actions.className = "library-actions";
+          const star = document.createElement("button");
+          star.className = "star-button";
+          star.type = "button";
+          star.textContent = item.star > 0 ? "★" : "☆";
+          star.title = item.star > 0 ? "取消星级" : "添加星级";
+          star.setAttribute("aria-label", star.title);
+          star.addEventListener("click", (event) => {
+            event.stopPropagation();
+            item.star = item.star > 0 ? 0 : 1;
+            persistSpeakingData();
+            renderSpeakingSynonymList();
+          });
+          const remove = document.createElement("button");
+          remove.className = "delete-button writing-delete";
+          remove.type = "button";
+          remove.textContent = "删除";
+          remove.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (!window.confirm(`确定删除“${item.original}”吗？`)) return;
+            state.speaking.synonyms = state.speaking.synonyms.filter((entry) => entry.id !== item.id);
+            persistSpeakingData();
+            renderSpeakingSynonymList();
+            setSpeakingSynonymStatus("替换卡已删除。");
+          });
+          actions.append(star, remove);
+          row.append(number, copy, actions);
+          row.addEventListener("click", () => {
+            if (row.dataset.reorderSuppress) return;
+            openSpeakingSynonymModal({ item });
+          });
+          row.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openSpeakingSynonymModal({ item });
+            }
+          });
+          attachLongPressReorder(row, list, (orderedIds) => {
+            state.speaking.synonyms = applyVisibleOrder(state.speaking.synonyms, orderedIds);
+            persistSpeakingData();
+            renderSpeakingSynonymList();
+          });
+          list.append(row);
+        });
+      }
+      function persistCurrentSpeakingSynonymDraft() {
+        if (!state.speakingSynonymDetailId || !state.speakingSynonymDraft) return;
+        const item = state.speaking.synonyms.find((entry) => entry.id === state.speakingSynonymDetailId);
+        if (!item) return;
+        item.translation = $("#speaking-synonym-translation").value.trim();
+        item.substitutions = state.speakingSynonymDraft.substitutions
+          .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
+          .filter((substitution) => substitution.content);
+        persistSpeakingData();
+      }
+      function renderSpeakingSubstitutionList() {
+        const list = $("#speaking-substitution-list");
+        list.replaceChildren();
+        const substitutions = state.speakingSynonymDraft?.substitutions || [];
+        if (!substitutions.length) {
+          const empty = document.createElement("div");
+          empty.className = "speaking-substitution-empty";
+          empty.textContent = "还没有替换表达，点击下方 + 添加。";
+          list.append(empty);
+          return;
+        }
+        substitutions.forEach((substitution) => {
+          const row = document.createElement("div");
+          row.className = "speaking-substitution-row";
+          const input = document.createElement("input");
+          input.className = "speaking-substitution-input";
+          input.type = "text";
+          input.value = substitution.content;
+          input.setAttribute("aria-label", "同义替换表达");
+          input.addEventListener("input", (event) => {
+            substitution.content = event.target.value;
+            persistCurrentSpeakingSynonymDraft();
+          });
+          const remove = document.createElement("button");
+          remove.className = "delete-button speaking-substitution-remove";
+          remove.type = "button";
+          remove.textContent = "删除";
+          remove.addEventListener("click", () => {
+            state.speakingSynonymDraft.substitutions = state.speakingSynonymDraft.substitutions.filter((entry) => entry.id !== substitution.id);
+            persistCurrentSpeakingSynonymDraft();
+            renderSpeakingSubstitutionList();
+          });
+          row.append(input, remove);
+          list.append(row);
+        });
+      }
+      function openSpeakingSynonymModal({ item = null, smart = false, translation = "" } = {}) {
+        state.speakingSynonymDetailId = item?.id || null;
+        state.speakingSynonymDraft = {
+          original: item?.original || "",
+          translation: item?.translation || translation || "",
+          substitutions: item?.substitutions?.map((substitution) => ({ ...substitution })) || [],
+        };
+        state.speakingSynonymAddOpen = false;
+        $("#speaking-synonym-original").textContent = state.speakingSynonymDraft.original;
+        $("#speaking-synonym-translation").value = state.speakingSynonymDraft.translation;
+        $("#speaking-synonym-modal-title").textContent = item ? "编辑同义替换卡" : "确认同义替换卡";
+        $("#speaking-synonym-modal-subtitle").textContent = smart ? "中文翻译已自动获取，可以继续补充替换表达。" : "每条替换表达都可以单独编辑或删除，星级请在替换库列表中标记。";
+        $("#speaking-synonym-save").textContent = item ? "保存修改" : "确认收藏";
+        $("#speaking-add-substitution-form").hidden = true;
+        renderSpeakingSubstitutionList();
+        $("#speaking-synonym-backdrop").hidden = false;
+      }
+      function closeSpeakingSynonymModal() {
+        $("#speaking-synonym-backdrop").hidden = true;
+        state.speakingSynonymDetailId = null;
+        state.speakingSynonymDraft = null;
+        state.speakingSynonymAddOpen = false;
+      }
+      function saveSpeakingSynonym(event) {
+        event.preventDefault();
+        const original = state.speakingSynonymDraft?.original?.trim();
+        if (!original) {
+          setSpeakingSynonymStatus("请先填写原始英文表达。", "error");
+          return;
+        }
+        const existing = state.speaking.synonyms.find((item) => item.id === state.speakingSynonymDetailId);
+        const item = {
+          id: state.speakingSynonymDetailId || createId(),
+          createdAt: existing?.createdAt || Date.now(),
+          order: existing?.order ?? getNextNewItemOrder(state.speaking.synonyms),
+          original,
+          translation: $("#speaking-synonym-translation").value.trim(),
+          star: existing?.star > 0 ? 1 : 0,
+          substitutions: (state.speakingSynonymDraft.substitutions || [])
+            .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
+            .filter((substitution) => substitution.content),
+        };
+        state.speaking.synonyms = existing
+          ? state.speaking.synonyms.map((entry) => entry.id === existing.id ? item : entry)
+          : [...state.speaking.synonyms, item];
+        persistSpeakingData();
+        closeSpeakingSynonymModal();
+        renderSpeakingSynonyms();
+        setSpeakingSynonymStatus(existing ? "替换卡已更新。" : "替换卡已收藏。");
+      }
+      async function smartAddSpeakingSynonym() {
+        const input = $("#speaking-synonym-input").value.trim();
+        if (!input) {
+          setSpeakingSynonymStatus("请先输入英文表达。", "error");
+          return;
+        }
+        const button = $("#speaking-synonym-button");
+        button.disabled = true;
+        button.textContent = "生成中...";
+        try {
+          const translation = await fetchWritingTranslation(input);
+          openSpeakingSynonymModal({ smart: true, translation });
+          state.speakingSynonymDraft.original = input;
+          $("#speaking-synonym-original").textContent = input;
+          setSpeakingSynonymStatus(translation ? "中文翻译已获取，可以添加替换表达。" : "中文翻译暂未获取，可手动填写。");
+        } finally {
+          button.disabled = false;
+          button.textContent = "生成替换卡";
+        }
+      }
 
       /* ---------- 事件绑定与初始化 ---------- */
       $$("[data-route]").forEach((element) => element.addEventListener("click", () => navigate(element.dataset.route)));
       $$("[data-word-view]").forEach((element) => element.addEventListener("click", () => switchWordView(element.dataset.wordView)));
+      $$("[data-writing-screen-target]").forEach((element) => element.addEventListener("click", () => openWritingScreen(element.dataset.writingScreenTarget)));
+      $$("[data-writing-branch]").forEach((element) => element.addEventListener("click", () => openWritingScreen(element.dataset.writingBranch)));
+      $$("[data-speaking-screen-target]").forEach((element) => element.addEventListener("click", () => openSpeakingScreen(element.dataset.speakingScreenTarget)));
+      $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
+      $$("[data-speaking-panel]").forEach((element) => element.addEventListener("click", () => {
+        state.speakingPanelView = element.dataset.speakingPanel;
+        renderSpeakingStructureBranch();
+      }));
+      $$("[data-speaking-synonym-panel]").forEach((element) => element.addEventListener("click", () => {
+        state.speakingSynonymPanelView = element.dataset.speakingSynonymPanel;
+        renderSpeakingSynonyms();
+      }));
+      $$("[data-writing-panel]").forEach((element) => element.addEventListener("click", () => {
+        state.writingPanelView = element.dataset.writingPanel;
+        renderWritingBranch();
+      }));
       $("#query-form").addEventListener("submit", generateCard);
       $("#detail-form").addEventListener("submit", saveDetail);
+      $("#detail-pronounce").addEventListener("click", speakDetailWord);
+      $("#settings-button").addEventListener("click", openSettings);
+      $("#settings-close").addEventListener("click", closeSettings);
+      $("#settings-cancel").addEventListener("click", closeSettings);
+      $("#settings-save").addEventListener("click", saveSettings);
+      $$("[data-settings-module]").forEach((element) => element.addEventListener("click", () => {
+        state.settingsModule = element.dataset.settingsModule;
+        state.settingsLibraryId = getSettingsLibraries(state.settingsModule)[0]?.id || "";
+        renderSettings();
+      }));
+      $("#settings-library-select").addEventListener("change", (event) => {
+        state.settingsLibraryId = event.target.value;
+        renderSettings();
+      });
+      $("#settings-add-category").addEventListener("click", addSettingsCategory);
+      $("#settings-new-category").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          addSettingsCategory();
+        }
+      });
       $$("[data-action='close-detail']").forEach((button) => button.addEventListener("click", closeDetail));
+      $$("[data-action='close-writing']").forEach((button) => button.addEventListener("click", closeWritingModal));
       $("#search-input").addEventListener("input", (event) => { state.query = event.target.value.trim(); renderLibrary(); });
       $("#sort-input").addEventListener("change", (event) => { state.sort = event.target.value; renderLibrary(); });
       $("#direction-input").addEventListener("change", (event) => { state.direction = event.target.value; renderLibrary(); });
       $("#star-filter-input").addEventListener("change", (event) => { state.starFilter = event.target.value; renderLibrary(); });
+      $("#smart-writing-button").addEventListener("click", smartAddWriting);
+      $("#writing-category-filter").addEventListener("change", (event) => {
+        state.writingCategory = event.target.value;
+        renderWritingList();
+      });
+      $("#writing-star-filter").addEventListener("change", (event) => {
+        state.writingStarFilter = event.target.value;
+        renderWritingList();
+      });
+      $("#writing-form").addEventListener("submit", saveWritingItem);
+      $("#writing-floating-highlight").addEventListener("click", addWritingHighlight);
+      $("#writing-annotation-close").addEventListener("click", closeWritingAnnotation);
+      $("#writing-annotation-save").addEventListener("click", saveWritingAnnotation);
+      $("#writing-annotation-delete").addEventListener("click", deleteWritingAnnotation);
+      $("#writing-star-button").addEventListener("click", () => {
+        const button = $("#writing-star-button");
+        button.dataset.star = Number(button.dataset.star) > 0 ? "0" : "1";
+        updateWritingStarButton();
+      });
+      $("#speaking-structure-button").addEventListener("click", smartAddSpeakingPhrase);
+      $("#speaking-category-filter").addEventListener("change", (event) => {
+        state.speakingCategory = event.target.value;
+        renderSpeakingStructureList();
+      });
+      $("#speaking-star-filter").addEventListener("change", (event) => {
+        state.speakingStarFilter = event.target.value;
+        renderSpeakingStructureList();
+      });
+      $("#speaking-phrase-form").addEventListener("submit", saveSpeakingPhrase);
+      $$("[data-action='close-speaking-phrase']").forEach((button) => button.addEventListener("click", closeSpeakingPhraseModal));
+      $("#speaking-floating-highlight").addEventListener("click", addSpeakingHighlight);
+      $("#speaking-annotation-close").addEventListener("click", closeSpeakingAnnotation);
+      $("#speaking-annotation-save").addEventListener("click", saveSpeakingAnnotation);
+      $("#speaking-annotation-delete").addEventListener("click", deleteSpeakingAnnotation);
+      $("#speaking-phrase-star-button").addEventListener("click", () => {
+        const button = $("#speaking-phrase-star-button");
+        button.dataset.star = Number(button.dataset.star) > 0 ? "0" : "1";
+        updateSpeakingPhraseStarButton();
+      });
+      $("#speaking-synonym-button").addEventListener("click", smartAddSpeakingSynonym);
+      $("#speaking-synonym-star-filter").addEventListener("change", (event) => {
+        state.speakingSynonymStarFilter = event.target.value;
+        renderSpeakingSynonymList();
+      });
+      $("#speaking-synonym-form").addEventListener("submit", saveSpeakingSynonym);
+      $$("[data-action='close-speaking-synonym']").forEach((button) => button.addEventListener("click", closeSpeakingSynonymModal));
+      $("#speaking-add-substitution").addEventListener("click", () => {
+        state.speakingSynonymAddOpen = !state.speakingSynonymAddOpen;
+        $("#speaking-add-substitution-form").hidden = !state.speakingSynonymAddOpen;
+        if (state.speakingSynonymAddOpen) $("#speaking-new-substitution").focus();
+      });
+      $("#speaking-save-substitution").addEventListener("click", () => {
+        const input = $("#speaking-new-substitution");
+        const content = input.value.trim();
+        if (!content || !state.speakingSynonymDraft) return;
+        state.speakingSynonymDraft.substitutions.push({ id: createId(), content, star: 0 });
+        input.value = "";
+        state.speakingSynonymAddOpen = false;
+        $("#speaking-add-substitution-form").hidden = true;
+        persistCurrentSpeakingSynonymDraft();
+        renderSpeakingSubstitutionList();
+      });
+      $("#speaking-synonym-translation").addEventListener("input", persistCurrentSpeakingSynonymDraft);
+      document.addEventListener("selectionchange", () => {
+        updateWritingFloatingHighlightButton();
+        updateSpeakingFloatingHighlightButton();
+      });
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !$("#detail-backdrop").hidden) closeDetail();
+        if (event.key === "Escape" && !$("#writing-backdrop").hidden) closeWritingModal();
+        if (event.key === "Escape" && !$("#speaking-phrase-backdrop").hidden) closeSpeakingPhraseModal();
+        if (event.key === "Escape" && !$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
+        if (event.key === "Escape" && !$("#settings-backdrop").hidden) closeSettings();
       });
       $("#detail-backdrop").addEventListener("click", (event) => { if (event.target === $("#detail-backdrop")) closeDetail(); });
+      $("#writing-backdrop").addEventListener("click", (event) => { if (event.target === $("#writing-backdrop")) closeWritingModal(); });
+      $("#speaking-phrase-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-phrase-backdrop")) closeSpeakingPhraseModal(); });
+      $("#speaking-synonym-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-synonym-backdrop")) closeSpeakingSynonymModal(); });
+      $("#settings-backdrop").addEventListener("click", (event) => { if (event.target === $("#settings-backdrop")) closeSettings(); });
       function navigate(route) {
         $$("[data-page]").forEach((page) => page.toggleAttribute("hidden", page.dataset.page !== route));
         $$(".nav-link").forEach((link) => link.setAttribute("aria-current", link.dataset.route === route ? "page" : "false"));
         if (route === "words") renderLibrary();
+        if (route === "speaking") openSpeakingScreen("speaking-home");
+        if (route === "writing") {
+          openWritingScreen("writing-home");
+        }
         state.route = route;
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
@@ -772,6 +3799,8 @@
       }
       updateNetworkIndicator();
       navigate("home");
+      renderWriting();
+      renderSpeakingSynonyms();
     </script>
   </body>
 </html>
