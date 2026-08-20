@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f3f7f4" />
+    <meta name="application-name" content="雅思学习助手" />
+    <meta name="apple-mobile-web-app-title" content="雅思学习助手" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>雅思学习助手</title>
     <style>
       :root {
@@ -29,6 +36,7 @@
       body {
         min-width: 320px;
         margin: 0;
+        padding-bottom: env(safe-area-inset-bottom);
         color: var(--ink);
         background:
           radial-gradient(circle at 8% 0%, rgba(225, 239, 229, .75), transparent 28rem),
@@ -3801,6 +3809,13 @@
       navigate("home");
       renderWriting();
       renderSpeakingSynonyms();
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch((error) => {
+            console.warn("Service worker registration failed:", error);
+          });
+        });
+      }
     </script>
   </body>
 </html>
