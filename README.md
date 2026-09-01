@@ -11,6 +11,7 @@
 - 口语结构卡、同义替换卡和高亮标注
 - 手动选择本地 JSON 词典，联网失败时按需查询
 - 使用 `localStorage` 保存学习数据
+- 可选 Supabase 云端同步，多设备共用同一份学习数据
 - 使用 service worker 缓存页面壳，支持离线打开
 - 支持安装为手机 PWA，独立窗口运行
 
@@ -34,6 +35,7 @@ python -m http.server 8080
 ├── manifest.json
 ├── sw.js
 ├── vercel.json
+├── supabase-schema.sql
 ├── README.md
 ├── .gitignore
 ├── icons/
@@ -47,9 +49,25 @@ python -m http.server 8080
 ## 数据和隐私
 
 - 个人单词、写作、口语和设置数据只保存在当前浏览器的 `localStorage`。
-- 项目没有数据库、Flask、Node 后端或账号系统。
+- 配置 Supabase 后，登录同一账号即可把个人数据同步到云端。
+- 项目没有 Flask 或 Node 后端；Supabase 云端数据库和账号登录为可选配置。
 - 本地原始词典只读，不会被页面修改。
 - 清除浏览器站点数据会删除本机学习记录；如需备份，请使用浏览器开发者工具导出对应的 localStorage 数据。
+
+## Supabase 云端同步
+
+1. 在 Supabase 项目的 SQL Editor 执行 `supabase-schema.sql`。
+2. 打开 Project Settings -> API，复制 Project URL 和 Publishable / anon key。
+3. 在 `index.html` 中设置：
+
+```js
+const SUPABASE_URL = "你的 Project URL";
+const SUPABASE_PUBLISHABLE_KEY = "你的 Publishable / anon key";
+```
+
+4. 部署到固定网址后，点击页面右上角“云同步”登录或注册。
+
+页面只使用公开的 publishable / anon key。不要把 `service_role` 或 Secret Key 放进前端代码。
 
 ## 使用本地词典
 

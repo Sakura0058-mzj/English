@@ -12,6 +12,7 @@
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>雅思学习助手</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       :root {
         --ink: #263731;
@@ -113,6 +114,22 @@
         line-height: 1;
       }
       .settings-button:hover { color: var(--sage-dark); background: var(--sage-light); }
+      .topbar-actions { display: flex; align-items: center; gap: 6px; }
+      .cloud-button {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        gap: 6px;
+        padding: 0 11px;
+        color: #687871;
+        background: var(--canvas);
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .cloud-button:hover { color: var(--sage-dark); background: var(--sage-light); }
+      .cloud-button[data-state="online"] { color: var(--sage-dark); background: var(--sage-light); }
+      .cloud-button[data-state="error"] { color: var(--coral); background: var(--coral-light); }
 
       .page { padding: 44px 0 72px; }
       .view-panel { animation: panel-in 180ms ease-out; }
@@ -868,13 +885,20 @@
       .settings-add-row { display: flex; gap: 8px; margin-top: 14px; }
       .settings-add-row input { min-width: 0; flex: 1; }
       .settings-hint { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+      .cloud-modal { width: min(100%, 520px); }
+      .cloud-form { display: grid; gap: 12px; margin-top: 22px; }
+      .cloud-status { min-height: 18px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+      .cloud-status.error { color: var(--coral); }
+      .cloud-status.success { color: var(--sage-dark); }
 
       .file-input { display: none; }
       @media (max-width: 760px) {
         .topbar-inner, .module-heading, .library-toolbar { align-items: stretch; flex-direction: column; }
         .global-nav { width: 100%; }
         .nav-link { flex: 1; }
-        .settings-button { position: absolute; top: 18px; right: 16px; }
+        .topbar-actions { position: absolute; top: 18px; right: 16px; }
+        .cloud-button span:last-child { display: none; }
+        .cloud-button { width: 38px; justify-content: center; padding: 0; }
         .feature-grid { grid-template-columns: 1fr; }
         .writing-entry-grid { grid-template-columns: 1fr; }
         .speaking-entry-grid, .speaking-entry-grid.three { grid-template-columns: 1fr; }
@@ -916,7 +940,10 @@
           <button class="nav-link" data-route="speaking">口语</button>
           <button class="nav-link" data-route="writing">作文</button>
         </nav>
-        <button id="settings-button" class="settings-button" type="button" title="设置" aria-label="设置">⚙</button>
+        <div class="topbar-actions">
+          <button id="cloud-button" class="cloud-button" type="button" data-state="offline" title="云端同步" aria-label="云端同步"><span>☁</span><span id="cloud-button-text">云同步</span></button>
+          <button id="settings-button" class="settings-button" type="button" title="设置" aria-label="设置">⚙</button>
+        </div>
       </div>
     </header>
 
@@ -1320,6 +1347,28 @@
         </div>
       </section>
     </div>
+    <div id="cloud-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal cloud-modal" role="dialog" aria-modal="true" aria-labelledby="cloud-title">
+        <div class="detail-top">
+          <div>
+            <p class="section-kicker">CLOUD SYNC</p>
+            <h2 id="cloud-title">云端同步</h2>
+            <p id="cloud-subtitle" class="detail-phonetic">登录后，单词、口语、作文和分类设置会同步到 Supabase。</p>
+          </div>
+          <button id="cloud-close" class="close-button" type="button" aria-label="关闭云同步">×</button>
+        </div>
+        <form id="cloud-form" class="cloud-form">
+          <label class="writing-form-item wide"><span class="writing-form-label">邮箱</span><input id="cloud-email" class="writing-form-control" type="email" autocomplete="email" placeholder="you@example.com" /></label>
+          <label class="writing-form-item wide"><span class="writing-form-label">密码</span><input id="cloud-password" class="writing-form-control" type="password" autocomplete="current-password" placeholder="至少 6 位" /></label>
+          <p id="cloud-status" class="cloud-status" role="status" aria-live="polite"></p>
+          <div class="detail-actions">
+            <button id="cloud-signout" class="secondary-button" type="button" hidden>退出登录</button>
+            <button id="cloud-signup" class="secondary-button" type="button">注册</button>
+            <button id="cloud-login" class="primary-button" type="submit">登录并同步</button>
+          </div>
+        </form>
+      </section>
+    </div>
     <button id="writing-floating-highlight" class="writing-floating-highlight" type="button" hidden>标记高亮</button>
     <button id="speaking-floating-highlight" class="writing-floating-highlight" type="button" hidden>标记高亮</button>
 
@@ -1331,6 +1380,10 @@
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
+      const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
+      const CLOUD_TABLE = "user_app_data";
+      const SUPABASE_URL = "https://icbyegkwfdifbicxsbiv.supabase.co";
+      const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_kIc3DW0CVM-JEE6VWMhKhg_mbSub69u";
       const LONG_PRESS_DURATION = 500;
       const DICTIONARY_API = "https://api.dictionaryapi.dev/api/v2/entries/en/";
       const TRANSLATION_API = "https://api.mymemory.translated.net/get";
@@ -1628,9 +1681,222 @@
         settingsModule: "speaking",
         settingsLibraryId: "part1",
         settingsDraft: null,
+        cloudUser: null,
+        cloudReady: false,
+        cloudSyncing: false,
       };
       const $ = (selector) => document.querySelector(selector);
       const $$ = (selector) => [...document.querySelectorAll(selector)];
+      const supabaseClient = createSupabaseClient();
+      let cloudSaveTimer = null;
+      let cloudHydrating = false;
+
+      /* ---------- Supabase 云端同步 ---------- */
+      function isSupabaseConfigured() {
+        return Boolean(
+          SUPABASE_URL &&
+          SUPABASE_PUBLISHABLE_KEY &&
+          !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_SUPABASE")
+        );
+      }
+      function createSupabaseClient() {
+        if (!isSupabaseConfigured() || !window.supabase?.createClient) return null;
+        return window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+      }
+      function getCloudPayload() {
+        return {
+          words: state.words,
+          writing: state.writing,
+          speaking: state.speaking,
+          categorySettings,
+          updatedAt: new Date().toISOString(),
+        };
+      }
+      function cacheCloudPayload() {
+        try {
+          localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(getCloudPayload()));
+        } catch {}
+      }
+      function setCloudStatus(message, type = "") {
+        const element = $("#cloud-status");
+        if (element) {
+          element.className = `cloud-status${type ? ` ${type}` : ""}`;
+          element.textContent = message;
+        }
+      }
+      function renderCloudState(message = "") {
+        const button = $("#cloud-button");
+        const text = $("#cloud-button-text");
+        if (!button || !text) return;
+        if (!isSupabaseConfigured()) {
+          button.dataset.state = "error";
+          text.textContent = "未配置";
+          setCloudStatus(message || "还需要填入 Supabase Publishable Key。", "error");
+          return;
+        }
+        if (state.cloudUser) {
+          button.dataset.state = "online";
+          text.textContent = state.cloudSyncing ? "同步中" : "已同步";
+          $("#cloud-subtitle").textContent = `已登录：${state.cloudUser.email || state.cloudUser.id}`;
+          $("#cloud-signout").hidden = false;
+          $("#cloud-signup").hidden = true;
+          $("#cloud-login").textContent = "立即同步";
+          if (message) setCloudStatus(message, "success");
+        } else {
+          button.dataset.state = "offline";
+          text.textContent = "云同步";
+          $("#cloud-subtitle").textContent = "登录后，单词、口语、作文和分类设置会同步到 Supabase。";
+          $("#cloud-signout").hidden = true;
+          $("#cloud-signup").hidden = false;
+          $("#cloud-login").textContent = "登录并同步";
+          if (message) setCloudStatus(message);
+        }
+      }
+      async function saveCloudNow() {
+        if (!supabaseClient || !state.cloudUser || cloudHydrating) return;
+        state.cloudSyncing = true;
+        renderCloudState();
+        const payload = getCloudPayload();
+        const { error } = await supabaseClient
+          .from(CLOUD_TABLE)
+          .upsert({ user_id: state.cloudUser.id, payload }, { onConflict: "user_id" });
+        state.cloudSyncing = false;
+        if (error) {
+          renderCloudState();
+          setCloudStatus(`云端保存失败：${error.message}`, "error");
+          return;
+        }
+        cacheCloudPayload();
+        renderCloudState("云端已保存。");
+      }
+      function scheduleCloudSave() {
+        cacheCloudPayload();
+        if (!supabaseClient || !state.cloudUser || cloudHydrating) return;
+        window.clearTimeout(cloudSaveTimer);
+        cloudSaveTimer = window.setTimeout(() => {
+          saveCloudNow().catch((error) => setCloudStatus(`云端保存失败：${error.message}`, "error"));
+        }, 700);
+      }
+      function applyCloudPayload(payload) {
+        if (!payload || typeof payload !== "object") return false;
+        cloudHydrating = true;
+        if (Array.isArray(payload.words)) {
+          state.words = payload.words.map((item) => ({ ...item, collocations: String(item.collocations || ""), star: item.star > 0 ? 1 : 0 }));
+          persistSavedWords();
+        }
+        if (payload.categorySettings) {
+          categorySettings = loadCategorySettingsFromObject(payload.categorySettings);
+          applyCategorySettings(categorySettings);
+          persistCategorySettings();
+        }
+        if (payload.writing) {
+          localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(payload.writing));
+          state.writing = loadWritingData();
+        }
+        if (payload.speaking) {
+          localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(payload.speaking));
+          state.speaking = loadSpeakingData();
+        }
+        cloudHydrating = false;
+        cacheCloudPayload();
+        renderLibrary();
+        renderWriting();
+        if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
+        if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+        return true;
+      }
+      async function hydrateFromCloud() {
+        if (!supabaseClient || !state.cloudUser) return;
+        const { data, error } = await supabaseClient
+          .from(CLOUD_TABLE)
+          .select("payload")
+          .eq("user_id", state.cloudUser.id)
+          .maybeSingle();
+        if (error) {
+          setCloudStatus(`云端读取失败：${error.message}`, "error");
+          return;
+        }
+        if (data?.payload) {
+          applyCloudPayload(data.payload);
+          renderCloudState("已从云端载入数据。");
+        } else {
+          await saveCloudNow();
+          renderCloudState("已创建你的云端词库。");
+        }
+      }
+      async function initCloudSync() {
+        renderCloudState();
+        if (!supabaseClient) return;
+        const { data } = await supabaseClient.auth.getSession();
+        state.cloudUser = data?.session?.user || null;
+        renderCloudState(state.cloudUser ? "正在读取云端数据..." : "");
+        if (state.cloudUser) await hydrateFromCloud();
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+          state.cloudUser = session?.user || null;
+          renderCloudState(state.cloudUser ? "已登录，正在同步..." : "已退出云同步。");
+          if (state.cloudUser) hydrateFromCloud();
+        });
+      }
+      function openCloudModal() {
+        renderCloudState();
+        $("#cloud-backdrop").hidden = false;
+      }
+      function closeCloudModal() {
+        $("#cloud-backdrop").hidden = true;
+      }
+      async function loginCloud(event) {
+        event.preventDefault();
+        if (!supabaseClient) {
+          setCloudStatus("还需要在代码里填入 Supabase Publishable Key。", "error");
+          return;
+        }
+        if (state.cloudUser) {
+          await saveCloudNow();
+          return;
+        }
+        const email = $("#cloud-email").value.trim();
+        const password = $("#cloud-password").value;
+        if (!email || !password) {
+          setCloudStatus("请填写邮箱和密码。", "error");
+          return;
+        }
+        setCloudStatus("正在登录...");
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) {
+          setCloudStatus(`登录失败：${error.message}`, "error");
+          return;
+        }
+        state.cloudUser = data.user;
+        await hydrateFromCloud();
+      }
+      async function signupCloud() {
+        if (!supabaseClient) {
+          setCloudStatus("还需要在代码里填入 Supabase Publishable Key。", "error");
+          return;
+        }
+        const email = $("#cloud-email").value.trim();
+        const password = $("#cloud-password").value;
+        if (!email || !password) {
+          setCloudStatus("请填写邮箱和至少 6 位密码。", "error");
+          return;
+        }
+        setCloudStatus("正在注册...");
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) {
+          setCloudStatus(`注册失败：${error.message}`, "error");
+          return;
+        }
+        state.cloudUser = data.user || null;
+        if (state.cloudUser) await hydrateFromCloud();
+        renderCloudState("注册成功。如果 Supabase 要求邮箱验证，请验证后再登录。");
+      }
+      async function signoutCloud() {
+        if (!supabaseClient) return;
+        await saveCloudNow();
+        await supabaseClient.auth.signOut();
+        state.cloudUser = null;
+        renderCloudState("已退出云同步。");
+      }
 
       /* ---------- 口语 / 作文分类设置 ---------- */
       function buildDefaultCategorySettings() {
@@ -1665,18 +1931,23 @@
         const defaults = cloneCategorySettings(DEFAULT_CATEGORY_SETTINGS);
         try {
           const saved = JSON.parse(localStorage.getItem(CATEGORY_STORAGE_KEY));
-          for (const part of Object.keys(defaults.speaking)) {
-            defaults.speaking[part] = sanitiseCategoryMap(saved?.speaking?.[part], defaults.speaking[part]);
-          }
-          for (const task of Object.keys(defaults.writing)) {
-            for (const collection of Object.keys(defaults.writing[task])) {
-              defaults.writing[task][collection] = sanitiseCategoryMap(
-                saved?.writing?.[task]?.[collection],
-                defaults.writing[task][collection]
-              );
-            }
-          }
+          return loadCategorySettingsFromObject(saved);
         } catch {}
+        return defaults;
+      }
+      function loadCategorySettingsFromObject(saved) {
+        const defaults = cloneCategorySettings(DEFAULT_CATEGORY_SETTINGS);
+        for (const part of Object.keys(defaults.speaking)) {
+          defaults.speaking[part] = sanitiseCategoryMap(saved?.speaking?.[part], defaults.speaking[part]);
+        }
+        for (const task of Object.keys(defaults.writing)) {
+          for (const collection of Object.keys(defaults.writing[task])) {
+            defaults.writing[task][collection] = sanitiseCategoryMap(
+              saved?.writing?.[task]?.[collection],
+              defaults.writing[task][collection]
+            );
+          }
+        }
         return defaults;
       }
       function applyCategorySettings(settings) {
@@ -1693,6 +1964,7 @@
       }
       function persistCategorySettings() {
         localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(categorySettings));
+        scheduleCloudSave();
       }
       function getSettingsLibraries(module) {
         if (module === "speaking") {
@@ -2018,6 +2290,7 @@
       function persistSavedWords() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
+          scheduleCloudSave();
         } catch {
           setStatus("单词库保存失败，请检查浏览器本地存储权限。", "error");
         }
@@ -2066,6 +2339,7 @@
       }
       function persistWritingData() {
         localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(state.writing));
+        scheduleCloudSave();
       }
       function loadSpeakingData() {
         const blank = { structures: { part1: [], part2: [], part3: [] }, synonyms: [] };
@@ -2146,6 +2420,7 @@
       }
       function persistSpeakingData() {
         localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(state.speaking));
+        scheduleCloudSave();
       }
       function createId() { return window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
       function unique(values) { return [...new Set(values.filter(Boolean).map((value) => String(value).trim()))]; }
@@ -3684,6 +3959,11 @@
       $("#detail-form").addEventListener("submit", saveDetail);
       $("#detail-pronounce").addEventListener("click", speakDetailWord);
       $("#settings-button").addEventListener("click", openSettings);
+      $("#cloud-button").addEventListener("click", openCloudModal);
+      $("#cloud-close").addEventListener("click", closeCloudModal);
+      $("#cloud-form").addEventListener("submit", loginCloud);
+      $("#cloud-signup").addEventListener("click", signupCloud);
+      $("#cloud-signout").addEventListener("click", signoutCloud);
       $("#settings-close").addEventListener("click", closeSettings);
       $("#settings-cancel").addEventListener("click", closeSettings);
       $("#settings-save").addEventListener("click", saveSettings);
@@ -3782,12 +4062,14 @@
         if (event.key === "Escape" && !$("#speaking-phrase-backdrop").hidden) closeSpeakingPhraseModal();
         if (event.key === "Escape" && !$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
         if (event.key === "Escape" && !$("#settings-backdrop").hidden) closeSettings();
+        if (event.key === "Escape" && !$("#cloud-backdrop").hidden) closeCloudModal();
       });
       $("#detail-backdrop").addEventListener("click", (event) => { if (event.target === $("#detail-backdrop")) closeDetail(); });
       $("#writing-backdrop").addEventListener("click", (event) => { if (event.target === $("#writing-backdrop")) closeWritingModal(); });
       $("#speaking-phrase-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-phrase-backdrop")) closeSpeakingPhraseModal(); });
       $("#speaking-synonym-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-synonym-backdrop")) closeSpeakingSynonymModal(); });
       $("#settings-backdrop").addEventListener("click", (event) => { if (event.target === $("#settings-backdrop")) closeSettings(); });
+      $("#cloud-backdrop").addEventListener("click", (event) => { if (event.target === $("#cloud-backdrop")) closeCloudModal(); });
       function navigate(route) {
         $$("[data-page]").forEach((page) => page.toggleAttribute("hidden", page.dataset.page !== route));
         $$(".nav-link").forEach((link) => link.setAttribute("aria-current", link.dataset.route === route ? "page" : "false"));
@@ -3809,6 +4091,7 @@
       navigate("home");
       renderWriting();
       renderSpeakingSynonyms();
+      initCloudSync().catch((error) => setCloudStatus(`云同步初始化失败：${error.message}`, "error"));
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker.register("/sw.js").catch((error) => {
