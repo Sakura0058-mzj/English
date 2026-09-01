@@ -14,6 +14,7 @@
 - 可选 Supabase 云端同步，多设备共用同一份学习数据
 - 使用 service worker 缓存页面壳，支持离线打开
 - 支持安装为手机 PWA，独立窗口运行
+- 顶部内置“安装到手机”入口，便于快速添加到主屏幕
 
 ## 本地运行
 
@@ -144,6 +145,8 @@ Vercel 都会自动为 GitHub 的 `main` 分支创建部署。Pull Request 通�
 项目里的 `vercel.json` 已经为 service worker、manifest 和图标配置了合适的缓存头，不需要额外的后端配置。
 
 ## 手机安装 PWA
+
+页面右上角有一个“安装”按钮。能自动安装的浏览器会直接弹出安装框；iPhone 会显示主屏幕添加提示。
 
 ### Android Chrome
 

@@ -130,6 +130,20 @@
       .cloud-button:hover { color: var(--sage-dark); background: var(--sage-light); }
       .cloud-button[data-state="online"] { color: var(--sage-dark); background: var(--sage-light); }
       .cloud-button[data-state="error"] { color: var(--coral); background: var(--coral-light); }
+      .install-button {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        gap: 6px;
+        padding: 0 11px;
+        color: #687871;
+        background: var(--canvas);
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .install-button:hover { color: var(--sage-dark); background: var(--sage-light); }
+      .install-button[hidden] { display: none !important; }
 
       .page { padding: 44px 0 72px; }
       .view-panel { animation: panel-in 180ms ease-out; }
@@ -890,6 +904,10 @@
       .cloud-status { min-height: 18px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
       .cloud-status.error { color: var(--coral); }
       .cloud-status.success { color: var(--sage-dark); }
+      .install-modal { width: min(100%, 460px); }
+      .install-list { margin: 16px 0 0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+      .install-list li + li { margin-top: 6px; }
+      .install-note { margin: 14px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
 
       .file-input { display: none; }
       @media (max-width: 760px) {
@@ -899,6 +917,8 @@
         .topbar-actions { position: absolute; top: 18px; right: 16px; }
         .cloud-button span:last-child { display: none; }
         .cloud-button { width: 38px; justify-content: center; padding: 0; }
+        .install-button span:last-child { display: none; }
+        .install-button { width: 38px; justify-content: center; padding: 0; }
         .feature-grid { grid-template-columns: 1fr; }
         .writing-entry-grid { grid-template-columns: 1fr; }
         .speaking-entry-grid, .speaking-entry-grid.three { grid-template-columns: 1fr; }
@@ -941,6 +961,7 @@
           <button class="nav-link" data-route="writing">作文</button>
         </nav>
         <div class="topbar-actions">
+          <button id="install-button" class="install-button" type="button" title="安装到手机" aria-label="安装到手机"><span>⬇</span><span id="install-button-text">安装</span></button>
           <button id="cloud-button" class="cloud-button" type="button" data-state="offline" title="云端同步" aria-label="云端同步"><span>☁</span><span id="cloud-button-text">云同步</span></button>
           <button id="settings-button" class="settings-button" type="button" title="设置" aria-label="设置">⚙</button>
         </div>
@@ -1369,6 +1390,23 @@
         </form>
       </section>
     </div>
+    <div id="install-backdrop" class="detail-backdrop" hidden>
+      <section class="detail-modal install-modal" role="dialog" aria-modal="true" aria-labelledby="install-title">
+        <div class="detail-top">
+          <div>
+            <p class="section-kicker">APP INSTALL</p>
+            <h2 id="install-title">安装到手机</h2>
+            <p id="install-subtitle" class="detail-phonetic">把雅思学习助手添加到主屏幕，像 App 一样打开。</p>
+          </div>
+          <button id="install-close" class="close-button" type="button" aria-label="关闭安装提示">×</button>
+        </div>
+        <ul id="install-steps" class="install-list"></ul>
+        <p id="install-note" class="install-note"></p>
+        <div class="detail-actions">
+          <button id="install-action" class="primary-button" type="button">继续</button>
+        </div>
+      </section>
+    </div>
     <button id="writing-floating-highlight" class="writing-floating-highlight" type="button" hidden>标记高亮</button>
     <button id="speaking-floating-highlight" class="writing-floating-highlight" type="button" hidden>标记高亮</button>
 
@@ -1690,6 +1728,7 @@
       const supabaseClient = createSupabaseClient();
       let cloudSaveTimer = null;
       let cloudHydrating = false;
+      let deferredInstallPrompt = null;
 
       /* ---------- Supabase 云端同步 ---------- */
       function isSupabaseConfigured() {
@@ -1751,6 +1790,97 @@
           $("#cloud-login").textContent = "登录并同步";
           if (message) setCloudStatus(message);
         }
+      }
+      function isStandaloneMode() {
+        return window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true;
+      }
+      function isIosSafari() {
+        const ua = navigator.userAgent;
+        return /iPad|iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+      }
+      function renderInstallState() {
+        const button = $("#install-button");
+        if (!button) return;
+        button.hidden = isStandaloneMode();
+        if (button.hidden) return;
+        const text = $("#install-button-text");
+        if (deferredInstallPrompt) {
+          button.title = "安装到手机";
+          if (text) text.textContent = "安装";
+          return;
+        }
+        if (isIosSafari()) {
+          button.title = "查看安装方法";
+          if (text) text.textContent = "安装";
+          return;
+        }
+        button.title = "安装到手机";
+        if (text) text.textContent = "安装";
+      }
+      function openInstallModal() {
+        const backdrop = $("#install-backdrop");
+        const steps = $("#install-steps");
+        const note = $("#install-note");
+        const action = $("#install-action");
+        if (!backdrop || !steps || !note || !action) return;
+        steps.innerHTML = "";
+        if (deferredInstallPrompt) {
+          const items = [
+            "点击下方按钮，浏览器会询问是否安装应用。",
+            "确认后，桌面会出现一个独立的“雅思学习助手”图标。",
+            "以后直接点图标打开，就像手机 App 一样。",
+          ];
+          items.forEach((text) => {
+            const li = document.createElement("li");
+            li.textContent = text;
+            steps.appendChild(li);
+          });
+          note.textContent = "支持自动安装的浏览器会直接弹出系统安装框。";
+          action.textContent = "开始安装";
+          action.onclick = async () => {
+            try {
+              deferredInstallPrompt.prompt();
+              await deferredInstallPrompt.userChoice;
+            } finally {
+              deferredInstallPrompt = null;
+              closeInstallModal();
+              renderInstallState();
+            }
+          };
+        } else if (isIosSafari()) {
+          const items = [
+            "点击浏览器底部的分享按钮。",
+            "在菜单里找到“添加到主屏幕”。",
+            "确认后就能像 App 一样从桌面打开。",
+          ];
+          items.forEach((text) => {
+            const li = document.createElement("li");
+            li.textContent = text;
+            steps.appendChild(li);
+          });
+          note.textContent = "iPhone 需要用 Safari 才能完成添加到主屏幕。";
+          action.textContent = "知道了";
+          action.onclick = closeInstallModal;
+        } else {
+          const items = [
+            "先用 HTTPS 打开这个网站。",
+            "如果浏览器支持 PWA，菜单里通常会有“安装应用”或“添加到主屏幕”。",
+            "安装后会得到一个独立窗口，不显示普通浏览器工具栏。",
+          ];
+          items.forEach((text) => {
+            const li = document.createElement("li");
+            li.textContent = text;
+            steps.appendChild(li);
+          });
+          note.textContent = "部分浏览器只有在满足 PWA 条件后才会显示安装入口。";
+          action.textContent = "知道了";
+          action.onclick = closeInstallModal;
+        }
+        backdrop.hidden = false;
+      }
+      function closeInstallModal() {
+        const backdrop = $("#install-backdrop");
+        if (backdrop) backdrop.hidden = true;
       }
       async function saveCloudNow() {
         if (!supabaseClient || !state.cloudUser || cloudHydrating) return;
@@ -3960,7 +4090,9 @@
       $("#detail-pronounce").addEventListener("click", speakDetailWord);
       $("#settings-button").addEventListener("click", openSettings);
       $("#cloud-button").addEventListener("click", openCloudModal);
+      $("#install-button").addEventListener("click", openInstallModal);
       $("#cloud-close").addEventListener("click", closeCloudModal);
+      $("#install-close").addEventListener("click", closeInstallModal);
       $("#cloud-form").addEventListener("submit", loginCloud);
       $("#cloud-signup").addEventListener("click", signupCloud);
       $("#cloud-signout").addEventListener("click", signoutCloud);
@@ -4070,6 +4202,17 @@
       $("#speaking-synonym-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-synonym-backdrop")) closeSpeakingSynonymModal(); });
       $("#settings-backdrop").addEventListener("click", (event) => { if (event.target === $("#settings-backdrop")) closeSettings(); });
       $("#cloud-backdrop").addEventListener("click", (event) => { if (event.target === $("#cloud-backdrop")) closeCloudModal(); });
+      $("#install-backdrop").addEventListener("click", (event) => { if (event.target === $("#install-backdrop")) closeInstallModal(); });
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+        renderInstallState();
+      });
+      window.addEventListener("appinstalled", () => {
+        deferredInstallPrompt = null;
+        closeInstallModal();
+        renderInstallState();
+      });
       function navigate(route) {
         $$("[data-page]").forEach((page) => page.toggleAttribute("hidden", page.dataset.page !== route));
         $$(".nav-link").forEach((link) => link.setAttribute("aria-current", link.dataset.route === route ? "page" : "false"));
@@ -4088,6 +4231,7 @@
         if (view === "library") renderLibrary();
       }
       updateNetworkIndicator();
+      renderInstallState();
       navigate("home");
       renderWriting();
       renderSpeakingSynonyms();
