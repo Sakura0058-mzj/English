@@ -1885,6 +1885,14 @@
       }
       async function saveCloudNow() {
         if (!supabaseClient || !state.cloudUser || cloudHydrating) return;
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const sessionUser = sessionData?.session?.user;
+        if (!sessionUser || sessionUser.id !== state.cloudUser.id) {
+          state.cloudUser = null;
+          renderCloudState();
+          setCloudStatus("登录状态已失效，请验证邮箱后重新登录。", "error");
+          return;
+        }
         state.cloudSyncing = true;
         renderCloudState();
         const payload = getCloudPayload();
@@ -1997,6 +2005,12 @@
           setCloudStatus(`登录失败：${error.message}`, "error");
           return;
         }
+        if (!data?.session || !data?.user) {
+          state.cloudUser = null;
+          renderCloudState();
+          setCloudStatus("登录成功但未获得有效会话。请先验证邮箱，再重新登录。", "error");
+          return;
+        }
         state.cloudUser = data.user;
         await hydrateFromCloud();
       }
@@ -2029,9 +2043,14 @@
           setCloudStatus(`注册失败：${error.message}`, "error");
           return;
         }
-        state.cloudUser = data.user || null;
-        if (state.cloudUser) await hydrateFromCloud();
-        renderCloudState("注册成功。如果 Supabase 要求邮箱验证，请验证后再登录。");
+        state.cloudUser = data?.session?.user || null;
+        if (state.cloudUser) {
+          await hydrateFromCloud();
+          renderCloudState("注册成功，已开始同步。");
+        } else {
+          renderCloudState();
+          setCloudStatus("注册成功，请先验证邮箱，再使用同一组邮箱和密码登录。", "success");
+        }
       }
       async function signoutCloud() {
         if (!supabaseClient) return;
