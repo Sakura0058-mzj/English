@@ -128,6 +128,7 @@
         font-weight: 800;
       }
       .cloud-button:hover { color: var(--sage-dark); background: var(--sage-light); }
+      .cloud-button[data-state="authing"] { color: #7b7b6e; background: #f3f1ea; }
       .cloud-button[data-state="online"] { color: var(--sage-dark); background: var(--sage-light); }
       .cloud-button[data-state="error"] { color: var(--coral); background: var(--coral-light); }
       .install-button {
@@ -901,6 +902,19 @@
       .settings-hint { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
       .cloud-modal { width: min(100%, 520px); }
       .cloud-form { display: grid; gap: 12px; margin-top: 22px; }
+      .cloud-password-row { display: flex; align-items: stretch; gap: 8px; }
+      .cloud-password-row .writing-form-control { flex: 1; }
+      .cloud-password-toggle {
+        min-width: 72px;
+        padding: 0 12px;
+        color: #687871;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .cloud-password-toggle:hover { color: var(--sage-dark); border-color: #a9c0b1; }
       .cloud-status { min-height: 18px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
       .cloud-status.error { color: var(--coral); }
       .cloud-status.success { color: var(--sage-dark); }
@@ -962,7 +976,7 @@
         </nav>
         <div class="topbar-actions">
           <button id="install-button" class="install-button" type="button" title="安装到手机" aria-label="安装到手机"><span>⬇</span><span id="install-button-text">安装</span></button>
-          <button id="cloud-button" class="cloud-button" type="button" data-state="offline" title="云端同步" aria-label="云端同步"><span>☁</span><span id="cloud-button-text">云同步</span></button>
+          <button id="cloud-button" class="cloud-button" type="button" data-state="offline" title="登录 / 注册" aria-label="登录 / 注册"><span>☁</span><span id="cloud-button-text">登录 / 注册</span></button>
           <button id="settings-button" class="settings-button" type="button" title="设置" aria-label="设置">⚙</button>
         </div>
       </div>
@@ -1372,20 +1386,26 @@
       <section class="detail-modal cloud-modal" role="dialog" aria-modal="true" aria-labelledby="cloud-title">
         <div class="detail-top">
           <div>
-            <p class="section-kicker">CLOUD SYNC</p>
-            <h2 id="cloud-title">云端同步</h2>
-            <p id="cloud-subtitle" class="detail-phonetic">登录后，单词、口语、作文和分类设置会同步到 Supabase。</p>
+            <p class="section-kicker">CLOUD ACCOUNT</p>
+            <h2 id="cloud-title">登录 / 注册</h2>
+            <p id="cloud-subtitle" class="detail-phonetic">未登录时仅保存到本地；登录后自动开启云同步。</p>
           </div>
           <button id="cloud-close" class="close-button" type="button" aria-label="关闭云同步">×</button>
         </div>
         <form id="cloud-form" class="cloud-form">
           <label class="writing-form-item wide"><span class="writing-form-label">邮箱</span><input id="cloud-email" class="writing-form-control" type="email" autocomplete="email" placeholder="you@example.com" /></label>
-          <label class="writing-form-item wide"><span class="writing-form-label">密码</span><input id="cloud-password" class="writing-form-control" type="password" autocomplete="current-password" placeholder="至少 6 位" /></label>
+          <label class="writing-form-item wide">
+            <span class="writing-form-label">密码</span>
+            <div class="cloud-password-row">
+              <input id="cloud-password" class="writing-form-control" type="password" autocomplete="current-password" placeholder="至少 6 位" />
+              <button id="cloud-password-toggle" class="cloud-password-toggle" type="button">显示</button>
+            </div>
+          </label>
           <p id="cloud-status" class="cloud-status" role="status" aria-live="polite"></p>
           <div class="detail-actions">
             <button id="cloud-signout" class="secondary-button" type="button" hidden>退出登录</button>
             <button id="cloud-signup" class="secondary-button" type="button">注册</button>
-            <button id="cloud-login" class="primary-button" type="submit">登录并同步</button>
+            <button id="cloud-login" class="primary-button" type="submit">登录 / 同步</button>
           </div>
         </form>
       </section>
@@ -1419,6 +1439,7 @@
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
+      const CLOUD_EMAIL_KEY = "ielts-study-helper.cloud-email.v1";
       const CLOUD_TABLE = "user_app_data";
       const CLOUD_SAVE_RPC = "save_user_app_data";
       const SUPABASE_URL = "https://opzifteovkhbtjjjfnza.supabase.co";
@@ -1722,6 +1743,7 @@
         settingsDraft: null,
         cloudUser: null,
         cloudReady: false,
+        cloudAuthPending: false,
         cloudSyncing: false,
       };
       const $ = (selector) => document.querySelector(selector);
@@ -1767,28 +1789,64 @@
       function renderCloudState(message = "") {
         const button = $("#cloud-button");
         const text = $("#cloud-button-text");
+        const emailInput = $("#cloud-email");
+        const passwordInput = $("#cloud-password");
+        const passwordToggle = $("#cloud-password-toggle");
+        const loginButton = $("#cloud-login");
+        const signupButton = $("#cloud-signup");
+        const signoutButton = $("#cloud-signout");
         if (!button || !text) return;
         if (!isSupabaseConfigured()) {
           button.dataset.state = "error";
+          button.title = "未配置云同步";
+          button.setAttribute("aria-label", "未配置云同步");
           text.textContent = "未配置";
           setCloudStatus(message || "还需要填入 Supabase Publishable Key。", "error");
           return;
         }
+        if (state.cloudAuthPending) {
+          button.dataset.state = "authing";
+          button.title = "登录中";
+          button.setAttribute("aria-label", "登录中");
+          text.textContent = "登录中";
+          $("#cloud-subtitle").textContent = "正在验证账号，请稍等。";
+          if (emailInput) emailInput.disabled = true;
+          if (passwordInput) passwordInput.disabled = true;
+          if (passwordToggle) passwordToggle.disabled = true;
+          if (signoutButton) signoutButton.hidden = true;
+          if (signupButton) signupButton.hidden = true;
+          if (loginButton) {
+            loginButton.disabled = true;
+            loginButton.textContent = "登录中...";
+          }
+          if (message) setCloudStatus(message);
+          return;
+        }
+        if (emailInput) emailInput.disabled = false;
+        if (passwordInput) passwordInput.disabled = false;
+        if (passwordToggle) passwordToggle.disabled = false;
+        if (loginButton) loginButton.disabled = false;
+        if (signupButton) signupButton.disabled = false;
+        if (signoutButton) signoutButton.disabled = false;
         if (state.cloudUser) {
           button.dataset.state = "online";
-          text.textContent = state.cloudSyncing ? "同步中" : "已同步";
-          $("#cloud-subtitle").textContent = `已登录：${state.cloudUser.email || state.cloudUser.id}`;
+          button.title = "已登录，云同步启用";
+          button.setAttribute("aria-label", "已登录，云同步启用");
+          text.textContent = state.cloudSyncing ? "同步中" : "已登录";
+          $("#cloud-subtitle").textContent = `已登录：${state.cloudUser.email || state.cloudUser.id}，云同步已启用。`;
           $("#cloud-signout").hidden = false;
           $("#cloud-signup").hidden = true;
           $("#cloud-login").textContent = "立即同步";
           if (message) setCloudStatus(message, "success");
         } else {
           button.dataset.state = "offline";
-          text.textContent = "云同步";
-          $("#cloud-subtitle").textContent = "登录后，单词、口语、作文和分类设置会同步到 Supabase。";
+          button.title = "登录 / 注册";
+          button.setAttribute("aria-label", "登录 / 注册");
+          text.textContent = "登录 / 注册";
+          $("#cloud-subtitle").textContent = "未登录，仅保存到本地；登录后会自动开启云同步。";
           $("#cloud-signout").hidden = true;
           $("#cloud-signup").hidden = false;
-          $("#cloud-login").textContent = "登录并同步";
+          $("#cloud-login").textContent = "登录 / 同步";
           if (message) setCloudStatus(message);
         }
       }
@@ -1975,15 +2033,28 @@
         if (!supabaseClient) return;
         const { data } = await supabaseClient.auth.getSession();
         state.cloudUser = data?.session?.user || null;
+        state.cloudAuthPending = false;
         renderCloudState(state.cloudUser ? "正在读取云端数据..." : "");
         if (state.cloudUser) await hydrateFromCloud();
         supabaseClient.auth.onAuthStateChange((_event, session) => {
           state.cloudUser = session?.user || null;
-          renderCloudState(state.cloudUser ? "已登录，正在同步..." : "已退出云同步。");
+          state.cloudAuthPending = false;
+          renderCloudState(state.cloudUser ? "已登录，正在同步..." : "已退出登录，恢复本地模式。");
           if (state.cloudUser) hydrateFromCloud();
         });
       }
       function openCloudModal() {
+        const emailInput = $("#cloud-email");
+        if (emailInput && !emailInput.value) {
+          const rememberedEmail = localStorage.getItem(CLOUD_EMAIL_KEY);
+          emailInput.value = state.cloudUser?.email || rememberedEmail || "";
+        }
+        const passwordInput = $("#cloud-password");
+        if (passwordInput) {
+          passwordInput.type = "password";
+          const toggle = $("#cloud-password-toggle");
+          if (toggle) toggle.textContent = "显示";
+        }
         renderCloudState();
         $("#cloud-backdrop").hidden = false;
       }
@@ -2006,9 +2077,12 @@
           setCloudStatus("请填写邮箱和密码。", "error");
           return;
         }
-        setCloudStatus("正在登录...");
+        state.cloudAuthPending = true;
+        renderCloudState("正在登录中...");
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        state.cloudAuthPending = false;
         if (error) {
+          renderCloudState();
           setCloudStatus(`登录失败：${error.message}`, "error");
           return;
         }
@@ -2019,6 +2093,7 @@
           return;
         }
         state.cloudUser = data.user;
+        localStorage.setItem(CLOUD_EMAIL_KEY, email);
         await hydrateFromCloud();
       }
       async function signupCloud() {
@@ -2032,13 +2107,17 @@
           setCloudStatus("请填写邮箱和至少 6 位密码。", "error");
           return;
         }
-        setCloudStatus("正在注册...");
+        state.cloudAuthPending = true;
+        renderCloudState("正在注册中...");
         const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        state.cloudAuthPending = false;
         if (error) {
+          renderCloudState();
           setCloudStatus(`注册失败：${error.message}`, "error");
           return;
         }
         state.cloudUser = data?.session?.user || null;
+        localStorage.setItem(CLOUD_EMAIL_KEY, email);
         if (state.cloudUser) {
           await hydrateFromCloud();
           renderCloudState("注册成功，已开始同步。");
@@ -2052,7 +2131,16 @@
         await saveCloudNow();
         await supabaseClient.auth.signOut();
         state.cloudUser = null;
+        state.cloudAuthPending = false;
         renderCloudState("已退出云同步。");
+      }
+      function toggleCloudPasswordVisibility() {
+        const input = $("#cloud-password");
+        const button = $("#cloud-password-toggle");
+        if (!input || !button) return;
+        const visible = input.type === "text";
+        input.type = visible ? "password" : "text";
+        button.textContent = visible ? "显示" : "隐藏";
       }
 
       /* ---------- 口语 / 作文分类设置 ---------- */
@@ -4121,6 +4209,7 @@
       $("#cloud-close").addEventListener("click", closeCloudModal);
       $("#install-close").addEventListener("click", closeInstallModal);
       $("#cloud-form").addEventListener("submit", loginCloud);
+      $("#cloud-password-toggle").addEventListener("click", toggleCloudPasswordVisibility);
       $("#cloud-signup").addEventListener("click", signupCloud);
       $("#cloud-signout").addEventListener("click", signoutCloud);
       $("#settings-close").addEventListener("click", closeSettings);
