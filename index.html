@@ -1421,6 +1421,7 @@
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
       const CLOUD_TABLE = "user_app_data";
+      const CLOUD_SAVE_RPC = "save_user_app_data";
       const SUPABASE_URL = "https://opzifteovkhbtjjjfnza.supabase.co";
       const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_G5EWCDSGGcDgiLDbVeYoNg_cMeHPnwn";
       const LONG_PRESS_DURATION = 500;
@@ -1885,24 +1886,31 @@
       }
       async function saveCloudNow() {
         if (!supabaseClient || !state.cloudUser || cloudHydrating) return;
-        const { data: sessionData } = await supabaseClient.auth.getSession();
-        const sessionUser = sessionData?.session?.user;
-        if (!sessionUser || sessionUser.id !== state.cloudUser.id) {
+        const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+        const sessionUser = userData?.user;
+        if (userError || !sessionUser) {
           state.cloudUser = null;
           renderCloudState();
-          setCloudStatus("登录状态已失效，请验证邮箱后重新登录。", "error");
+          setCloudStatus("登录状态已失效，请重新登录后再同步。", "error");
           return;
         }
+        state.cloudUser = sessionUser;
         state.cloudSyncing = true;
         renderCloudState();
         const payload = getCloudPayload();
-        const { error } = await supabaseClient
-          .from(CLOUD_TABLE)
-          .upsert({ user_id: state.cloudUser.id, payload }, { onConflict: "user_id" });
+        let { error } = await supabaseClient.rpc(CLOUD_SAVE_RPC, { p_payload: payload });
+        if (error?.code === "PGRST202" || error?.code === "42883") {
+          ({ error } = await supabaseClient
+            .from(CLOUD_TABLE)
+            .upsert({ user_id: sessionUser.id, payload }, { onConflict: "user_id" }));
+        }
         state.cloudSyncing = false;
         if (error) {
           renderCloudState();
-          setCloudStatus(`云端保存失败：${error.message}`, "error");
+          const hint = error.code === "42501"
+            ? "请在 Supabase SQL Editor 重新执行 supabase-schema.sql。"
+            : error.message;
+          setCloudStatus(`云端保存失败：${hint}`, "error");
           return;
         }
         cacheCloudPayload();
