@@ -1381,7 +1381,6 @@
         <form id="cloud-form" class="cloud-form">
           <label class="writing-form-item wide"><span class="writing-form-label">邮箱</span><input id="cloud-email" class="writing-form-control" type="email" autocomplete="email" placeholder="you@example.com" /></label>
           <label class="writing-form-item wide"><span class="writing-form-label">密码</span><input id="cloud-password" class="writing-form-control" type="password" autocomplete="current-password" placeholder="至少 6 位" /></label>
-          <button id="cloud-github" class="secondary-button cloud-github-button" type="button">使用 GitHub 登录</button>
           <p id="cloud-status" class="cloud-status" role="status" aria-live="polite"></p>
           <div class="detail-actions">
             <button id="cloud-signout" class="secondary-button" type="button" hidden>退出登录</button>
@@ -2021,18 +2020,6 @@
         }
         state.cloudUser = data.user;
         await hydrateFromCloud();
-      }
-      async function loginCloudWithGithub() {
-        if (!supabaseClient) {
-          setCloudStatus("还需要在代码里填入 Supabase Publishable Key。", "error");
-          return;
-        }
-        setCloudStatus("正在跳转到 GitHub 登录...");
-        const { error } = await supabaseClient.auth.signInWithOAuth({
-          provider: "github",
-          options: { redirectTo: `${window.location.origin}${window.location.pathname}` },
-        });
-        if (error) setCloudStatus(`GitHub 登录失败：${error.message}`, "error");
       }
       async function signupCloud() {
         if (!supabaseClient) {
@@ -4134,7 +4121,6 @@
       $("#cloud-close").addEventListener("click", closeCloudModal);
       $("#install-close").addEventListener("click", closeInstallModal);
       $("#cloud-form").addEventListener("submit", loginCloud);
-      $("#cloud-github").addEventListener("click", loginCloudWithGithub);
       $("#cloud-signup").addEventListener("click", signupCloud);
       $("#cloud-signout").addEventListener("click", signoutCloud);
       $("#settings-close").addEventListener("click", closeSettings);
