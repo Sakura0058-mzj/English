@@ -1,4 +1,4 @@
-const CACHE_NAME = "ielts-study-assistant-v1";
+const CACHE_NAME = "ielts-study-assistant-v2-20260905";
 const APP_SHELL = [
   "/",
   "/index.html",
