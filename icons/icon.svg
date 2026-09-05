@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#638a76"/>
-  <path d="M112 126c0-15.5 12.5-28 28-28h232c15.5 0 28 12.5 28 28v258c0 15.5-12.5 28-28 28H140c-15.5 0-28-12.5-28-28V126Z" fill="#fffefa"/>
-  <path d="M256 98v314" fill="none" stroke="#dce7df" stroke-width="16"/>
-  <path d="M164 176h62M164 222h62M164 268h48M286 176h62M286 222h62M286 268h48" fill="none" stroke="#416853" stroke-linecap="round" stroke-width="16"/>
-  <path d="M171 340c17-42 52-64 85-64 33 0 68 22 85 64-27-12-56-18-85-18s-58 6-85 18Z" fill="#e3af4d"/>
-  <path d="M256 276c-12 15-20 34-20 56 0 10 2 20 5 28" fill="none" stroke="#bd6759" stroke-linecap="round" stroke-width="10"/>
+  <rect width="512" height="512" rx="116" fill="#fffefa"/>
+  <rect x="55" y="55" width="402" height="402" rx="88" fill="#e7f0ea"/>
+  <path d="M104 349c50 48 123 72 211 60 34-5 67-17 96-35" fill="none" stroke="#e3af4d" stroke-linecap="round" stroke-width="20"/>
+  <text x="256" y="272" fill="#416853" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-style="italic" font-weight="700" text-anchor="middle" transform="rotate(-8 256 256)">IELTS</text>
+  <path d="M125 309h262" stroke="#bd6759" stroke-linecap="round" stroke-width="12"/>
+  <text x="256" y="350" fill="#638a76" font-family="Arial, sans-serif" font-size="25" font-weight="800" letter-spacing="7" text-anchor="middle">STUDY</text>
 </svg>
