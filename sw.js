@@ -1,4 +1,4 @@
-const CACHE_NAME = "ielts-study-assistant-v4-20260905";
+const CACHE_NAME = "ielts-study-assistant-v5-20260905";
 const BASE_PATH = new URL(".", self.registration.scope).pathname;
 const APP_SHELL = [
   BASE_PATH,
