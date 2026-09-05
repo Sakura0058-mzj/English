@@ -8,9 +8,9 @@
     <meta name="apple-mobile-web-app-title" content="雅思学习助手" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <title>雅思学习助手</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -4354,7 +4354,7 @@
       initCloudSync().catch((error) => setCloudStatus(`云同步初始化失败：${error.message}`, "error"));
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js").catch((error) => {
+          navigator.serviceWorker.register("./sw.js").catch((error) => {
             console.warn("Service worker registration failed:", error);
           });
         });
