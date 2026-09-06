@@ -1163,15 +1163,38 @@
 
         <section class="writing-screen" data-writing-screen="task1" hidden>
           <div class="module-heading">
-            <div><p class="eyebrow">TASK 1</p><h1>小作文</h1><p>选择你要整理的素材类型。</p></div>
+            <div><p class="eyebrow">TASK 1</p><h1>小作文</h1><p>按写作逻辑选择数据图表、流程图或地图。</p></div>
             <div class="writing-task-switch" aria-label="作文类型切换">
               <button class="writing-task-switch-button" type="button" aria-current="page">小作文</button>
               <button class="writing-task-switch-button" type="button" data-writing-screen-target="task2">大作文</button>
             </div>
           </div>
           <div class="writing-entry-grid">
-            <button class="feature-card" data-writing-branch="task1-structures"><span class="feature-icon sage">句</span><h2>结构句型</h2><p>按开头、概述、细节和结尾整理句型。</p><span class="feature-link">进入结构句型 →</span></button>
-            <button class="feature-card" data-writing-branch="task1-samples"><span class="feature-icon blue">范</span><h2>范文收藏</h2><p>按线图、柱状图、饼图等图表类型整理范文。</p><span class="feature-link" style="color:var(--blue)">进入范文收藏 →</span></button>
+            <button class="feature-card" data-writing-screen-target="task1-data"><span class="feature-icon sage">图</span><h2>数据图表</h2><p>区分静态比较与动态变化，按写作逻辑整理素材。</p><span class="feature-link">进入数据图表 →</span></button>
+            <button class="feature-card" data-writing-task1-type="process"><span class="feature-icon blue">流</span><h2>流程图</h2><p>围绕步骤、顺序、转换和被动语态整理素材。</p><span class="feature-link" style="color:var(--blue)">进入流程图 →</span></button>
+            <button class="feature-card" data-writing-task1-type="map"><span class="feature-icon coral">地</span><h2>地图</h2><p>围绕方位、设施变化和区域改造整理素材。</p><span class="feature-link" style="color:var(--coral)">进入地图 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="task1-data" hidden>
+          <div class="module-heading">
+            <div><p class="eyebrow">TASK 1 · DATA</p><h1>数据图表</h1><p>根据图表是否包含多个时间点选择写作逻辑。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换"><button class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button><button class="writing-task-switch-button" type="button" data-writing-screen-target="task2">大作文</button></div>
+          </div>
+          <div class="writing-entry-grid">
+            <button class="feature-card" data-writing-task1-type="static"><span class="feature-icon sage">比</span><h2>静态数据图表</h2><p>同一时间点的数据比较，核心逻辑是 Compare。</p><span class="feature-link">进入静态数据图表 →</span></button>
+            <button class="feature-card" data-writing-task1-type="dynamic"><span class="feature-icon blue">变</span><h2>动态数据图表</h2><p>多个时间点的变化与比较，核心逻辑是 Change + Compare。</p><span class="feature-link" style="color:var(--blue)">进入动态数据图表 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="task1-type" hidden>
+          <div class="module-heading">
+            <div><p id="writing-task1-type-eyebrow" class="eyebrow">TASK 1</p><h1 id="writing-task1-type-title">数据图表</h1><p id="writing-task1-type-description">选择结构句型或范文收藏。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换"><button class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button><button class="writing-task-switch-button" type="button" data-writing-screen-target="task2">大作文</button></div>
+          </div>
+          <div class="writing-entry-grid">
+            <button id="writing-task1-structures-entry" class="feature-card" data-writing-branch="task1-static-structures"><span class="feature-icon sage">句</span><h2>结构句型</h2><p>按写作阶段和核心功能筛选 Band 7 句型。</p><span class="feature-link">进入结构句型 →</span></button>
+            <button id="writing-task1-samples-entry" class="feature-card" data-writing-branch="task1-static-samples"><span class="feature-icon blue">范</span><h2>范文收藏</h2><p>保存与你当前 Task 1 类型对应的范文。</p><span class="feature-link" style="color:var(--blue)">进入范文收藏 →</span></button>
           </div>
         </section>
 
@@ -1218,10 +1241,11 @@
 
           <div class="word-panel" data-writing-panel-view="library" hidden>
             <section class="panel library-panel writing-library">
-              <div class="library-toolbar">
+            <div class="library-toolbar">
                 <div class="writing-library-title"><div><p class="section-kicker">WRITING BANK</p><h2 id="writing-library-heading">短语库</h2></div><span id="writing-count" class="word-tab-count">0</span></div>
                 <div class="library-controls">
                   <select id="writing-category-filter" class="sort-select" aria-label="作文分类"></select>
+                  <select id="writing-function-filter" class="sort-select" aria-label="核心功能筛选" hidden></select>
                   <select id="writing-star-filter" class="sort-select" aria-label="星级筛选"><option value="all">全部句子</option><option value="starred">仅显示带星级句子</option></select>
                 </div>
               </div>
@@ -1255,6 +1279,7 @@
           <div class="writing-card-heading">
             <p class="section-kicker">WRITING CARD</p>
             <select id="writing-category" class="writing-category-select" aria-label="写作分类"></select>
+            <select id="writing-function" class="writing-category-select" aria-label="核心功能" hidden></select>
             <h2 id="writing-modal-title">确认智能添加</h2>
             <p id="writing-modal-subtitle" class="detail-phonetic"></p>
           </div>
@@ -1435,6 +1460,8 @@
       const STORAGE_KEY = "ielts-study-helper.words.v1";
       const CAMBRIDGE5_IMPORT_KEY = "ielts-study-helper.cambridge5-imported.v1";
       const WRITING_STORAGE_KEY = "ielts-study-helper.writing.v1";
+      const WRITING_TASK1_SEED_KEY = "ielts-study-helper.writing-task1-seed.v1";
+      const WRITING_TASK1_SEED_VERSION = "band7-v1";
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
@@ -1450,6 +1477,12 @@
       const WRITING_CONFIG = {
         task1: {
           label: "小作文",
+          types: {
+            static: { label: "静态数据图表", description: "同一时间点的数据比较，核心逻辑是 Compare。" },
+            dynamic: { label: "动态数据图表", description: "多个时间点的变化与比较，核心逻辑是 Change + Compare。" },
+            process: { label: "流程图", description: "描述步骤、顺序和转换，核心逻辑是 Process。" },
+            map: { label: "地图", description: "描述方位和改造，核心逻辑是 Location + Change。" },
+          },
           collections: {
             structures: {
               label: "结构句型",
@@ -1508,6 +1541,34 @@
         drawback: "缺点",
         other: "其他",
       };
+      const WRITING_TASK1_STRUCTURE_CONFIG = {
+        static: {
+          sections: { intro: "Introduction / 引言", overview: "Overview / 总览", body1: "Body 1 / 主体段1", body2: "Body 2 / 主体段2" },
+          functions: {
+            rewrite: "题目改写", shows: "图表说明", compares: "比较对象", highest: "最高", lowest: "最低",
+            overall: "总体差异", major: "主要特征", similar: "相似", comparison: "比较", ranking: "排名", gap: "差距", multiple: "倍数",
+          },
+        },
+        dynamic: {
+          sections: { intro: "Introduction / 引言", overview: "Overview / 总览", body1: "Body 1 / 主体段1", body2: "Body 2 / 主体段2" },
+          functions: {
+            changes: "变化说明", period: "时间范围", overallRise: "总体上升", overallFall: "总体下降", fluctuation: "波动", stable: "稳定",
+            peak: "峰值", trough: "谷值", start: "起点", end: "终点", increase: "上升", decrease: "下降", rapid: "快速变化",
+            gradual: "缓慢变化", amplitude: "幅度", trend: "趋势比较",
+          },
+        },
+        process: {
+          sections: { intro: "Introduction / 引言", overview: "Overview / 总览", beginning: "Beginning / 开始", development: "Development / 中间过程", ending: "Ending / 结束", passive: "Passive voice / 被动语态" },
+          functions: { illustrates: "过程说明", stages: "阶段总览", beginning: "开始", next: "下一步", development: "中间过程", transition: "转换", subsequent: "后续步骤", ending: "最后", passive: "被动语态" },
+        },
+        map: {
+          sections: { intro: "Introduction / 引言", overview: "Overview / 总览", location: "Location / 方位", change: "Change / 变化" },
+          functions: {
+            layout: "布局说明", changes: "变化说明", development: "整体发展", facilities: "新设施", removal: "拆除设施", direction: "东西南北", center: "中心", adjacent: "相邻", opposite: "对面",
+            new: "新建", demolished: "拆除", replaced: "替换", converted: "改造", expanded: "扩建", relocated: "移动", unchanged: "保持不变",
+          },
+        },
+      };
       const SPEAKING_CONFIG = {
         part1: {
           label: "Part 1",
@@ -1545,6 +1606,118 @@
           },
         },
       };
+      // 精选的 Band 7 Task 1 句型：每个写作逻辑类别 25 条，阶段和功能分别可筛选。
+      const WRITING_TASK1_STRUCTURE_SEED_ROWS = {
+        static: [
+          ["intro", "rewrite", "The chart compares the proportions of [X] across [N] categories in [YEAR].", "该图表比较了[YEAR]年[N]个类别中[X]所占的比例。", "用于改写静态图表题目，替换变量即可。"],
+          ["intro", "shows", "The bar chart shows how [X] was distributed among [N] groups in [YEAR].", "柱状图展示了[YEAR]年[X]在[N]个群体中的分布情况。", "用于说明单一时间点的分布。"],
+          ["intro", "illustrates", "The table illustrates the figures for [X] in [N] different locations.", "该表格说明了[N]个不同地点的[X]数据。", "用于表格题的正式开头。"],
+          ["intro", "compares", "The figures compare [X] with [Y] in terms of [MEASURE].", "这些数据从[MEASURE]方面比较了[X]和[Y]。", "用于明确两个对象和比较指标。"],
+          ["intro", "presents", "The chart presents information about the amount of [X] consumed by [N] groups.", "该图表提供了[N]个群体消费[X]数量的信息。", "用于改写数量类静态题目。"],
+          ["overview", "highest", "Overall, [A] recorded the highest figure, while [B] had the lowest.", "总体来看，[A]的数据最高，而[B]最低。", "概述最高值和最低值。"],
+          ["overview", "lowest", "The most notable feature is the considerable gap between the highest and lowest figures.", "最显著的特征是最高值和最低值之间存在明显差距。", "概述整体差异，不堆砌具体数字。"],
+          ["overview", "overall", "Overall, the figures varied substantially, with the largest values concentrated in [GROUP].", "总体来看，各项数据差异较大，最大值集中在[GROUP]。", "概述主要分布特征。"],
+          ["overview", "similar", "A broadly similar pattern can be seen in [A] and [B], whereas [C] stands apart.", "[A]和[B]呈现出大致相似的模式，而[C]较为突出。", "概述相似项和例外项。"],
+          ["overview", "comparison", "The figures for [A] and [B] were relatively close, in contrast to the other categories.", "[A]和[B]的数据较为接近，与其他类别形成对比。", "概述接近数据。"],
+          ["overview", "ranking", "In general, [A] ranked first, followed by [B] and [C].", "总体而言，[A]排名第一，其次是[B]和[C]。", "概述清晰的排名关系。"],
+          ["body1", "highest", "[A] accounted for [X]%, making it the largest proportion among the categories shown.", "[A]占[X]%，是图中所示类别中比例最大的。", "具体描述最高比例。"],
+          ["body1", "comparison", "At [X]%, the figure for [A] was approximately [N] percentage points higher than that for [B].", "[A]的比例为[X]%，比[B]高约[N]个百分点。", "比较百分比差值，注意使用百分点。"],
+          ["body1", "ranking", "With a figure of [X], [A] occupied the second position, behind only [B].", "[A]的数据为[X]，位居第二，仅次于[B]。", "描述第二名和排名。"],
+          ["body1", "similar", "The proportions for [A] and [B] were almost identical, at approximately [X]% and [Y], respectively.", "[A]和[B]的比例几乎相同，分别约为[X]%和[Y]。", "描述相近数据，分别对应两个对象。"],
+          ["body1", "gap", "There was a difference of roughly [X] units between [A] and [B].", "[A]和[B]之间相差约[X]个单位。", "描述非百分比数据的差距。"],
+          ["body1", "multiple", "The figure for [A] was approximately twice as high as that for [B].", "[A]的数据约为[B]的两倍。", "描述整倍数关系，避免夸张。"],
+          ["body2", "lowest", "By comparison, [A] had the smallest figure, at only [X].", "相比之下，[A]的数据最小，只有[X]。", "具体描述最低项。"],
+          ["body2", "comparison", "Although [A] and [B] belonged to different groups, their figures were virtually the same.", "尽管[A]和[B]属于不同群体，但数据几乎相同。", "比较两项相似数据。"],
+          ["body2", "gap", "The gap between [A] and [B] was much narrower than the difference observed between [C] and [D].", "[A]和[B]之间的差距远小于[C]和[D]之间的差异。", "比较两组差距。"],
+          ["body2", "multiple", "[A] was roughly three times the figure recorded for [B].", "[A]的数据约为[B]的三倍。", "描述三倍关系。"],
+          ["body2", "ranking", "The remaining categories occupied the middle positions, ranging from [X] to [Y].", "其余类别处于中间位置，数据从[X]到[Y]不等。", "概括剩余数据和范围。"],
+          ["body2", "lowest", "The smallest proportion was observed in [A], followed by [B] at a slightly higher level.", "[A]的比例最小，其次是数据略高的[B]。", "同时描述最低值和次低值。"],
+          ["body2", "similar", "The two middle-ranking categories showed comparable results, both standing well below [A].", "排名中间的两个类别结果相近，且都明显低于[A]。", "连接中间数据与最高数据。"],
+          ["body2", "comparison", "Taken together, the figures suggest that [A] was substantially more common than [B].", "综合来看，数据表明[A]比[B]普遍得多。", "段尾总结比较结果。"],
+        ],
+        dynamic: [
+          ["intro", "changes", "The line graph shows how [X] changed between [YEAR] and [YEAR].", "折线图展示了[X]在[YEAR]至[YEAR]期间的变化。", "用于变化图表题目的改写。"],
+          ["intro", "period", "The chart compares changes in [X] over the period from [YEAR] to [YEAR].", "该图表比较了[YEAR]至[YEAR]期间[X]的变化。", "明确时间范围和比较对象。"],
+          ["intro", "period", "The figures illustrate the trends in [X] across the [N]-year period shown.", "这些数据说明了所示[N]年期间[X]的趋势。", "用于不重复具体年份的开头。"],
+          ["intro", "changes", "The graph provides information about variations in [X] for [N] different groups.", "该图表提供了[N]个不同群体[X]变化的信息。", "用于多条线或多组数据。"],
+          ["intro", "period", "The chart presents data on [X], beginning in [YEAR] and ending in [YEAR].", "该图表呈现了[X]的数据，起始于[YEAR]，结束于[YEAR]。", "强调起点和终点。"],
+          ["overview", "overallRise", "Overall, [A] and [B] followed an upward trend, whereas [C] declined over the period.", "总体来看，[A]和[B]呈上升趋势，而[C]在此期间下降。", "概述相反趋势。"],
+          ["overview", "overallFall", "The general trend was downward, despite a brief increase in [A].", "总体趋势是下降的，尽管[A]曾短暂上升。", "概述下降并指出例外。"],
+          ["overview", "fluctuation", "Overall, [A] fluctuated considerably, while [B] remained comparatively stable.", "总体来看，[A]波动较大，而[B]相对稳定。", "概述波动和稳定的对比。"],
+          ["overview", "peak", "The most striking feature is that [A] reached a peak of [X] in [YEAR].", "最显著的特征是[A]在[YEAR]达到[X]的峰值。", "概述峰值。"],
+          ["overview", "trough", "[A] recorded the lowest point at the beginning, before recovering towards the end.", "[A]在开头记录了最低点，之后到末期恢复。", "概述谷值和后续恢复。"],
+          ["overview", "trend", "By the end of the period, the figures had moved in noticeably different directions.", "到该时期结束时，各项数据呈现出明显不同的走向。", "概述多条线的最终差异。"],
+          ["body1", "increase", "The number of [X] rose steadily from [A] in [YEAR] to [B] in [YEAR].", "[X]的数量从[YEAR]的[A]稳步上升到[YEAR]的[B]。", "描述稳定上升并给出起终点。"],
+          ["body1", "decrease", "The figure for [X] fell gradually, dropping from [A] to [B] over the period.", "[X]的数据逐渐下降，在此期间从[A]降至[B]。", "描述缓慢下降。"],
+          ["body1", "rapid", "After [YEAR], [X] experienced a sharp increase, reaching [A] within just [N] years.", "[YEAR]之后，[X]大幅上升，仅[N]年就达到[A]。", "描述快速上升。"],
+          ["body1", "gradual", "[X] grew at a modest rate during the first half of the period.", "在前半段时期，[X]以较缓慢的速度增长。", "描述前期缓慢变化。"],
+          ["body1", "start", "Starting at [A], the figure for [X] climbed to [B] by [YEAR].", "[X]从[A]起步，到[YEAR]上升至[B]。", "描述起点和前期变化。"],
+          ["body1", "amplitude", "The increase amounted to [X] units, which was the largest change among the categories.", "增幅达到[X]个单位，是各类别中最大的变化。", "描述变化幅度。"],
+          ["body1", "trend", "In contrast to [A], [B] showed a sustained decline throughout the first part of the period.", "与[A]相反，[B]在前一阶段持续下降。", "比较两条趋势。"],
+          ["body2", "fluctuation", "The figure for [X] fluctuated between [A] and [B], with no clear overall direction.", "[X]的数据在[A]和[B]之间波动，没有明显的总体方向。", "描述无明确趋势的波动。"],
+          ["body2", "stable", "Following a slight change, [X] remained relatively stable at around [A].", "轻微变化后，[X]相对稳定在[A]左右。", "描述稳定阶段。"],
+          ["body2", "peak", "[X] reached a peak of [A] in [YEAR] before falling back to [B].", "[X]在[YEAR]达到[A]的峰值，随后回落至[B]。", "描述峰值及峰后变化。"],
+          ["body2", "trough", "After reaching a low of [A], [X] recovered gradually towards the end of the period.", "达到[A]的低点后，[X]在该时期末逐渐恢复。", "描述谷值和后期恢复。"],
+          ["body2", "end", "By [YEAR], [A] had overtaken [B], although it started from a lower level.", "到[YEAR]，[A]已经超过[B]，尽管它起初处于较低水平。", "描述终点反超。"],
+          ["body2", "start", "The figures began at similar levels but ended with a substantial difference of [X].", "各项数据起点相近，但最终形成了[X]的明显差距。", "比较起点与终点。"],
+          ["body2", "amplitude", "The overall change in [A] was considerably greater than that in [B].", "[A]的整体变化幅度明显大于[B]。", "比较两项变化幅度。"],
+        ],
+        process: [
+          ["intro", "illustrates", "The diagram illustrates the process by which [PRODUCT] is produced.", "该图说明了[PRODUCT]的生产过程。", "流程图题目改写。"],
+          ["intro", "illustrates", "The flow chart shows how [MATERIAL] is transformed into [PRODUCT].", "流程图展示了[MATERIAL]如何转化为[PRODUCT]。", "适用于原料到成品的流程。"],
+          ["intro", "illustrates", "The diagram describes the stages involved in [PROCESS].", "该图描述了[PROCESS]所涉及的各个阶段。", "适用于多阶段流程。"],
+          ["overview", "stages", "Overall, the process consists of [N] main stages, beginning with [A] and ending with [B].", "总体来看，该过程包括[N]个主要阶段，从[A]开始，以[B]结束。", "概述阶段数量、起点和终点。"],
+          ["overview", "stages", "Overall, [MATERIAL] passes through a series of stages before the final product is obtained.", "总体来看，[MATERIAL]经过一系列阶段后得到最终产品。", "概述连续生产过程。"],
+          ["overview", "beginning", "The procedure starts when [A] is collected and prepared for the next stage.", "该流程始于[A]被收集并为下一阶段做准备。", "概述开始环节。"],
+          ["overview", "ending", "The final stage involves packaging the finished product for distribution.", "最后一个阶段是将成品包装后进行分发。", "概述结束环节。"],
+          ["beginning", "beginning", "Initially, [MATERIAL] is collected from [SOURCE] and taken to the processing site.", "首先，[MATERIAL]从[SOURCE]收集后被运往加工地点。", "描述流程起点。"],
+          ["beginning", "next", "In the first stage, the raw material is sorted according to its size and quality.", "第一阶段，原材料按照大小和质量进行分类。", "描述开始后的初步处理。"],
+          ["beginning", "passive", "At the outset, the material is placed in a container before being treated.", "开始时，材料被放入容器中，然后进行处理。", "自然使用被动语态。"],
+          ["development", "next", "Next, the material is transferred to a machine where it is cleaned thoroughly.", "接下来，材料被转移到机器中进行彻底清洗。", "连接下一步骤。"],
+          ["development", "development", "The cleaned material then passes through a heating stage lasting approximately [N] minutes.", "清洗后的材料随后经过约[N]分钟的加热阶段。", "描述中间阶段和持续时间。"],
+          ["development", "transition", "Once this has been completed, the mixture is separated into [N] parts.", "完成这一步后，混合物被分成[N]部分。", "表示步骤转换。"],
+          ["development", "subsequent", "Following this, the liquid is cooled before being combined with [MATERIAL].", "随后，液体先冷却，再与[MATERIAL]混合。", "连接后续步骤。"],
+          ["development", "passive", "The substance is filtered to remove any remaining impurities.", "该物质经过过滤，以去除剩余杂质。", "流程图中的被动处理。"],
+          ["development", "development", "At this point, the partly processed material is ready for the next phase.", "此时，部分加工后的材料已准备进入下一阶段。", "段落内部过渡。"],
+          ["development", "transition", "After the components have been mixed, the resulting product is pressed into shape.", "各成分混合后，所得产品被压制成形。", "描述混合到成形的转换。"],
+          ["development", "subsequent", "The next step is to transport the processed material to the final production area.", "下一步是将加工后的材料运送到最终生产区域。", "连接运输步骤。"],
+          ["ending", "ending", "Finally, the completed product is inspected and prepared for delivery.", "最后，成品经过检查并准备交付。", "描述倒数或最后步骤。"],
+          ["ending", "ending", "In the final stage, the items are packaged and sent to retailers.", "在最后阶段，物品被包装并送往零售商。", "描述流程终点。"],
+          ["ending", "passive", "Once the process is complete, the finished goods are stored until they are dispatched.", "流程完成后，成品被储存，直到发出。", "描述完成后的状态。"],
+          ["ending", "transition", "The final transformation occurs when the treated material is converted into [PRODUCT].", "最后一次转化发生在处理后的材料变成[PRODUCT]时。", "描述最终转化。"],
+          ["passive", "passive", "The product is then cooled, labelled and placed in suitable containers.", "随后产品被冷却、贴标签并放入合适的容器中。", "并列被动动作。"],
+          ["passive", "passive", "At this stage, the remaining water is removed and the solid material is dried.", "在这一阶段，剩余水分被去除，固体材料被烘干。", "描述两个并列被动步骤。"],
+          ["passive", "passive", "The final mixture is inspected before it is released for sale.", "最终混合物经过检查后才投放销售。", "描述质量检查和结果。"],
+        ],
+        map: [
+          ["intro", "layout", "The maps show the layout of [PLACE] in [YEAR] and [YEAR].", "两张地图展示了[PLACE]在[YEAR]和[YEAR]的布局。", "地图题目改写。"],
+          ["intro", "changes", "The diagrams illustrate the changes that took place in [PLACE] between [YEAR] and [YEAR].", "这些图说明了[YEAR]至[YEAR]期间[PLACE]发生的变化。", "强调时间前后的变化。"],
+          ["intro", "layout", "The maps provide information about the development of [PLACE] over the period shown.", "这些地图提供了所示期间[PLACE]发展情况的信息。", "适用于整体改造题。"],
+          ["overview", "development", "Overall, [PLACE] underwent considerable development, with several new facilities added.", "总体来看，[PLACE]经历了显著发展，并增加了几项新设施。", "概述整体发展。"],
+          ["overview", "facilities", "The main changes were the construction of [A] and the expansion of [B].", "主要变化是建造[A]以及扩建[B]。", "概述新增和扩建。"],
+          ["overview", "removal", "Several existing features were removed or replaced, while [A] remained unchanged.", "一些原有设施被拆除或替换，而[A]保持不变。", "概述拆除与保留。"],
+          ["overview", "changes", "The area became more developed and accessible by the end of the period.", "到该时期末，该区域发展程度更高，也更易于到达。", "概述结果性变化。"],
+          ["location", "direction", "[A] was located to the north of [B], with [C] situated to the south.", "[A]位于[B]北部，而[C]位于南部。", "描述南北方位。"],
+          ["location", "direction", "In the eastern part of the site, there was a [FACILITY], while [A] lay in the west.", "场地东部有一个[FACILITY]，而[A]位于西部。", "描述东西方位。"],
+          ["location", "center", "A [FACILITY] occupied the centre of the area, surrounded by [A] and [B].", "一个[FACILITY]位于区域中心，周围是[A]和[B]。", "描述中心位置和周边。"],
+          ["location", "adjacent", "[A] was situated adjacent to [B], directly beside the main road.", "[A]紧邻[B]，就在主干道旁。", "描述相邻关系。"],
+          ["location", "opposite", "The car park was opposite the entrance, on the other side of the road.", "停车场位于入口对面，在道路另一侧。", "描述对面关系。"],
+          ["location", "adjacent", "To the east of [A] was a new path leading towards [B].", "[A]的东侧是一条通往[B]的新道路。", "灵活描述相邻方位。"],
+          ["change", "new", "A new [FACILITY] was constructed in the northern section of the site.", "场地北部新建了一个[FACILITY]。", "描述新建设施。"],
+          ["change", "demolished", "The old [FACILITY] was demolished to make room for [A].", "旧的[FACILITY]被拆除，为[A]腾出空间。", "描述拆除及目的。"],
+          ["change", "replaced", "The former [FACILITY] was replaced by a larger [FACILITY].", "原来的[FACILITY]被一个更大的[FACILITY]取代。", "描述替换。"],
+          ["change", "converted", "The open land was converted into a public garden.", "空地被改造成公共花园。", "描述功能改造。"],
+          ["change", "expanded", "The existing road was expanded and extended towards the west.", "现有道路被扩建并向西延伸。", "描述道路扩建。"],
+          ["change", "relocated", "The [FACILITY] was relocated from the centre to the southern edge of the area.", "[FACILITY]从中心迁移到了该区域的南侧边缘。", "描述设施移动。"],
+          ["change", "unchanged", "Despite the redevelopment, the river and the main road remained unchanged.", "尽管进行了改造，河流和主干道保持不变。", "描述未改变的要素。"],
+          ["change", "new", "A footpath was added, connecting the residential area with the new facilities.", "新增了一条人行道，将住宅区与新设施连接起来。", "描述新增连接设施。"],
+          ["change", "demolished", "The row of shops on the western side disappeared in the later plan.", "西侧的商店排在后来的规划中消失了。", "避免重复使用 demolished。"],
+          ["change", "converted", "The former car park was transformed into a landscaped public space.", "原来的停车场被改造成景观公共空间。", "描述空间功能变化。"],
+          ["change", "expanded", "The residential zone was extended southwards, occupying part of the former farmland.", "住宅区向南扩展，占用了部分原有农田。", "描述区域扩建和占用。"],
+          ["change", "unchanged", "The position of [A] was unchanged, although its surrounding area was substantially reorganised.", "尽管周边区域进行了大幅重组，[A]的位置没有变化。", "描述保留要素与周围变化。"],
+        ],
+      };
+      const WRITING_TASK1_STRUCTURE_SEED = Object.entries(WRITING_TASK1_STRUCTURE_SEED_ROWS).flatMap(([task1Type, rows]) => rows.map(([section, functionName, content, translation, note]) => ({ task1Type, section, function: functionName, content, translation, note })));
       const DEFAULT_CATEGORY_SETTINGS = buildDefaultCategorySettings();
       let categorySettings = loadCategorySettings();
       applyCategorySettings(categorySettings);
@@ -1715,8 +1888,10 @@
         writingScreen: "writing-home",
         writingPanelView: "editor",
         writingView: "task1",
+        writingTask1Type: "static",
         writingCollection: "structures",
         writingCategory: "all",
+        writingFunction: "all",
         writingStarFilter: "all",
         writingDetailId: null,
         writingSmartMode: false,
@@ -1751,6 +1926,7 @@
       const supabaseClient = createSupabaseClient();
       let cloudSaveTimer = null;
       let cloudHydrating = false;
+      let task1MigratedDuringHydration = false;
       let deferredInstallPrompt = null;
 
       /* ---------- Supabase 云端同步 ---------- */
@@ -1769,6 +1945,7 @@
         return {
           words: state.words,
           writing: state.writing,
+          writingTask1SeedVersion: localStorage.getItem(WRITING_TASK1_SEED_KEY) || "",
           speaking: state.speaking,
           categorySettings,
           updatedAt: new Date().toISOString(),
@@ -1994,6 +2171,10 @@
           persistCategorySettings();
         }
         if (payload.writing) {
+          if (payload.writingTask1SeedVersion !== WRITING_TASK1_SEED_VERSION) {
+            localStorage.removeItem(WRITING_TASK1_SEED_KEY);
+            task1MigratedDuringHydration = true;
+          }
           localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(payload.writing));
           state.writing = loadWritingData();
         }
@@ -2022,6 +2203,10 @@
         }
         if (data?.payload) {
           applyCloudPayload(data.payload);
+          if (task1MigratedDuringHydration) {
+            task1MigratedDuringHydration = false;
+            await saveCloudNow();
+          }
           renderCloudState("已从云端载入数据。");
         } else {
           await saveCloudNow();
@@ -2145,18 +2330,25 @@
 
       /* ---------- 口语 / 作文分类设置 ---------- */
       function buildDefaultCategorySettings() {
+        const writing = Object.fromEntries(
+          Object.entries(WRITING_CONFIG).map(([task, taskConfig]) => [
+            task,
+            Object.fromEntries(
+              Object.entries(taskConfig.collections).map(([collection, config]) => [collection, { ...config.categories }])
+            ),
+          ])
+        );
+        writing.task1.structures = Object.fromEntries(
+          Object.entries(WRITING_TASK1_STRUCTURE_CONFIG).map(([type, config]) => [
+            type,
+            { sections: { ...config.sections }, functions: { ...config.functions } },
+          ])
+        );
         return {
           speaking: Object.fromEntries(
             Object.entries(SPEAKING_CONFIG).map(([part, config]) => [part, { ...config.categories }])
           ),
-          writing: Object.fromEntries(
-            Object.entries(WRITING_CONFIG).map(([task, taskConfig]) => [
-              task,
-              Object.fromEntries(
-                Object.entries(taskConfig.collections).map(([collection, config]) => [collection, { ...config.categories }])
-              ),
-            ])
-          ),
+          writing,
         };
       }
       function cloneCategorySettings(value) {
@@ -2187,6 +2379,19 @@
         }
         for (const task of Object.keys(defaults.writing)) {
           for (const collection of Object.keys(defaults.writing[task])) {
+            if (task === "task1" && collection === "structures") {
+              for (const type of Object.keys(defaults.writing.task1.structures)) {
+                defaults.writing.task1.structures[type].sections = sanitiseCategoryMap(
+                  saved?.writing?.task1?.structures?.[type]?.sections,
+                  defaults.writing.task1.structures[type].sections
+                );
+                defaults.writing.task1.structures[type].functions = sanitiseCategoryMap(
+                  saved?.writing?.task1?.structures?.[type]?.functions,
+                  defaults.writing.task1.structures[type].functions
+                );
+              }
+              continue;
+            }
             defaults.writing[task][collection] = sanitiseCategoryMap(
               saved?.writing?.[task]?.[collection],
               defaults.writing[task][collection]
@@ -2201,6 +2406,7 @@
         });
         Object.entries(settings.writing).forEach(([task, collections]) => {
           Object.entries(collections).forEach(([collection, categories]) => {
+            if (task === "task1" && collection === "structures") return;
             if (WRITING_CONFIG[task]?.collections?.[collection]) {
               WRITING_CONFIG[task].collections[collection].categories = { ...categories };
             }
@@ -2215,16 +2421,20 @@
         if (module === "speaking") {
           return Object.entries(SPEAKING_CONFIG).map(([part, config]) => ({ id: part, label: `${config.label} · 结构化表达` }));
         }
-        return Object.entries(WRITING_CONFIG).flatMap(([task, taskConfig]) =>
-          Object.entries(taskConfig.collections).map(([collection, config]) => ({
-            id: `${task}:${collection}`,
-            label: `${taskConfig.label} · ${config.label}`,
-          }))
-        );
+        return Object.entries(WRITING_CONFIG).flatMap(([task, taskConfig]) => Object.entries(taskConfig.collections).flatMap(([collection, config]) => {
+          if (task === "task1" && collection === "structures") {
+            return Object.entries(WRITING_TASK1_STRUCTURE_CONFIG).flatMap(([type, typeConfig]) => [
+              { id: `${task}:${collection}:${type}:sections`, label: `${taskConfig.label} · ${typeConfig.sections.intro ? WRITING_CONFIG.task1.types[type].label : type} · 写作阶段` },
+              { id: `${task}:${collection}:${type}:functions`, label: `${taskConfig.label} · ${WRITING_CONFIG.task1.types[type].label} · 核心功能` },
+            ]);
+          }
+          return [{ id: `${task}:${collection}`, label: `${taskConfig.label} · ${config.label}` }];
+        }));
       }
       function getSettingsCategoryMap(settings, module, libraryId) {
         if (module === "speaking") return settings.speaking[libraryId];
-        const [task, collection] = libraryId.split(":");
+        const [task, collection, type, axis] = libraryId.split(":");
+        if (task === "task1" && collection === "structures" && type && axis) return settings.writing.task1.structures[type]?.[axis];
         return settings.writing[task]?.[collection];
       }
       function createCategoryId(label, categories) {
@@ -2470,6 +2680,18 @@
         });
         Object.entries(next.writing).forEach(([task, collections]) => {
           Object.entries(collections).forEach(([collection, categories]) => {
+            if (task === "task1" && collection === "structures") {
+              Object.entries(categories).forEach(([type, maps]) => {
+                const fallbackSection = getFirstCategoryId(maps.sections);
+                const fallbackFunction = getFirstCategoryId(maps.functions);
+                state.writing.task1.structures.forEach((item) => {
+                  if (item.task1Type !== type) return;
+                  if (!maps.sections[item.section]) { item.section = fallbackSection; item.category = fallbackSection; writingChanged = true; }
+                  if (!maps.functions[item.function]) { item.function = fallbackFunction; writingChanged = true; }
+                });
+              });
+              return;
+            }
             const fallback = getFirstCategoryId(categories);
             state.writing[task][collection].forEach((item) => {
               if (!categories[item.category]) {
@@ -2490,6 +2712,19 @@
         }
         for (const task of Object.keys(next.writing)) {
           for (const collection of Object.keys(next.writing[task])) {
+            if (task === "task1" && collection === "structures") {
+              Object.keys(next.writing.task1.structures).forEach((type) => {
+                next.writing.task1.structures[type].sections = sanitiseCategoryMap(
+                  next.writing.task1.structures[type].sections,
+                  categorySettings.writing.task1.structures[type].sections
+                );
+                next.writing.task1.structures[type].functions = sanitiseCategoryMap(
+                  next.writing.task1.structures[type].functions,
+                  categorySettings.writing.task1.structures[type].functions
+                );
+              });
+              continue;
+            }
             next.writing[task][collection] = sanitiseCategoryMap(
               next.writing[task][collection],
               categorySettings.writing[task][collection]
@@ -2551,6 +2786,11 @@
                     id: item.id || createId(),
                     createdAt: Number(item.createdAt) || Date.now(),
                     order: Number(item.order),
+                    task1Type: WRITING_CONFIG[task].types && WRITING_CONFIG[task].types[item.task1Type]
+                      ? item.task1Type
+                      : task === "task1" ? "static" : "",
+                    section: String(item.section || item.category || ""),
+                    function: String(item.function || ""),
                     category: (() => {
                       const requested = task === "task2" && collection === "structures" && item.category === "body"
                         ? "development"
@@ -2578,6 +2818,30 @@
                   }))
                 : []);
             }
+          }
+        } catch {}
+        try {
+          if (localStorage.getItem(WRITING_TASK1_SEED_KEY) !== WRITING_TASK1_SEED_VERSION) {
+            const now = Date.now();
+            blank.task1.structures = WRITING_TASK1_STRUCTURE_SEED.map((item, index) => ({
+              id: createId(),
+              createdAt: now + index,
+              order: index + 1,
+              task1Type: item.task1Type,
+              section: item.section,
+              function: item.function,
+              category: item.section,
+              title: "",
+              content: item.content,
+              translation: item.translation,
+              note: `${item.note} Band 7`,
+              noteType: "other",
+              star: 0,
+              highlights: [],
+            }));
+            blank.task1.samples = [];
+            localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(blank));
+            localStorage.setItem(WRITING_TASK1_SEED_KEY, WRITING_TASK1_SEED_VERSION);
           }
         } catch {}
         return blank;
@@ -2909,6 +3173,18 @@
       function getWritingConfig(task = state.writingView, collection = state.writingCollection) {
         return WRITING_CONFIG[task]?.collections?.[collection] || null;
       }
+      function getTask1TypeConfig(type = state.writingTask1Type) {
+        const fallback = WRITING_TASK1_STRUCTURE_CONFIG[type] || WRITING_TASK1_STRUCTURE_CONFIG.static;
+        const saved = categorySettings?.writing?.task1?.structures?.[type];
+        return {
+          ...fallback,
+          sections: saved?.sections || fallback.sections,
+          functions: saved?.functions || fallback.functions,
+        };
+      }
+      function getTask1TypeLabel(type = state.writingTask1Type) {
+        return WRITING_CONFIG.task1.types[type]?.label || type;
+      }
       function getWritingCategoryLabel(task, collection, category) {
         return getWritingConfig(task, collection)?.categories?.[category] || category;
       }
@@ -2924,30 +3200,14 @@
         element.textContent = message;
       }
       const WRITING_BRANCHES = {
-        "task1-structures": {
-          task: "task1",
-          collection: "structures",
-          parent: "task1",
-          eyebrow: "TASK 1 · STRUCTURES",
-          title: "小作文 · 结构句型",
-          description: "按开头、概述、细节和结尾整理结构句型。",
-          editorTitle: "编辑短语卡",
-          libraryTitle: "短语库",
-          smartTitle: "智能添加短语卡",
-          buttonTitle: "生成短语卡",
-        },
-        "task1-samples": {
-          task: "task1",
-          collection: "samples",
-          parent: "task1",
-          eyebrow: "TASK 1 · SAMPLES",
-          title: "小作文 · 范文收藏",
-          description: "按线图、柱状图、饼图、表格、流程图和地图整理范文。",
-          editorTitle: "添加范文",
-          libraryTitle: "范文库",
-          smartTitle: "智能添加范文",
-          buttonTitle: "生成范文卡",
-        },
+        "task1-static-structures": { task: "task1", collection: "structures", task1Type: "static", parent: "task1-type", eyebrow: "TASK 1 · STATIC DATA", title: "静态数据图表 · 结构句型", description: "同一时间点的数据比较，按写作阶段和核心功能整理 Band 7 句型。", editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡" },
+        "task1-static-samples": { task: "task1", collection: "samples", task1Type: "static", parent: "task1-type", eyebrow: "TASK 1 · STATIC DATA", title: "静态数据图表 · 范文收藏", description: "保存静态数据图表范文。", editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡" },
+        "task1-dynamic-structures": { task: "task1", collection: "structures", task1Type: "dynamic", parent: "task1-type", eyebrow: "TASK 1 · DYNAMIC DATA", title: "动态数据图表 · 结构句型", description: "多个时间点的变化与比较，按写作阶段和核心功能整理 Band 7 句型。", editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡" },
+        "task1-dynamic-samples": { task: "task1", collection: "samples", task1Type: "dynamic", parent: "task1-type", eyebrow: "TASK 1 · DYNAMIC DATA", title: "动态数据图表 · 范文收藏", description: "保存动态数据图表范文。", editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡" },
+        "task1-process-structures": { task: "task1", collection: "structures", task1Type: "process", parent: "task1-type", eyebrow: "TASK 1 · PROCESS", title: "流程图 · 结构句型", description: "按步骤、转换和被动语态整理 Band 7 句型。", editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡" },
+        "task1-process-samples": { task: "task1", collection: "samples", task1Type: "process", parent: "task1-type", eyebrow: "TASK 1 · PROCESS", title: "流程图 · 范文收藏", description: "保存流程图范文。", editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡" },
+        "task1-map-structures": { task: "task1", collection: "structures", task1Type: "map", parent: "task1-type", eyebrow: "TASK 1 · MAP", title: "地图 · 结构句型", description: "按方位、设施变化和区域改造整理 Band 7 句型。", editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡" },
+        "task1-map-samples": { task: "task1", collection: "samples", task1Type: "map", parent: "task1-type", eyebrow: "TASK 1 · MAP", title: "地图 · 范文收藏", description: "保存地图范文。", editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡" },
         "task2-structures": {
           task: "task2",
           collection: "structures",
@@ -2974,7 +3234,9 @@
         },
       };
       function getWritingBranchId() {
-        return `${state.writingView}-${state.writingCollection}`;
+        return state.writingView === "task1"
+          ? `task1-${state.writingTask1Type}-${state.writingCollection}`
+          : `${state.writingView}-${state.writingCollection}`;
       }
       function getWritingBranchMeta() {
         return WRITING_BRANCHES[getWritingBranchId()];
@@ -2982,14 +3244,17 @@
       function openWritingScreen(screen) {
         if (screen === "branch") screen = getWritingBranchId();
         if (!$("#writing-backdrop").hidden) closeWritingModal();
-        if (screen === "task1" || screen === "task2" || screen === "writing-home") {
+        if (screen === "task1" || screen === "task1-data" || screen === "task1-type" || screen === "task2" || screen === "writing-home") {
           state.writingScreen = screen;
+          if (screen === "task1-type") renderWritingTask1Type();
         } else if (WRITING_BRANCHES[screen]) {
           const branch = WRITING_BRANCHES[screen];
           state.writingView = branch.task;
+          if (branch.task1Type) state.writingTask1Type = branch.task1Type;
           state.writingCollection = branch.collection;
           state.writingScreen = "branch";
           state.writingCategory = "all";
+          state.writingFunction = "all";
           state.writingPanelView = "editor";
         } else {
           return;
@@ -2997,6 +3262,14 @@
         $$("[data-writing-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.writingScreen !== state.writingScreen));
         if (state.writingScreen === "branch") renderWritingBranch();
         window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function renderWritingTask1Type() {
+        const type = WRITING_CONFIG.task1.types[state.writingTask1Type] || WRITING_CONFIG.task1.types.static;
+        $("#writing-task1-type-eyebrow").textContent = `TASK 1 · ${state.writingTask1Type.toUpperCase()}`;
+        $("#writing-task1-type-title").textContent = type.label;
+        $("#writing-task1-type-description").textContent = type.description;
+        $("#writing-task1-structures-entry").dataset.writingBranch = `task1-${state.writingTask1Type}-structures`;
+        $("#writing-task1-samples-entry").dataset.writingBranch = `task1-${state.writingTask1Type}-samples`;
       }
       function renderWritingBranch() {
         const meta = getWritingBranchMeta();
@@ -3016,26 +3289,49 @@
         $$("[data-writing-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.writingPanelView !== state.writingPanelView));
         $$("[data-writing-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.writingPanel === state.writingPanelView)));
         renderWritingCategoryFilter();
+        renderWritingFunctionFilter();
         renderWritingStarFilter();
         renderWritingList();
       }
       function renderWritingCategoryFilter() {
         const select = $("#writing-category-filter");
-        const config = getWritingConfig();
-        const categories = Object.entries(config.categories);
-        if (state.writingCategory !== "all" && !config.categories[state.writingCategory]) state.writingCategory = "all";
+        const meta = getWritingBranchMeta();
+        const isTask1Structure = state.writingView === "task1" && state.writingCollection === "structures";
+        const categories = isTask1Structure ? getTask1TypeConfig(meta?.task1Type || state.writingTask1Type).sections : getWritingConfig().categories;
+        if (state.writingCategory !== "all" && !categories[state.writingCategory]) state.writingCategory = "all";
         select.replaceChildren();
         const all = document.createElement("option");
         all.value = "all";
         all.textContent = "全部分类";
         select.append(all);
-        categories.forEach(([value, label]) => {
+        Object.entries(categories).forEach(([value, label]) => {
           const option = document.createElement("option");
           option.value = value;
           option.textContent = label;
           select.append(option);
         });
         select.value = state.writingCategory;
+        select.setAttribute("aria-label", isTask1Structure ? "写作阶段筛选" : "作文分类");
+      }
+      function renderWritingFunctionFilter() {
+        const select = $("#writing-function-filter");
+        const isTask1Structure = state.writingView === "task1" && state.writingCollection === "structures";
+        select.hidden = !isTask1Structure;
+        if (!isTask1Structure) return;
+        const functions = getTask1TypeConfig(getWritingBranchMeta()?.task1Type || state.writingTask1Type).functions;
+        if (state.writingFunction !== "all" && !functions[state.writingFunction]) state.writingFunction = "all";
+        select.replaceChildren();
+        const all = document.createElement("option");
+        all.value = "all";
+        all.textContent = "全部功能";
+        select.append(all);
+        Object.entries(functions).forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          select.append(option);
+        });
+        select.value = state.writingFunction;
       }
       function renderWritingStarFilter() {
         $("#writing-star-filter").value = state.writingStarFilter;
@@ -3045,10 +3341,15 @@
       }
       function renderWritingList() {
         const list = $("#writing-list");
+        const branch = getWritingBranchMeta();
+        const task1Type = branch?.task1Type || state.writingTask1Type;
+        const isTask1Structure = state.writingView === "task1" && state.writingCollection === "structures";
         const items = getOrderedItems(getWritingItems()).filter((item) => {
-          const matchesCategory = state.writingCategory === "all" || item.category === state.writingCategory;
+          const matchesType = state.writingView !== "task1" || item.task1Type === task1Type;
+          const matchesCategory = state.writingCategory === "all" || (isTask1Structure ? item.section === state.writingCategory : item.category === state.writingCategory);
+          const matchesFunction = !isTask1Structure || state.writingFunction === "all" || item.function === state.writingFunction;
           const matchesStar = state.writingStarFilter !== "starred" || item.star > 0;
-          return matchesCategory && matchesStar;
+          return matchesType && matchesCategory && matchesFunction && matchesStar;
         });
         $("#writing-count").textContent = items.length;
         $("#writing-count-tab").textContent = items.length;
@@ -3087,8 +3388,16 @@
             : item.title || item.content.split(/\r?\n/)[0].slice(0, 80) || "未命名素材";
           const tag = document.createElement("span");
           tag.className = `category-tag${state.writingView === "task2" ? " blue" : ""}`;
-          tag.textContent = getWritingCategoryLabel(state.writingView, state.writingCollection, item.category);
+          tag.textContent = isTask1Structure
+            ? getTask1TypeConfig(task1Type).sections[item.section] || item.section
+            : getWritingCategoryLabel(state.writingView, state.writingCollection, item.category);
           title.append(titleText, tag);
+          if (isTask1Structure) {
+            const functionTag = document.createElement("span");
+            functionTag.className = "category-tag";
+            functionTag.textContent = getTask1TypeConfig(task1Type).functions[item.function] || item.function;
+            title.append(functionTag);
+          }
           if (isTopic) {
             const noteTag = document.createElement("span");
             noteTag.className = "category-tag";
@@ -3174,16 +3483,31 @@
       function populateWritingModalCategories(preferred = "") {
         const task = $("#writing-task").value;
         const collection = $("#writing-collection").value;
-        const config = getWritingConfig(task, collection);
+        const isTask1Structure = task === "task1" && collection === "structures";
+        const categories = isTask1Structure ? getTask1TypeConfig().sections : getWritingConfig(task, collection).categories;
         const select = $("#writing-category");
         select.replaceChildren();
-        Object.entries(config.categories).forEach(([value, label]) => {
+        Object.entries(categories).forEach(([value, label]) => {
           const option = document.createElement("option");
           option.value = value;
           option.textContent = label;
           select.append(option);
         });
-        select.value = config.categories[preferred] ? preferred : Object.keys(config.categories)[0];
+        select.value = categories[preferred] ? preferred : Object.keys(categories)[0];
+        select.setAttribute("aria-label", isTask1Structure ? "写作阶段" : "写作分类");
+        const functionSelect = $("#writing-function");
+        functionSelect.hidden = !isTask1Structure;
+        if (!isTask1Structure) return;
+        const functions = getTask1TypeConfig().functions;
+        const preferredFunction = String(functionSelect.dataset.value || "");
+        functionSelect.replaceChildren();
+        Object.entries(functions).forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          functionSelect.append(option);
+        });
+        functionSelect.value = functions[preferredFunction] ? preferredFunction : Object.keys(functions)[0];
       }
       function updateWritingModalFields(preferredCategory = "") {
         const task = $("#writing-task").value;
@@ -3370,7 +3694,9 @@
         state.writingAnnotationId = null;
         $("#writing-task").value = task;
         $("#writing-collection").value = collection;
-        updateWritingModalFields(category || item?.category || "");
+        if (task === "task1" && item?.task1Type) state.writingTask1Type = item.task1Type;
+        $("#writing-function").dataset.value = item?.function || "";
+        updateWritingModalFields(category || item?.section || item?.category || "");
         $("#writing-title").value = item?.title || "";
         $("#writing-content").value = item?.content || "";
         $("#writing-translation").value = item?.translation || "";
@@ -3422,6 +3748,9 @@
           id: state.writingDetailId || createId(),
           createdAt: existingLocation?.item.createdAt || Date.now(),
           order: existingLocation?.item.order ?? getNextNewItemOrder(state.writing[task][collection]),
+          task1Type: task === "task1" ? state.writingTask1Type : "",
+          section: task === "task1" && collection === "structures" ? $("#writing-category").value : "",
+          function: task === "task1" && collection === "structures" ? $("#writing-function").value : "",
           category: $("#writing-category").value,
           title,
           content,
@@ -3457,17 +3786,19 @@
           };
         }
         if (task === "task1" && collection === "structures") {
-          const categories = getWritingConfig(task, collection).categories;
+          const config = getTask1TypeConfig();
+          const categories = config.sections;
           const structureMarkers = [
-            ["conclusion", ["in conclusion", "to sum up", "overall,"]],
+            ["ending", ["finally", "in the final stage", "in conclusion"]],
             ["overview", ["overall", "in general", "generally", "it is clear that"]],
-            ["detail", ["rose", "fell", "increased", "decreased", "from", "to", "%", "highest", "lowest"]],
+            ["body1", ["rose", "fell", "increased", "decreased", "from", "to", "%", "highest", "lowest", "next"]],
             ["intro", ["the chart", "the graph", "the table", "illustrates", "shows"]],
           ];
           const detected = structureMarkers.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0];
           return {
             category: categories[detected] ? detected : getFirstCategoryId(categories),
-            reason: "已按当前小作文结构句收藏识别句型位置。",
+            function: getFirstCategoryId(config.functions),
+            reason: "已按当前 Task 1 类型识别写作阶段。",
           };
         }
         if (task === "task2" && collection === "topics") {
@@ -3529,6 +3860,9 @@
           });
           $("#writing-content").value = input;
           $("#writing-translation").value = translation;
+          if (task === "task1" && collection === "structures" && recommendation.function) {
+            $("#writing-function").value = recommendation.function;
+          }
           if (collection === "topics") $("#writing-note-type-inline").value = recommendation.noteType || "other";
           renderWritingOriginal();
           setWritingStatus(`${recommendation.reason}${translation ? "中文翻译已获取。" : "中文翻译暂未获取，可手动填写。"}`);
@@ -4186,6 +4520,10 @@
       $$("[data-word-view]").forEach((element) => element.addEventListener("click", () => switchWordView(element.dataset.wordView)));
       $$("[data-writing-screen-target]").forEach((element) => element.addEventListener("click", () => openWritingScreen(element.dataset.writingScreenTarget)));
       $$("[data-writing-branch]").forEach((element) => element.addEventListener("click", () => openWritingScreen(element.dataset.writingBranch)));
+      $$("[data-writing-task1-type]").forEach((element) => element.addEventListener("click", () => {
+        state.writingTask1Type = element.dataset.writingTask1Type;
+        openWritingScreen("task1-type");
+      }));
       $$("[data-speaking-screen-target]").forEach((element) => element.addEventListener("click", () => openSpeakingScreen(element.dataset.speakingScreenTarget)));
       $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
       $$("[data-speaking-panel]").forEach((element) => element.addEventListener("click", () => {
@@ -4240,6 +4578,10 @@
       $("#smart-writing-button").addEventListener("click", smartAddWriting);
       $("#writing-category-filter").addEventListener("change", (event) => {
         state.writingCategory = event.target.value;
+        renderWritingList();
+      });
+      $("#writing-function-filter").addEventListener("change", (event) => {
+        state.writingFunction = event.target.value;
         renderWritingList();
       });
       $("#writing-star-filter").addEventListener("change", (event) => {
