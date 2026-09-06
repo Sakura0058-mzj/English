@@ -147,6 +147,22 @@
       .install-button[hidden] { display: none !important; }
 
       .page { padding: 44px 0 72px; }
+      .back-button {
+        display: inline-flex;
+        min-height: 36px;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 22px;
+        padding: 0 12px;
+        color: #687871;
+        background: var(--canvas);
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .back-button:hover { color: var(--sage-dark); background: var(--sage-light); border-color: #bfd4c5; }
+      .back-button[hidden] { display: none; }
       .view-panel { animation: panel-in 180ms ease-out; }
       @keyframes panel-in {
         from { opacity: 0; transform: translateY(5px); }
@@ -983,6 +999,7 @@
     </header>
 
     <main class="page">
+      <button id="back-button" class="back-button" type="button" hidden aria-label="返回上一级">← 返回上一级</button>
       <section class="view-panel" data-page="home">
         <div class="hero">
           <p class="eyebrow">IELTS STUDY SPACE</p>
@@ -3194,6 +3211,41 @@
       function isWritingTopicCollection(task = state.writingView, collection = state.writingCollection) {
         return task === "task2" && collection === "topics";
       }
+      function renderBackButton() {
+        const button = $("#back-button");
+        if (!button) return;
+        const route = state.route;
+        const visible = route === "words"
+          || route === "speaking" && state.speakingScreen !== "speaking-home"
+          || route === "writing" && state.writingScreen !== "writing-home";
+        button.hidden = !visible;
+        button.textContent = visible ? "← 返回上一级" : "";
+        button.setAttribute("aria-label", "返回上一级");
+      }
+      function goBackOneLevel() {
+        if (state.route === "words") {
+          navigate("home");
+          return;
+        }
+        if (state.route === "speaking") {
+          const screen = state.speakingScreen === "speaking-structure-branch"
+            ? "speaking-structure-home"
+            : state.speakingScreen === "speaking-structure-home" || state.speakingScreen === "speaking-synonyms"
+              ? "speaking-home"
+              : "speaking-home";
+          openSpeakingScreen(screen);
+          return;
+        }
+        if (state.route === "writing") {
+          let screen = "writing-home";
+          if (state.writingScreen === "task1") screen = "writing-home";
+          if (state.writingScreen === "task2") screen = "writing-home";
+          if (state.writingScreen === "task1-data") screen = "task1";
+          if (state.writingScreen === "task1-type") screen = "task1-data";
+          if (state.writingScreen === "branch") screen = state.writingView === "task1" ? "task1-type" : "task2";
+          openWritingScreen(screen);
+        }
+      }
       function setWritingStatus(message, type = "") {
         const element = $("#writing-status");
         element.className = `writing-status${type ? ` ${type}` : ""}`;
@@ -3261,6 +3313,7 @@
         }
         $$("[data-writing-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.writingScreen !== state.writingScreen));
         if (state.writingScreen === "branch") renderWritingBranch();
+        renderBackButton();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       function renderWritingTask1Type() {
@@ -3911,6 +3964,7 @@
         $$("[data-speaking-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingScreen !== state.speakingScreen));
         if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
         if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+        renderBackButton();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       function openSpeakingStructurePart(part) {
@@ -4541,6 +4595,7 @@
       $("#query-form").addEventListener("submit", generateCard);
       $("#detail-form").addEventListener("submit", saveDetail);
       $("#detail-pronounce").addEventListener("click", speakDetailWord);
+      $("#back-button").addEventListener("click", goBackOneLevel);
       $("#settings-button").addEventListener("click", openSettings);
       $("#cloud-button").addEventListener("click", openCloudModal);
       $("#install-button").addEventListener("click", openInstallModal);
@@ -4680,6 +4735,7 @@
           openWritingScreen("writing-home");
         }
         state.route = route;
+        renderBackButton();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       function switchWordView(view) {
