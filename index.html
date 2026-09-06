@@ -149,17 +149,19 @@
       .page { padding: 44px 0 72px; }
       .back-button {
         display: inline-flex;
-        min-height: 36px;
+        width: 36px;
+        height: 36px;
         align-items: center;
-        gap: 6px;
+        justify-content: center;
         margin-bottom: 22px;
-        padding: 0 12px;
+        padding: 0;
         color: #687871;
         background: var(--canvas);
         border: 1px solid var(--line);
         border-radius: 9px;
-        font-size: 12px;
-        font-weight: 800;
+        font-size: 18px;
+        font-weight: 900;
+        line-height: 1;
       }
       .back-button:hover { color: var(--sage-dark); background: var(--sage-light); border-color: #bfd4c5; }
       .back-button[hidden] { display: none; }
@@ -3216,11 +3218,12 @@
         if (!button) return;
         const route = state.route;
         const visible = route === "words"
-          || route === "speaking" && state.speakingScreen !== "speaking-home"
-          || route === "writing" && state.writingScreen !== "writing-home";
+          || route === "speaking"
+          || route === "writing";
         button.hidden = !visible;
-        button.textContent = visible ? "← 返回上一级" : "";
+        button.textContent = visible ? "⬅" : "";
         button.setAttribute("aria-label", "返回上一级");
+        button.title = "返回上一级";
       }
       function goBackOneLevel() {
         if (state.route === "words") {
@@ -3228,6 +3231,10 @@
           return;
         }
         if (state.route === "speaking") {
+          if (state.speakingScreen === "speaking-home") {
+            navigate("home");
+            return;
+          }
           const screen = state.speakingScreen === "speaking-structure-branch"
             ? "speaking-structure-home"
             : state.speakingScreen === "speaking-structure-home" || state.speakingScreen === "speaking-synonyms"
@@ -3237,6 +3244,10 @@
           return;
         }
         if (state.route === "writing") {
+          if (state.writingScreen === "writing-home") {
+            navigate("home");
+            return;
+          }
           let screen = "writing-home";
           if (state.writingScreen === "task1") screen = "writing-home";
           if (state.writingScreen === "task2") screen = "writing-home";
