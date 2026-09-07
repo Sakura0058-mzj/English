@@ -3382,7 +3382,7 @@
           if (state.writingScreen === "task1") screen = "writing-home";
           if (state.writingScreen === "task2") screen = "writing-home";
           if (state.writingScreen === "task1-data") screen = "task1";
-          if (state.writingScreen === "task1-type") screen = "task1-data";
+          if (state.writingScreen === "task1-type") screen = ["process", "map"].includes(state.writingTask1Type) ? "task1" : "task1-data";
           if (state.writingScreen === "branch") screen = state.writingView === "task1" ? "task1-type" : "task2";
           openWritingScreen(screen);
         }
