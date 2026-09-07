@@ -621,6 +621,19 @@
         font-weight: 800;
         line-height: 1.55;
       }
+      .library-highlight-content {
+        min-width: 0;
+      }
+      .writing-row-title .library-highlight-content,
+      .speaking-row-title .library-highlight-content {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+      .library-highlight {
+        cursor: inherit;
+      }
       .writing-row-preview {
         max-width: 760px;
         margin-top: 5px;
@@ -1525,6 +1538,7 @@
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
+      const CATEGORY_UPDATED_AT_KEY = "ielts-study-helper.category-config-updated-at.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
       const CLOUD_EMAIL_KEY = "ielts-study-helper.cloud-email.v1";
       const CLOUD_TABLE = "user_app_data";
@@ -1780,6 +1794,12 @@
       const WRITING_TASK1_STRUCTURE_SEED = Object.entries(WRITING_TASK1_STRUCTURE_SEED_ROWS).flatMap(([task1Type, rows]) => rows.map(([section, functionName, content, translation, note]) => ({ task1Type, section, function: functionName, content, translation, note })));
       const DEFAULT_CATEGORY_SETTINGS = buildDefaultCategorySettings();
       let categorySettings = loadCategorySettings();
+      // Old saved settings did not include a timestamp. Treat them as the latest local choice once.
+      let categorySettingsUpdatedAt = Number(localStorage.getItem(CATEGORY_UPDATED_AT_KEY)) || 0;
+      if (!categorySettingsUpdatedAt && localStorage.getItem(CATEGORY_STORAGE_KEY)) {
+        categorySettingsUpdatedAt = Date.now();
+        localStorage.setItem(CATEGORY_UPDATED_AT_KEY, String(categorySettingsUpdatedAt));
+      }
       applyCategorySettings(categorySettings);
       const SPEAKING_PART1_PHRASE_SEED = [
         ["intro", "Well, to be honest, I would say that...", "老实说，我会说……", "回答多数 Part 1 问题的自然开场。"],
@@ -1987,6 +2007,7 @@
       let cloudSaveTimer = null;
       let cloudHydrating = false;
       let task1MigratedDuringHydration = false;
+      let categorySettingsChangedDuringHydration = false;
       let deferredInstallPrompt = null;
 
       /* ---------- Supabase 云端同步 ---------- */
@@ -2008,6 +2029,7 @@
           writingTask1SeedVersion: localStorage.getItem(WRITING_TASK1_SEED_KEY) || "",
           speaking: state.speaking,
           categorySettings,
+          categorySettingsUpdatedAt,
           updatedAt: new Date().toISOString(),
         };
       }
@@ -2210,10 +2232,14 @@
         cacheCloudPayload();
         renderCloudState("云端已保存。");
       }
-      function scheduleCloudSave() {
+      function scheduleCloudSave({ immediate = false } = {}) {
         cacheCloudPayload();
         if (!supabaseClient || !state.cloudUser || cloudHydrating) return;
         window.clearTimeout(cloudSaveTimer);
+        if (immediate) {
+          saveCloudNow().catch((error) => setCloudStatus(`云端保存失败：${error.message}`, "error"));
+          return;
+        }
         cloudSaveTimer = window.setTimeout(() => {
           saveCloudNow().catch((error) => setCloudStatus(`云端保存失败：${error.message}`, "error"));
         }, 700);
@@ -2226,9 +2252,17 @@
           persistSavedWords();
         }
         if (payload.categorySettings) {
-          categorySettings = loadCategorySettingsFromObject(payload.categorySettings);
-          applyCategorySettings(categorySettings);
-          persistCategorySettings();
+          const cloudUpdatedAt = Number(payload.categorySettingsUpdatedAt) || 0;
+          const useCloudSettings = !categorySettingsUpdatedAt || cloudUpdatedAt > categorySettingsUpdatedAt;
+          if (useCloudSettings) {
+            categorySettings = loadCategorySettingsFromObject(payload.categorySettings);
+            categorySettingsUpdatedAt = cloudUpdatedAt || Date.now();
+            localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(categorySettings));
+            localStorage.setItem(CATEGORY_UPDATED_AT_KEY, String(categorySettingsUpdatedAt));
+            applyCategorySettings(categorySettings);
+          } else if (JSON.stringify(categorySettings) !== JSON.stringify(payload.categorySettings)) {
+            categorySettingsChangedDuringHydration = true;
+          }
         }
         if (payload.writing) {
           if (payload.writingTask1SeedVersion !== WRITING_TASK1_SEED_VERSION) {
@@ -2263,8 +2297,9 @@
         }
         if (data?.payload) {
           applyCloudPayload(data.payload);
-          if (task1MigratedDuringHydration) {
+          if (task1MigratedDuringHydration || categorySettingsChangedDuringHydration) {
             task1MigratedDuringHydration = false;
+            categorySettingsChangedDuringHydration = false;
             await saveCloudNow();
           }
           renderCloudState("已从云端载入数据。");
@@ -2474,8 +2509,11 @@
         });
       }
       function persistCategorySettings() {
+        categorySettingsUpdatedAt = Date.now();
         localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(categorySettings));
-        scheduleCloudSave();
+        localStorage.setItem(CATEGORY_UPDATED_AT_KEY, String(categorySettingsUpdatedAt));
+        // Category drag order is a completed user action, so do not leave it in the debounce window.
+        scheduleCloudSave({ immediate: true });
       }
       function getSettingsLibraries(module) {
         if (module === "speaking") {
@@ -3495,6 +3533,30 @@
       function getWritingCollectionTitle() {
         return `${WRITING_CONFIG[state.writingView].label}${getWritingConfig().label}`;
       }
+      // List rows use the same persisted offsets as the detail card, without making them editable.
+      function appendListHighlights(container, content, highlights, fallback = "") {
+        const text = String(content || fallback || "");
+        const validHighlights = (Array.isArray(highlights) ? highlights : [])
+          .map((highlight) => ({
+            ...highlight,
+            start: Math.max(0, Math.min(text.length, Number(highlight.start) || 0)),
+            end: Math.max(0, Math.min(text.length, Number(highlight.end) || 0)),
+          }))
+          .filter((highlight) => highlight.end > highlight.start)
+          .sort((a, b) => a.start - b.start || a.end - b.end);
+        let cursor = 0;
+        validHighlights.forEach((highlight) => {
+          if (highlight.start < cursor) return;
+          if (highlight.start > cursor) container.append(document.createTextNode(text.slice(cursor, highlight.start)));
+          const mark = document.createElement("span");
+          mark.className = "writing-highlight library-highlight";
+          mark.textContent = text.slice(highlight.start, highlight.end);
+          mark.title = highlight.note ? `高亮注释：${highlight.note}` : "已高亮";
+          container.append(mark);
+          cursor = highlight.end;
+        });
+        if (cursor < text.length) container.append(document.createTextNode(text.slice(cursor)));
+      }
       function renderWritingList() {
         const list = $("#writing-list");
         const branch = getWritingBranchMeta();
@@ -3538,10 +3600,14 @@
           const title = document.createElement("div");
           title.className = "writing-row-title";
           const titleText = document.createElement("span");
+          titleText.className = "library-highlight-content";
           const isTopic = isWritingTopicCollection();
-          titleText.textContent = isTopic
-            ? item.content.split(/\r?\n/)[0].slice(0, 160) || "未命名话题句"
-            : item.title || item.content.split(/\r?\n/)[0].slice(0, 80) || "未命名素材";
+          const titleUsesContent = isTopic || !item.title;
+          const titleValue = isTopic
+            ? item.content || "未命名话题句"
+            : item.title || item.content || "未命名素材";
+          if (titleUsesContent) appendListHighlights(titleText, item.content, item.highlights, titleValue);
+          else titleText.textContent = titleValue;
           const tag = document.createElement("span");
           tag.className = `category-tag${state.writingView === "task2" ? " blue" : ""}`;
           tag.textContent = isTask1Structure
@@ -3562,7 +3628,8 @@
           }
           const preview = document.createElement("div");
           preview.className = "writing-row-preview";
-          preview.textContent = item.content || item.translation || item.note || "暂无内容";
+          if (!titleUsesContent && item.content) appendListHighlights(preview, item.content, item.highlights);
+          else preview.textContent = item.translation || item.note || "暂无内容";
           copy.append(title, preview);
 
           const actions = document.createElement("div");
@@ -4142,7 +4209,8 @@
           const title = document.createElement("div");
           title.className = "speaking-row-title";
           const titleText = document.createElement("span");
-          titleText.textContent = item.content.split(/\r?\n/)[0].slice(0, 160) || "未命名口语句";
+          titleText.className = "library-highlight-content";
+          appendListHighlights(titleText, item.content, item.highlights, "未命名口语句");
           const tag = document.createElement("span");
           tag.className = "category-tag";
           tag.textContent = getSpeakingConfig().categories[item.category] || item.category;
