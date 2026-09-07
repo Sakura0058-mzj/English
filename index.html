@@ -486,10 +486,16 @@
         background: var(--sage-light);
         border: 1px solid #c9ddcf;
         border-radius: 50%;
-        font-size: 16px;
         line-height: 1;
       }
       .pronounce-button:hover { background: #dbeadf; }
+      .pronounce-icon { display: block; width: 18px; height: 18px; overflow: visible; }
+      .speaker-shape { fill: currentColor; }
+      .sound-waves { display: none; }
+      .pronounce-button[data-speaking="true"] .sound-waves { display: block; }
+      .pronounce-button[data-speaking="true"] .sound-waves path { animation: sound-wave-pulse 700ms ease-in-out infinite; }
+      .pronounce-button[data-speaking="true"] .sound-waves path:nth-child(2) { animation-delay: 120ms; }
+      @keyframes sound-wave-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
       .close-button { width: 34px; height: 34px; color: #829088; background: transparent; border-radius: 8px; font-size: 24px; }
       .close-button:hover { background: var(--canvas); }
       .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 25px; }
@@ -1277,7 +1283,7 @@
 
     <div id="detail-backdrop" class="detail-backdrop" hidden>
       <section class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
-        <div class="detail-top"><div><p class="section-kicker">WORD CARD</p><div class="detail-title-row"><h2 id="detail-title"></h2><button id="detail-pronounce" class="pronounce-button" type="button" title="朗读单词" aria-label="朗读单词">🔊</button></div><p id="detail-phonetic" class="detail-phonetic"></p></div><button class="close-button" data-action="close-detail" aria-label="关闭详情">×</button></div>
+        <div class="detail-top"><div><p class="section-kicker">WORD CARD</p><div class="detail-title-row"><h2 id="detail-title"></h2><button id="detail-pronounce" class="pronounce-button" type="button" title="朗读单词" aria-label="朗读单词" data-speaking="false"><svg class="pronounce-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="speaker-shape" d="M4 9v6h4l5 4V5L8 9H4z"></path><g class="sound-waves" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"><path d="M16 8.5c1 1 1.5 2.2 1.5 3.5s-.5 2.5-1.5 3.5"></path><path d="M18.5 6c1.7 1.7 2.5 3.7 2.5 6s-.8 4.3-2.5 6"></path></g></svg></button></div><p id="detail-phonetic" class="detail-phonetic"></p></div><button class="close-button" data-action="close-detail" aria-label="关闭详情">×</button></div>
         <form id="detail-form">
           <div class="detail-grid">
             <label class="detail-item"><span class="detail-label">中文释义</span><textarea id="detail-meaning" class="card-control" placeholder="可编辑"></textarea></label>
@@ -3031,20 +3037,44 @@
         $("#detail-save").textContent = savedId ? "保存修改" : "保存到单词库";
         $("#detail-backdrop").hidden = false;
       }
+      function setPronounceState(isSpeaking) {
+        const button = $("#detail-pronounce");
+        if (!button) return;
+        button.dataset.speaking = isSpeaking ? "true" : "false";
+        button.title = isSpeaking ? "停止朗读" : "朗读单词";
+        button.setAttribute("aria-label", button.title);
+      }
+      function getSpeechWord(value) {
+        return String(value || "").trim().match(/^[A-Za-z]+(?:['-][A-Za-z]+)*$/)?.[0] || "";
+      }
       function speakDetailWord() {
-        const word = $("#detail-title").textContent.trim();
-        if (!word) return;
         if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
           window.alert("当前浏览器不支持单词朗读功能。");
           return;
         }
-        window.speechSynthesis.cancel();
+        const synthesis = window.speechSynthesis;
+        const word = getSpeechWord($("#detail-title").textContent);
+        if (!word) return;
+        if (synthesis.speaking || synthesis.pending) {
+          synthesis.cancel();
+          setPronounceState(false);
+          return;
+        }
+        synthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = "en-GB";
+        utterance.lang = "en-US";
         utterance.rate = 0.86;
-        const voices = window.speechSynthesis.getVoices();
-        utterance.voice = voices.find((voice) => /^en-GB/i.test(voice.lang)) || voices.find((voice) => /^en/i.test(voice.lang)) || null;
-        window.speechSynthesis.speak(utterance);
+        utterance.pitch = 1;
+        const voices = synthesis.getVoices();
+        utterance.voice = voices.find((voice) => /^en-US$/i.test(voice.lang))
+          || voices.find((voice) => /^en-GB$/i.test(voice.lang))
+          || voices.find((voice) => /^en/i.test(voice.lang))
+          || null;
+        utterance.onstart = () => setPronounceState(true);
+        utterance.onend = () => setPronounceState(false);
+        utterance.onerror = () => setPronounceState(false);
+        setPronounceState(true);
+        synthesis.speak(utterance);
       }
 
       async function generateCard(event) {
