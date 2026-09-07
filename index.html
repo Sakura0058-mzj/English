@@ -919,7 +919,42 @@
       }
       .settings-area-row label { color: var(--muted); font-size: 12px; font-weight: 800; }
       .settings-category-list { display: grid; gap: 9px; margin-top: 14px; }
-      .settings-category-row { display: flex; align-items: center; gap: 8px; }
+      .settings-category-list.reordering { user-select: none; }
+      .settings-category-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        touch-action: pan-y;
+      }
+      .settings-category-row.reorder-ready {
+        position: fixed;
+        z-index: 90;
+        cursor: grabbing;
+        user-select: none;
+        touch-action: none;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: 0 16px 34px rgba(50, 75, 62, .22);
+        transform: scale(1.03);
+        pointer-events: none;
+      }
+      .settings-category-handle {
+        flex: 0 0 22px;
+        width: 22px;
+        color: #9aaba1;
+        cursor: grab;
+        font-size: 15px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        line-height: 1;
+        text-align: center;
+        user-select: none;
+        touch-action: none;
+      }
+      .settings-category-row:not(.reorder-ready):hover .settings-category-handle { color: var(--sage-dark); }
+      .settings-category-list.reordering .settings-category-row:not(.reorder-ready) { transition: transform 180ms ease, opacity 180ms ease; }
+      .settings-category-list .reorder-placeholder { min-height: 40px; }
       .settings-category-input { min-width: 0; flex: 1; }
       .settings-add-row { display: flex; gap: 8px; margin-top: 14px; }
       .settings-add-row input { min-width: 0; flex: 1; }
@@ -2506,7 +2541,9 @@
         const merged = getOrderedItems(allItems).map((item) => visibleSet.has(item.id) ? movedVisible.shift() || item : item);
         return merged.map((item, index) => ({ ...item, order: index + 1 }));
       }
-      function attachLongPressReorder(row, list, onCommit) {
+      function attachLongPressReorder(row, list, onCommit, options = {}) {
+        const rowSelector = options.rowSelector || ".library-row";
+        const reorderingClass = options.reorderingClass || "reordering";
         let timer = null;
         let active = false;
         let pointerId = null;
@@ -2527,7 +2564,7 @@
         };
         const updatePlaceholder = (clientY) => {
           if (!placeholder) return;
-          const rows = [...list.querySelectorAll(".library-row[data-reorder-id]:not(.reorder-ready)")];
+          const rows = [...list.querySelectorAll(rowSelector + "[data-reorder-id]:not(.reorder-ready)")];
           const target = rows.find((item) => {
             const rect = item.getBoundingClientRect();
             return clientY < rect.top + rect.height / 2;
@@ -2545,7 +2582,7 @@
           placeholder.style.height = `${originalRect.height}px`;
           row.parentNode.insertBefore(placeholder, row.nextSibling);
           row.classList.add("reorder-ready");
-          list.classList.add("reordering");
+          list.classList.add(reorderingClass);
           row.style.width = `${originalRect.width}px`;
           row.style.height = `${originalRect.height}px`;
           row.style.left = `${originalRect.left}px`;
@@ -2559,14 +2596,14 @@
             if (placeholder?.parentNode) placeholder.parentNode.insertBefore(row, placeholder);
             placeholder?.remove();
             row.classList.remove("reorder-ready");
-            list.classList.remove("reordering");
+            list.classList.remove(reorderingClass);
             row.style.width = "";
             row.style.height = "";
             row.style.left = "";
             row.style.top = "";
             row.dataset.reorderSuppress = "1";
             if (commit) {
-              const orderedIds = [...list.querySelectorAll(".library-row[data-reorder-id]")].map((item) => item.dataset.reorderId);
+              const orderedIds = [...list.querySelectorAll(rowSelector + "[data-reorder-id]")].map((item) => item.dataset.reorderId);
               onCommit(orderedIds);
             }
             window.setTimeout(() => delete row.dataset.reorderSuppress, 350);
@@ -2607,6 +2644,17 @@
         });
         row.addEventListener("pointercancel", () => finish(false));
         row.addEventListener("lostpointercapture", () => finish(false));
+      }
+      function reorderCategoryMap(categories, orderedIds) {
+        const reordered = {};
+        orderedIds.forEach((id) => {
+          if (Object.prototype.hasOwnProperty.call(categories, id)) reordered[id] = categories[id];
+        });
+        Object.keys(categories).forEach((id) => {
+          if (!Object.prototype.hasOwnProperty.call(reordered, id)) reordered[id] = categories[id];
+        });
+        Object.keys(categories).forEach((id) => delete categories[id]);
+        Object.assign(categories, reordered);
       }
       function openSettings() {
         state.settingsModule = state.route === "writing" ? "writing" : "speaking";
@@ -2650,6 +2698,12 @@
         Object.entries(categories).forEach(([id, label]) => {
           const row = document.createElement("div");
           row.className = "settings-category-row";
+          row.dataset.reorderId = id;
+          const handle = document.createElement("span");
+          handle.className = "settings-category-handle";
+          handle.textContent = "::";
+          handle.title = "长按 0.5 秒后拖动排序";
+          handle.setAttribute("aria-hidden", "true");
           const input = document.createElement("input");
           input.className = "writing-form-control settings-category-input";
           input.type = "text";
@@ -2676,8 +2730,12 @@
             delete categories[id];
             renderSettings();
           });
-          row.append(input, remove);
+          row.append(handle, input, remove);
           list.append(row);
+          attachLongPressReorder(row, list, (orderedIds) => {
+            reorderCategoryMap(categories, orderedIds);
+            renderSettings();
+          }, { rowSelector: ".settings-category-row" });
         });
         $("#settings-new-category").value = "";
       }
