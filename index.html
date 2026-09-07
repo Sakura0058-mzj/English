@@ -2734,6 +2734,7 @@
           list.append(row);
           attachLongPressReorder(row, list, (orderedIds) => {
             reorderCategoryMap(categories, orderedIds);
+            persistSettingsDraft();
             renderSettings();
           }, { rowSelector: ".settings-category-row" });
         });
@@ -2787,7 +2788,7 @@
         if (writingChanged) persistWritingData();
         if (speakingChanged) persistSpeakingData();
       }
-      function saveSettings() {
+      function persistSettingsDraft() {
         if (!state.settingsDraft) return;
         const next = cloneCategorySettings(state.settingsDraft);
         for (const part of Object.keys(next.speaking)) {
@@ -2818,10 +2819,13 @@
         categorySettings = next;
         applyCategorySettings(categorySettings);
         persistCategorySettings();
-        closeSettings();
         if (state.writingScreen === "branch") renderWritingBranch();
         if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
         if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+      }
+      function saveSettings() {
+        persistSettingsDraft();
+        closeSettings();
       }
 
       function loadSavedWords() {
@@ -4708,11 +4712,13 @@
       $("#settings-cancel").addEventListener("click", closeSettings);
       $("#settings-save").addEventListener("click", saveSettings);
       $$("[data-settings-module]").forEach((element) => element.addEventListener("click", () => {
+        persistSettingsDraft();
         state.settingsModule = element.dataset.settingsModule;
         state.settingsLibraryId = getSettingsLibraries(state.settingsModule)[0]?.id || "";
         renderSettings();
       }));
       $("#settings-library-select").addEventListener("change", (event) => {
+        persistSettingsDraft();
         state.settingsLibraryId = event.target.value;
         renderSettings();
       });
