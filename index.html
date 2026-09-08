@@ -1273,15 +1273,38 @@
 
         <section class="writing-screen" data-writing-screen="task2" hidden>
           <div class="module-heading">
-            <div><p class="eyebrow">TASK 2</p><h1>大作文</h1><p>选择结构句型或话题素材空间。</p></div>
+            <div><p class="eyebrow">TASK 2</p><h1>大作文</h1><p>选择话题或通用结构，进入对应的写作素材空间。</p></div>
             <div class="writing-task-switch" aria-label="作文类型切换">
               <button class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button>
               <button class="writing-task-switch-button" type="button" aria-current="page">大作文</button>
             </div>
           </div>
           <div class="writing-entry-grid">
-            <button class="feature-card" data-writing-branch="task2-structures"><span class="feature-icon sage">句</span><h2>结构句型</h2><p>按开头段、论点提出、论证展开等位置整理句型。</p><span class="feature-link">进入结构句型 →</span></button>
-            <button class="feature-card" data-writing-branch="task2-topics"><span class="feature-icon blue">题</span><h2>话题收藏</h2><p>按教育、科技、环境、社会等话题整理观点。</p><span class="feature-link" style="color:var(--blue)">进入话题收藏 →</span></button>
+            <button class="feature-card" data-writing-branch="task2-topics"><span class="feature-icon blue">题</span><h2>话题</h2><p>预留大作文话题素材收藏空间。</p><span class="feature-link" style="color:var(--blue)">进入话题 →</span></button>
+            <button class="feature-card" data-writing-screen-target="task2-general"><span class="feature-icon sage">句</span><h2>通用结构</h2><p>按题型整理结构句型与范文收藏。</p><span class="feature-link">进入通用结构 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="task2-general" hidden>
+          <div class="module-heading">
+            <div><p class="eyebrow">TASK 2 · GENERAL STRUCTURES</p><h1>通用结构</h1><p>选择大作文题型，再进入结构句型或范文收藏。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换"><button class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button><button class="writing-task-switch-button" type="button" data-writing-screen-target="task2" aria-current="page">大作文</button></div>
+          </div>
+          <div class="writing-entry-grid">
+            <button class="feature-card" data-writing-task2-type="opinion"><span class="feature-icon sage">观</span><h2>观点论证型</h2><p>适用于观点、利弊和是否同意类题目。</p><span class="feature-link">进入观点论证型 →</span></button>
+            <button class="feature-card" data-writing-task2-type="discussion"><span class="feature-icon blue">辩</span><h2>双边讨论型</h2><p>讨论双方观点并给出个人意见。</p><span class="feature-link" style="color:var(--blue)">进入双边讨论型 →</span></button>
+            <button class="feature-card" data-writing-task2-type="problem"><span class="feature-icon coral">解</span><h2>问题分析型</h2><p>分析问题、原因、解决方案或第二问。</p><span class="feature-link" style="color:var(--coral)">进入问题分析型 →</span></button>
+          </div>
+        </section>
+
+        <section class="writing-screen" data-writing-screen="task2-type" hidden>
+          <div class="module-heading">
+            <div><p id="writing-task2-type-eyebrow" class="eyebrow">TASK 2 · GENERAL STRUCTURES</p><h1 id="writing-task2-type-title">观点论证型</h1><p id="writing-task2-type-description">选择结构句型或范文收藏。</p></div>
+            <div class="writing-task-switch" aria-label="作文类型切换"><button class="writing-task-switch-button" type="button" data-writing-screen-target="task1">小作文</button><button class="writing-task-switch-button" type="button" data-writing-screen-target="task2" aria-current="page">大作文</button></div>
+          </div>
+          <div class="writing-entry-grid">
+            <button id="writing-task2-structures-entry" class="feature-card" data-writing-branch="task2-opinion-structures"><span class="feature-icon sage">句</span><h2>结构句型</h2><p>按结构和功能筛选 Band 7 通用句型。</p><span class="feature-link">进入结构句型 →</span></button>
+            <button id="writing-task2-samples-entry" class="feature-card" data-writing-branch="task2-opinion-samples"><span class="feature-icon blue">范</span><h2>范文收藏</h2><p>保存与你当前题型对应的优秀范文。</p><span class="feature-link" style="color:var(--blue)">进入范文收藏 →</span></button>
           </div>
         </section>
 
@@ -1535,6 +1558,8 @@
       const WRITING_STORAGE_KEY = "ielts-study-helper.writing.v1";
       const WRITING_TASK1_SEED_KEY = "ielts-study-helper.writing-task1-seed.v1";
       const WRITING_TASK1_SEED_VERSION = "band7-v1";
+      const WRITING_TASK2_SEED_KEY = "ielts-study-helper.writing-task2-seed.v1";
+      const WRITING_TASK2_SEED_VERSION = "band7-v2";
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
@@ -1584,28 +1609,16 @@
           label: "大作文",
           collections: {
             topics: {
-              label: "话题收藏",
-              categories: {
-                education: "教育",
-                technology: "科技",
-                environment: "环境",
-                society: "社会",
-                government: "政府",
-                media: "媒体",
-                health: "健康",
-                economy: "经济",
-                other: "其他",
-              },
+              label: "话题",
+              categories: {},
             },
             structures: {
               label: "结构句型",
-              categories: {
-                intro: "开头段",
-                thesis: "论点提出",
-                development: "论证展开",
-                concession: "让步转折",
-                conclusion: "结尾段",
-              },
+              categories: {},
+            },
+            samples: {
+              label: "范文收藏",
+              categories: { general: "范文" },
             },
           },
         },
@@ -1643,6 +1656,226 @@
           },
         },
       };
+      const WRITING_TASK2_STRUCTURE_CONFIG = {
+        opinion: {
+          label: "观点论证型",
+          description: "适用于观点、利弊和是否同意类题目。",
+          sections: { intro: "Introduction / 引言", body1: "Body 1 / 主体段1", body2: "Body 2 / 主体段2", conclusion: "Conclusion / 结尾" },
+          functions: {
+            background: "背景介绍", rewrite: "题目改写", thesis: "明确立场", reason: "核心理由", explanation: "理由解释",
+            development: "进一步展开", example: "举例 / 具体说明", result: "结果 / 影响", judgment: "利弊判断", summary: "总结核心理由", restate: "重申立场",
+          },
+        },
+        discussion: {
+          label: "双边讨论型",
+          description: "适用于讨论双方观点并给出个人意见的题目。",
+          sections: { intro: "Introduction / 引言", viewA: "View A / 观点A", viewB: "View B / 观点B", conclusion: "Conclusion / 结尾" },
+          functions: {
+            background: "背景介绍", views: "引出两种观点", thesis: "明确个人立场", introduceA: "引入观点 A", introduceB: "引入观点 B", reason: "核心理由",
+            explanation: "理由解释", development: "进一步展开", example: "举例 / 具体说明", result: "结果 / 意义", balance: "权衡比较", summary: "总结双方观点", restate: "重申个人立场",
+          },
+        },
+        problem: {
+          label: "问题分析型",
+          description: "适用于问题解决、原因分析和双问题题目。",
+          sections: { intro: "Introduction / 引言", problem: "Problem / 问题", cause: "Cause / 原因", solution: "Solution / 解决方案", secondQuestion: "Second Question / 第二问", conclusion: "Conclusion / 结尾" },
+          functions: {
+            background: "背景介绍", rewrite: "题目改写", direction: "引出问题 / 回答方向", introduce: "问题 / 原因引入", core: "核心问题 / 原因", explanation: "原因解释",
+            development: "进一步展开", example: "具体表现 / 举例", impact: "负面影响 / 后果", solutionIntro: "解决方案引入", measure: "具体措施", implementation: "实施方式",
+            solutionExplanation: "解决方案解释", effect: "预期效果", evaluation: "正面 / 负面评价", answer: "第二问回答", summary: "总结问题 / 原因", solutionSummary: "总结解决方案", judgment: "最终判断",
+          },
+        },
+      };
+      const WRITING_TASK2_STRUCTURE_SEED_ROWS = {
+        opinion: [
+          ["intro", "background", "In many societies, [X] has become an increasingly important issue.", "在许多社会中，[X]已成为一个日益重要的问题。", "可选的背景引入，避免机械套用。"],
+          ["intro", "background", "The question of whether [X] should be encouraged has attracted considerable attention.", "是否应鼓励[X]这一问题已受到广泛关注。", "用于引出有争议的社会议题。"],
+          ["intro", "background", "Recent changes in [X] have prompted debate about its wider consequences.", "[X]的近期变化引发了人们对其更广泛后果的讨论。", "用于有明显社会变化的题目。"],
+          ["intro", "rewrite", "It is often argued that [X] is the most effective way to [Y].", "人们常认为，[X]是实现[Y]最有效的方式。", "改写题目中的观点或主张。"],
+          ["intro", "rewrite", "The issue under discussion is whether [X] can bring about [Y].", "讨论的核心问题是[X]是否能够带来[Y]。", "适合抽象改写题目。"],
+          ["intro", "rewrite", "Some people believe that [X], whereas others question its value in terms of [Y].", "一些人认为[X]，而另一些人则质疑其在[Y]方面的价值。", "适合存在对立立场的题目。"],
+          ["intro", "thesis", "I agree that [X], because its long-term benefits are likely to outweigh its costs.", "我同意[X]，因为它的长期益处可能超过其代价。", "明确支持立场并预示判断标准。"],
+          ["intro", "thesis", "I largely agree with this view, although its effectiveness depends on how it is implemented.", "我基本同意这一观点，但其效果取决于实施方式。", "适合带有限让步的立场。"],
+          ["intro", "thesis", "In my view, [X] is preferable, since it offers a more sustainable response to [Y].", "在我看来，[X]更可取，因为它为[Y]提供了更可持续的应对方式。", "适合提出明确偏好。"],
+          ["intro", "judgment", "Overall, I believe that the advantages of [X] outweigh the disadvantages.", "总的来说，我认为[X]的优点超过缺点。", "利弊题中直接给出判断。"],
+          ["intro", "judgment", "Although both sides have merit, I would argue that [X] is the more convincing position.", "尽管双方都有道理，我认为[X]是更有说服力的立场。", "适合需要权衡的题目。"],
+          ["intro", "judgment", "This essay argues that [X] should be supported, provided that [condition] is taken into account.", "本文认为应支持[X]，前提是考虑到[condition]。", "适合带条件的观点论证。"],
+          ["body1", "reason", "One of the main reasons for supporting [X] is that it can [Y].", "支持[X]的主要原因之一是它能够[Y]。", "主体段提出核心理由。"],
+          ["body1", "reason", "The strongest argument in favour of [X] is its potential to [Y].", "支持[X]最有力的论据是它有可能[Y]。", "突出一个主要理由。"],
+          ["body1", "reason", "A key consideration is that [X] enables [group] to [Y].", "一个关键因素是[X]使[群体]能够[Y]。", "适合政策和社会影响类题目。"],
+          ["body1", "explanation", "This is largely because [reason], which makes it easier for [group] to [result].", "这主要是因为[原因]，从而使[群体]更容易[结果]。", "解释上一句的因果机制。"],
+          ["body1", "explanation", "The underlying explanation is that [X] reduces the barriers that often prevent [group] from [Y].", "根本原因在于[X]减少了阻碍[群体][Y]的障碍。", "提供更具体的解释。"],
+          ["body1", "explanation", "In practical terms, this means that [group] can [Y] without having to [Z].", "在实践中，这意味着[群体]可以[Y]，而不必[Z]。", "把抽象理由落到实际结果。"],
+          ["body1", "development", "This benefit is particularly significant when [condition], as it can lead to [result].", "当[条件]时，这一益处尤其明显，因为它能带来[结果]。", "在理由后补充适用条件和结果。"],
+          ["body1", "development", "Over time, such a change may strengthen [X] and contribute to [Y].", "随着时间推移，这种变化可能强化[X]并促进[Y]。", "展开长期影响。"],
+          ["body1", "development", "More broadly, the policy could help to address [problem] rather than merely treating its symptoms.", "更广泛地说，这项政策有助于解决[问题]，而不只是处理表面症状。", "提升论证深度，避免停留在单一结果。"],
+          ["body1", "example", "For example, if [group] are given access to [resource], they are more likely to [result].", "例如，如果[群体]能够获得[资源]，他们更有可能[结果]。", "使用条件句举例。"],
+          ["body1", "example", "A clear example can be seen in [place or sector], where [specific example].", "[地点或领域]就是一个明显例子，在那里[具体例子]。", "引入真实或假设案例。"],
+          ["body1", "example", "This point is illustrated by the fact that [specific example], particularly among [group].", "这一点可由[具体例子]体现，尤其是在[群体]中。", "将例子与前面理由明确连接。"],
+          ["body1", "result", "As a result, [group] may experience [positive effect], while society benefits from [wider effect].", "因此，[群体]可能获得[积极影响]，社会也会从[更广泛影响]中受益。", "同时写个人和社会层面的结果。"],
+          ["body1", "result", "The immediate outcome is [result], which can in turn improve [broader outcome].", "直接结果是[结果]，进而能够改善[更广泛结果]。", "建立两层因果链。"],
+          ["body1", "result", "This not only helps to [result 1], but also creates the conditions for [result 2].", "这不仅有助于[结果1]，也为[结果2]创造了条件。", "适合递进论证。"],
+          ["body2", "reason", "A second reason for this position is that [X] can help to [Y].", "支持这一立场的第二个原因是[X]有助于[Y]。", "主体第二段提出新理由。"],
+          ["body2", "reason", "Another important point is the effect that [X] has on [group or area].", "另一个重要方面是[X]对[群体或领域]产生的影响。", "换一种方式引出第二理由。"],
+          ["body2", "reason", "It is also worth considering whether [X] provides a fairer way to achieve [Y].", "还值得考虑的是，[X]是否提供了实现[Y]的更公平方式。", "适合公平和机会类论证。"],
+          ["body2", "explanation", "The reason is that [X] changes the incentives facing [group], encouraging them to [Y].", "原因在于[X]改变了[群体]面临的激励，促使他们[Y]。", "解释行为变化机制。"],
+          ["body2", "explanation", "This can be explained by the fact that [cause], rather than by [misconception].", "这可以由[原因]解释，而不是由[误解]解释。", "纠正片面因果解释。"],
+          ["body2", "explanation", "Once [condition] is in place, the positive effects of [X] are likely to become more visible.", "一旦具备[条件]，[X]的积极影响可能会更加明显。", "说明条件与效果关系。"],
+          ["body2", "development", "In addition, [X] may encourage a gradual shift towards [desired change].", "此外，[X]可能推动逐步转向[期望变化]。", "展开中长期社会变化。"],
+          ["body2", "development", "This is important not only for [area 1], but also for the wider goal of [area 2].", "这不仅对[领域1]重要，也有助于实现[领域2]这一更广泛目标。", "连接局部理由与宏观目标。"],
+          ["body2", "development", "If this approach is combined with [measure], it is more likely to produce lasting improvements.", "如果这种方法与[措施]结合，更有可能带来持久改善。", "提出配套条件，增强论证严谨性。"],
+          ["body2", "example", "For instance, [group] could [action], thereby demonstrating how [X] works in practice.", "例如，[群体]可以[行动]，从而说明[X]在实践中如何发挥作用。", "把例子与机制联系起来。"],
+          ["body2", "example", "Consider the case of [place or group], in which [specific example] led to [result].", "以[地点或群体]为例，[具体例子]带来了[结果]。", "适合完整的案例链。"],
+          ["body2", "example", "Even a relatively small change, such as [example], can make a measurable difference to [area].", "即使是[例子]这样相对小的变化，也能对[领域]产生可衡量的影响。", "适合从小处说明宏观影响。"],
+          ["body2", "result", "Consequently, [X] is likely to reduce [problem] and improve [outcome] at the same time.", "因此，[X]可能同时减少[问题]并改善[结果]。", "总结第二理由的双重结果。"],
+          ["body2", "result", "The wider implication is that [result], which would benefit both [group 1] and [group 2].", "更广泛的含义是[结果]，这将使[群体1]和[群体2]都受益。", "将结果扩展到不同群体。"],
+          ["body2", "result", "Without this change, [problem] could persist and become more difficult to address in the future.", "如果没有这一变化，[问题]可能持续存在，并在未来更难解决。", "用反事实强调必要性。"],
+          ["conclusion", "summary", "In conclusion, [X] is supported by its ability to [reason 1] and [reason 2].", "总之，支持[X]的理由在于它能够[理由1]和[理由2]。", "总结两个主体段的核心理由。"],
+          ["conclusion", "summary", "Taken together, these arguments suggest that [X] would be a practical response to [problem].", "综合这些论点可见，[X]将是应对[问题]的实际方式。", "把理由归纳为整体判断。"],
+          ["conclusion", "restate", "For these reasons, I remain convinced that [X] is the more beneficial option.", "基于这些理由，我仍然相信[X]是更有益的选择。", "自然重申个人立场。"],
+          ["conclusion", "restate", "Therefore, I believe that [X] should be encouraged, although it must be accompanied by [measure].", "因此，我认为应鼓励[X]，但必须辅以[措施]。", "带条件地重申立场。"],
+          ["conclusion", "judgment", "On balance, the benefits of [X] are more substantial than its potential drawbacks.", "权衡来看，[X]的益处比其潜在缺点更为重要。", "利弊题的最终权衡。"],
+          ["conclusion", "judgment", "While [drawback] should not be ignored, it does not outweigh the long-term value of [X].", "虽然不应忽视[缺点]，但它并未超过[X]的长期价值。", "承认缺点后作出判断。"],
+          ["conclusion", "summary", "Overall, a balanced approach to [X] would maximise its advantages while limiting possible risks.", "总的来说，对[X]采取平衡方式可以最大化其优点并限制潜在风险。", "适合需要兼顾双方的结尾。"],
+          ["conclusion", "judgment", "The evidence therefore favours [X], despite the reasonable concerns about [drawback].", "因此，尽管对[缺点]的担忧有道理，证据仍然支持[X]。", "承认担忧后给出有依据的利弊判断。"],
+          ["conclusion", "restate", "For these reasons, I would support [X] as long as [condition] is properly managed.", "基于这些理由，只要妥善处理[条件]，我会支持[X]。", "以条件限制重申立场。"],
+          ["body1", "reason", "This argument is especially relevant to [group], for whom [X] can provide [benefit].", "这一论点对[群体]尤其重要，因为[X]可以为他们提供[好处]。", "从受益群体角度补充理由。"],
+          ["body1", "explanation", "In effect, [X] gives [group] a greater opportunity to [action] than they would otherwise have.", "实际上，[X]让[群体]比在其他情况下拥有更多机会去[行动]。", "解释某项措施如何扩大机会。"],
+          ["body2", "reason", "A separate but equally important reason is that [X] can influence [area] beyond the immediate issue.", "另一个同样重要但不同的理由是，[X]能影响眼前问题之外的[领域]。", "引出第二个较宏观的理由。"],
+          ["body2", "explanation", "This relationship is not automatic; it depends on whether [condition] allows the intended benefits to reach [group].", "这种关系并非自动产生，而取决于[条件]是否让预期益处惠及[群体]。", "加入条件使论证更严谨。"],
+          ["body2", "result", "This would make it possible to achieve [outcome] without placing an unreasonable burden on [group].", "这将有可能实现[结果]，而不会给[群体]造成不合理的负担。", "总结兼顾效果与成本的结果。"],
+          ["conclusion", "summary", "The central considerations are therefore [reason 1] and [reason 2], rather than [less relevant issue].", "因此，核心考量是[理由1]和[理由2]，而不是[次要问题]。", "精确概括论证重点并排除次要因素。"],
+        ],
+        discussion: [
+          ["intro", "background", "There is ongoing debate over whether [X] is the most appropriate way to achieve [Y].", "关于[X]是否是实现[Y]最合适的方式，人们一直存在争议。", "讨论型题目的背景引入。"],
+          ["intro", "background", "As [X] becomes more common, two contrasting views have emerged about its effects.", "随着[X]越来越普遍，人们对其影响形成了两种相反观点。", "引出社会变化和分歧。"],
+          ["intro", "views", "Some people support [view A], whereas others argue that [view B] is preferable.", "一些人支持[观点A]，而另一些人则认为[观点B]更可取。", "清晰呈现双方观点。"],
+          ["intro", "views", "The debate centres on whether priority should be given to [view A] or [view B].", "争论的核心是应优先考虑[观点A]还是[观点B]。", "适合两种政策方向的比较。"],
+          ["intro", "thesis", "This essay will consider both perspectives before explaining why I favour [view].", "本文将讨论双方观点，并解释我为何支持[观点]。", "明确文章路线和立场。"],
+          ["intro", "thesis", "Although both positions are reasonable, I am more persuaded by the argument that [view].", "尽管两种立场都有道理，但我更认同[观点]这一论点。", "带让步的个人立场。"],
+          ["intro", "background", "The disagreement reflects different priorities concerning [issue], rather than a simple right-or-wrong choice.", "这种分歧反映了人们对[问题]的不同优先考虑，而非简单的是非选择。", "提升讨论题的客观语气。"],
+          ["viewA", "introduceA", "Those who advocate [view A] often point out that it can [benefit].", "支持[观点A]的人常指出，它能够[好处]。", "引入 A 观点。"],
+          ["viewA", "introduceA", "From the perspective of [group], [view A] appears attractive because it [reason].", "从[群体]的角度看，[观点A]很有吸引力，因为它[理由]。", "从特定群体角度展开 A。"],
+          ["viewA", "reason", "The central argument for this position is that [X] provides [resource or opportunity].", "支持这一立场的核心论点是[X]提供了[资源或机会]。", "提出 A 的核心理由。"],
+          ["viewA", "reason", "A further justification is that [view A] allows [group] to respond more effectively to [problem].", "进一步的理由是，[观点A]使[群体]能更有效应对[问题]。", "补充 A 的适用价值。"],
+          ["viewA", "explanation", "This is because [cause], which means that [group] are better placed to [result].", "这是因为[原因]，意味着[群体]更有条件获得[结果]。", "解释 A 的因果链。"],
+          ["viewA", "explanation", "In other words, the approach addresses [need] by making [process] more accessible.", "换言之，这种方式通过让[过程]更易获得来满足[需求]。", "换一种方式解释 A。"],
+          ["viewA", "development", "If implemented consistently, this could lead to a gradual improvement in [area].", "如果持续实施，这可能逐步改善[领域]。", "展开 A 的长期效果。"],
+          ["viewA", "development", "This argument becomes particularly persuasive when [condition] is taken into account.", "考虑到[条件]时，这一论点尤其有说服力。", "补充 A 的适用条件。"],
+          ["viewA", "example", "For example, [place or group] may benefit when [specific example].", "例如，当[具体例子]时，[地点或群体]可能从中受益。", "为 A 提供例子。"],
+          ["viewA", "example", "A case in point is [example], which demonstrates the practical value of this position.", "[例子]就是一个例子，说明了这一立场的实际价值。", "简洁引入案例。"],
+          ["viewA", "result", "As a result, supporters believe that [view A] is likely to produce more reliable outcomes.", "因此，支持者认为[观点A]更可能带来可靠结果。", "总结 A 的意义。"],
+          ["viewA", "result", "The wider consequence could be greater access to [benefit], especially for [group].", "更广泛的结果可能是更多人获得[好处]，尤其是[群体]。", "写 A 的社会影响。"],
+          ["viewB", "introduceB", "By contrast, supporters of [view B] argue that the priority should be [goal].", "相比之下，支持[观点B]的人认为重点应是[目标]。", "转入 B 观点。"],
+          ["viewB", "introduceB", "An alternative perspective is that [view B] offers a more effective response to [problem].", "另一种观点认为，[观点B]能更有效应对[问题]。", "正式引出 B。"],
+          ["viewB", "reason", "The main strength of this position lies in its emphasis on [value or outcome].", "这一立场的主要优势在于重视[价值或结果]。", "提出 B 的核心理由。"],
+          ["viewB", "reason", "Its supporters also contend that [view B] is more likely to protect [group] from [risk].", "支持者还认为，[观点B]更可能保护[群体]免受[风险]。", "补充 B 的保护作用。"],
+          ["viewB", "explanation", "Their reasoning is that [cause], so resources can be directed towards [priority].", "他们的理由是[原因]，因此资源可以用于[重点]。", "解释 B 的政策机制。"],
+          ["viewB", "explanation", "This view is based on the assumption that [assumption], rather than on short-term convenience.", "这一观点基于[假设]，而非短期便利。", "体现对观点前提的理解。"],
+          ["viewB", "development", "In the longer term, this approach may strengthen [system] and reduce dependence on [risk].", "从长期看，这种方式可能强化[系统]并减少对[风险]的依赖。", "展开 B 的长远影响。"],
+          ["viewB", "development", "Moreover, it could encourage [group] to take greater responsibility for [area].", "此外，它还能鼓励[群体]对[领域]承担更大责任。", "补充 B 的行为影响。"],
+          ["viewB", "example", "For instance, when [specific example], the advantages of this alternative become clear.", "例如，当[具体例子]时，这一替代方案的优点就很明显。", "为 B 提供例子。"],
+          ["viewB", "example", "This can be illustrated by [place or sector], where [specific example] has produced [result].", "[地点或领域]可以说明这一点，在那里[具体例子]带来了[结果]。", "使用案例支撑 B。"],
+          ["viewB", "result", "Consequently, advocates expect this policy to improve [outcome] while limiting [problem].", "因此，支持者预计该政策能改善[结果]并限制[问题]。", "总结 B 的预期结果。"],
+          ["viewB", "result", "This could have wider benefits for [group 1], although [group 2] might face short-term difficulties.", "这可能使[群体1]受益更广，但[群体2]可能面临短期困难。", "呈现 B 的复杂影响。"],
+          ["viewB", "balance", "Both arguments have merit, but they place different weights on [priority A] and [priority B].", "双方论点都有道理，但对[重点A]和[重点B]的权重不同。", "客观比较两方重点。"],
+          ["viewB", "balance", "The choice therefore depends on whether the main aim is [goal A] or [goal B].", "因此，选择取决于主要目标是[目标A]还是[目标B]。", "说明争议背后的取舍。"],
+          ["viewB", "thesis", "On balance, I favour [view] because it offers a better combination of [benefit 1] and [benefit 2].", "权衡来看，我支持[观点]，因为它更好地结合了[好处1]和[好处2]。", "在 B 段末明确个人立场。"],
+          ["viewB", "thesis", "Although [other view] may work in some circumstances, I believe [view] is more sustainable.", "尽管[另一观点]在某些情况下有效，我认为[观点]更可持续。", "对另一方有限承认后表态。"],
+          ["conclusion", "summary", "In conclusion, [view A] prioritises [value A], whereas [view B] focuses on [value B].", "总之，[观点A]优先考虑[价值A]，而[观点B]关注[价值B]。", "总结双方不同重点。"],
+          ["conclusion", "summary", "Both perspectives offer plausible benefits, but they lead to different consequences for [group].", "双方观点都有合理益处，但会给[群体]带来不同后果。", "概括双方影响。"],
+          ["conclusion", "restate", "Having considered both sides, I believe that [view] is the more convincing approach.", "综合考虑双方后，我认为[观点]是更有说服力的方式。", "重申个人立场。"],
+          ["conclusion", "restate", "For this reason, priority should be given to [view], while the concerns surrounding [other view] should be addressed.", "因此应优先考虑[观点]，同时处理围绕[另一观点]的担忧。", "带平衡感的结尾。"],
+          ["conclusion", "summary", "Ultimately, the most effective policy may combine the strengths of both positions where possible.", "最终，最有效的政策可能是在可行情况下结合双方立场的优点。", "适合不必二选一的讨论题。"],
+          ["conclusion", "restate", "Overall, the evidence suggests that [view] would deliver the fairest long-term outcome.", "总体来看，证据表明[观点]将带来最公平的长期结果。", "以长期结果结束。"],
+          ["intro", "thesis", "I acknowledge the value of [other view], but I ultimately favour [view] for the following reasons.", "我承认[另一观点]的价值，但基于以下理由，我最终支持[观点]。", "先承认另一方再明确立场。"],
+          ["intro", "views", "While one group emphasises [priority A], another gives greater importance to [priority B].", "一方强调[重点A]，而另一方更重视[重点B]。", "用优先事项呈现两方差异。"],
+          ["viewA", "introduceA", "One commonly held view is that [view A] should be adopted because [reason].", "一种普遍观点是应采取[观点A]，因为[理由]。", "更客观地引入 A 观点。"],
+          ["viewB", "introduceB", "Those who take the opposing view maintain that [view B] would better serve [goal].", "持相反观点的人认为，[观点B]更能服务于[目标]。", "正式引入与 A 相反的观点。"],
+          ["viewB", "balance", "The stronger position depends on how the competing priorities affect [group] in practice.", "哪一方更有说服力取决于相互竞争的重点在实践中如何影响[群体]。", "把比较落到实际影响。"],
+          ["viewA", "reason", "This perspective is also supported by the fact that it can reduce the risk of [problem].", "这一观点还得到一个事实支持，即它可以降低[问题]的风险。", "从风险控制角度补充 A 的理由。"],
+          ["viewB", "result", "Its main consequence would be a shift in resources towards [priority], with potential gains for [group].", "其主要结果将是把资源转向[重点]，并可能使[群体]受益。", "从资源配置角度总结 B 的结果。"],
+          ["conclusion", "summary", "The debate is ultimately about how best to balance [value A] with [value B].", "这场争论最终涉及如何最好地平衡[价值A]与[价值B]。", "从价值权衡角度总结双方。"],
+          ["viewB", "explanation", "This reasoning becomes clearer when the possible long-term cost of [alternative] is considered.", "考虑到[替代方案]可能产生的长期成本，这一理由就更加清楚。", "从长期成本解释 B 的合理性。"],
+        ],
+        problem: [
+          ["intro", "background", "In recent years, [X] has become a significant concern in many communities.", "近年来，[X]已成为许多社区关注的重要问题。", "问题分析题的背景引入。"],
+          ["intro", "background", "The growth of [X] has raised questions about its causes and possible consequences.", "[X]的发展引发了人们对其原因和可能后果的思考。", "适合原因影响类题目。"],
+          ["intro", "rewrite", "The issue is not simply whether [X] exists, but why it has developed and how it can be addressed.", "问题不仅在于[X]是否存在，还在于它为何形成以及如何应对。", "改写问题解决题。"],
+          ["intro", "rewrite", "This essay examines the main factors behind [X] and considers appropriate responses.", "本文分析[X]背后的主要因素，并探讨适当的应对方式。", "概括文章任务。"],
+          ["intro", "direction", "There are several reasons for this problem, and each requires a targeted response.", "这一问题有多个原因，每个原因都需要有针对性的应对。", "引出原因与解决方案。"],
+          ["intro", "direction", "The following discussion will explain why [X] occurs before outlining what could be done about it.", "下文将解释[X]发生的原因，并提出可采取的措施。", "说明文章组织方向。"],
+          ["problem", "introduce", "One major problem associated with [X] is the pressure it places on [group].", "与[X]相关的一个主要问题是它给[群体]带来的压力。", "引入核心问题。"],
+          ["problem", "introduce", "A particularly serious aspect of this issue is the lack of [resource or support].", "这一问题尤其严重的方面是缺乏[资源或支持]。", "从资源角度引入问题。"],
+          ["problem", "core", "The central difficulty is that [group] are unable to [action] when [condition].", "核心困难是当[条件]时，[群体]无法[行动]。", "具体描述问题机制。"],
+          ["problem", "core", "This problem is especially evident among [group], who often have limited access to [resource].", "这一问题在[群体]中尤其明显，他们往往难以获得[资源]。", "限定受影响群体。"],
+          ["problem", "explanation", "This situation is partly caused by [cause], which makes it difficult to improve [area].", "这种情况部分由[原因]造成，使改善[领域]变得困难。", "解释问题成因。"],
+          ["problem", "explanation", "The problem is aggravated when [condition], since existing support is then unable to meet demand.", "当[条件]出现时，问题会加剧，因为现有支持无法满足需求。", "解释问题为何恶化。"],
+          ["problem", "development", "Without intervention, the gap between [group A] and [group B] may widen over time.", "如果不干预，[群体A]和[群体B]之间的差距可能随时间扩大。", "展开长期后果。"],
+          ["problem", "development", "This can create a cycle in which [problem 1] makes [problem 2] increasingly difficult to overcome.", "这会形成一种循环，使[问题1]让[问题2]越来越难克服。", "展示问题之间的相互强化。"],
+          ["problem", "example", "For example, [specific example] shows how this issue affects everyday life.", "例如，[具体例子]说明了这一问题如何影响日常生活。", "提供具体表现。"],
+          ["problem", "example", "A clear illustration is the experience of [group], who may [specific consequence].", "[群体]的经历可以清楚说明这一点，他们可能会[具体后果]。", "从群体经历举例。"],
+          ["problem", "impact", "As a consequence, [group] may suffer from [negative effect], with wider costs for [area].", "因此，[群体]可能遭受[负面影响]，并给[领域]带来更广泛的代价。", "写个人和社会后果。"],
+          ["problem", "impact", "In the long term, this may undermine [value] and place additional pressure on [system].", "从长期看，这可能削弱[价值]并给[系统]增加压力。", "写宏观负面影响。"],
+          ["problem", "impact", "The result is not only [immediate effect], but also a reduced ability to [future action].", "结果不仅是[直接影响]，还会降低未来[行动]的能力。", "建立递进后果。"],
+          ["cause", "introduce", "One underlying cause of [X] is the rapid change in [factor].", "[X]的一个根本原因是[因素]的快速变化。", "引入首要原因。"],
+          ["cause", "introduce", "Another explanation lies in the way that [institution or group] manages [area].", "另一个原因在于[机构或群体]管理[领域]的方式。", "从管理方式分析原因。"],
+          ["cause", "core", "The main driver is that [group] are encouraged or required to [action].", "主要驱动力是[群体]受到鼓励或要求去[行动]。", "指出行为驱动。"],
+          ["cause", "core", "At the heart of the problem is a mismatch between [demand] and [supply].", "问题的核心是[需求]与[供给]之间不匹配。", "适合资源和服务不足类题目。"],
+          ["cause", "explanation", "This happens because [cause], while the existing system lacks the capacity to [response].", "这是因为[原因]，而现有系统缺乏[应对]的能力。", "同时解释原因和制度限制。"],
+          ["cause", "explanation", "A further factor is that short-term incentives often take priority over [long-term goal].", "另一个因素是短期激励常常优先于[长期目标]。", "解释短期行为与长期问题。"],
+          ["cause", "development", "These factors reinforce one another, making [X] more difficult to control.", "这些因素相互强化，使[X]更难控制。", "连接多个原因。"],
+          ["cause", "development", "Unless the underlying conditions change, measures addressing only the symptoms are unlikely to succeed.", "除非根本条件改变，否则只处理表面症状的措施不太可能成功。", "强调解决根因。"],
+          ["cause", "example", "For instance, when [condition] occurs, [group] may respond by [action], which intensifies the problem.", "例如，当[条件]出现时，[群体]可能通过[行动]应对，反而加剧问题。", "用行为链解释原因。"],
+          ["cause", "example", "This pattern can be observed in [place or sector], where [specific example].", "在[地点或领域]可以观察到这种模式，其中[具体例子]。", "把原因落到案例。"],
+          ["cause", "impact", "The combined effect is a decline in [outcome] and a rise in [negative consequence].", "综合影响是[结果]下降以及[负面后果]上升。", "总结原因造成的双重影响。"],
+          ["solution", "solutionIntro", "One effective response would be for [authority or group] to prioritise [measure].", "一种有效的应对方式是让[机构或群体]优先采取[措施]。", "引入解决方案。"],
+          ["solution", "solutionIntro", "The problem could be tackled through a coordinated effort involving [group 1] and [group 2].", "可以通过[群体1]和[群体2]的协调努力解决这一问题。", "适合需要多方合作的题目。"],
+          ["solution", "measure", "Governments could provide [resource] so that [group] are better able to [action].", "政府可以提供[资源]，使[群体]更有能力[行动]。", "提出公共资源措施。"],
+          ["solution", "measure", "A practical measure would be to introduce stricter standards for [area].", "一项实际措施是为[领域]制定更严格的标准。", "提出监管措施。"],
+          ["solution", "measure", "Schools, employers or local organisations could offer [service] to those affected by [problem].", "学校、雇主或地方组织可以为受[问题]影响的人提供[服务]。", "提出机构支持措施。"],
+          ["solution", "implementation", "This could be implemented by allocating funding to [area] and monitoring its use regularly.", "可以通过向[领域]拨款并定期监督资金使用来实施。", "说明资金措施的执行方式。"],
+          ["solution", "implementation", "The policy should be introduced gradually, with clear targets and periodic evaluations.", "该政策应逐步实施，并设置明确目标和定期评估。", "说明渐进实施。"],
+          ["solution", "implementation", "To make this feasible, responsibility should be shared between [group 1] and [group 2].", "为使其可行，[群体1]和[群体2]应共同承担责任。", "说明责任分工。"],
+          ["solution", "solutionExplanation", "This approach would address the root cause rather than merely reducing the visible symptoms.", "这种方式将处理根本原因，而不只是减轻表面症状。", "解释方案为何有效。"],
+          ["solution", "solutionExplanation", "By improving [area], the measure would remove a major barrier to [desired outcome].", "通过改善[领域]，该措施将消除实现[期望结果]的一大障碍。", "说明措施和结果的联系。"],
+          ["solution", "effect", "If applied consistently, this policy could reduce [problem] and improve [outcome].", "如果持续实施，该政策可以减少[问题]并改善[结果]。", "写预期双重效果。"],
+          ["solution", "effect", "The likely long-term effect would be a more resilient system capable of responding to [challenge].", "可能的长期效果是形成更有韧性的系统，以应对[挑战]。", "提升解决方案的长期视角。"],
+          ["secondQuestion", "answer", "Regarding the second question, [X] is likely to have a positive effect on [area].", "关于第二个问题，[X]可能对[领域]产生积极影响。", "双问题题的第二问开头。"],
+          ["secondQuestion", "answer", "The most convincing answer is that [X] should be viewed as [evaluation], provided that [condition].", "最有说服力的答案是，应将[X]视为[评价]，前提是[条件]。", "回答评价型第二问。"],
+          ["secondQuestion", "evaluation", "Although [X] may create [drawback], its overall impact is likely to be beneficial because [reason].", "尽管[X]可能造成[缺点]，但由于[原因]，其总体影响可能是有益的。", "回答正负评价。"],
+          ["secondQuestion", "evaluation", "In my view, the main effect of [X] will be [effect], rather than [alternative effect].", "在我看来，[X]的主要影响将是[影响]，而不是[另一影响]。", "区分主要和次要影响。"],
+          ["secondQuestion", "impact", "This development could affect [group] by changing the way they [action].", "这一发展可能通过改变[群体][行动]的方式影响他们。", "回答影响类第二问。"],
+          ["secondQuestion", "impact", "Its consequences will depend largely on whether [condition] is maintained.", "其后果很大程度上取决于[条件]能否维持。", "带条件地回答影响。"],
+          ["secondQuestion", "measure", "One way to respond to this aspect of the question is to [measure].", "应对问题这一方面的一种方式是[措施]。", "双问题中需要提出措施时使用。"],
+          ["secondQuestion", "measure", "The most appropriate action would be to combine [measure 1] with [measure 2].", "最合适的做法是将[措施1]与[措施2]结合起来。", "提出组合方案。"],
+          ["secondQuestion", "summary", "Taken together, the causes explain why [X] has become serious, while the proposed measures offer a realistic response.", "综合来看，这些原因解释了[X]为何变得严重，而提出的措施提供了现实应对。", "总结原因和措施。"],
+          ["secondQuestion", "judgment", "Overall, [X] should be addressed through practical action rather than short-term promises.", "总的来说，应通过实际行动而非短期承诺来解决[X]。", "结尾最终判断。"],
+          ["conclusion", "summary", "In conclusion, [X] is driven mainly by [cause], and it has serious effects on [area].", "总之，[X]主要由[原因]驱动，并对[领域]产生严重影响。", "总结问题和原因。"],
+          ["conclusion", "solutionSummary", "The most effective response would combine [measure 1] with [measure 2] in a consistent way.", "最有效的应对是持续结合[措施1]和[措施2]。", "总结解决方案。"],
+          ["conclusion", "judgment", "If these steps are implemented carefully, the problem can be reduced without creating new inequalities.", "如果谨慎实施这些步骤，就能减少问题而不造成新的不平等。", "以条件和风险控制收束。"],
+          ["intro", "background", "The scale of [X] has made it necessary to examine both its underlying causes and possible remedies.", "[X]的规模使得审视其根本原因和可能补救措施变得必要。", "以问题规模引出分析任务。"],
+          ["intro", "rewrite", "The question raises two related issues: what lies behind [X] and how its effects can be limited.", "这个问题提出两个相关方面：[X]背后的原因，以及如何限制其影响。", "改写包含原因和措施的题目。"],
+          ["intro", "direction", "A complete response must therefore address the source of the problem as well as the steps needed to resolve it.", "因此，完整的回答既要说明问题来源，也要说明解决问题所需的步骤。", "交代文章需要覆盖的方向。"],
+          ["solution", "solutionIntro", "A sustainable solution should combine immediate action with investment in [long-term priority].", "可持续的解决方案应将即时行动与对[长期重点]的投入结合起来。", "引出兼顾短期和长期的方案。"],
+          ["solution", "solutionExplanation", "Unlike a short-term response, this approach would improve the conditions that allow [problem] to persist.", "与短期应对不同，这种方式将改善使[问题]持续存在的条件。", "解释根治型方案的优势。"],
+          ["solution", "effect", "The intended effect is not merely to ease [immediate problem], but to strengthen [system] over time.", "预期效果不仅是缓解[直接问题]，还包括逐步强化[系统]。", "写方案的短期和长期效果。"],
+          ["secondQuestion", "evaluation", "Although [X] may have limitations, it should be regarded as worthwhile if [condition] is satisfied.", "尽管[X]可能有限制，但只要满足[条件]，就应认为它是值得的。", "有条件地回答正负评价。"],
+          ["secondQuestion", "answer", "A reasonable answer to the second question is that [X] depends on the extent to which [condition].", "对第二个问题的合理回答是，[X]取决于[条件]的程度。", "回答取决于条件的双问题。"],
+          ["secondQuestion", "summary", "In this sense, addressing [cause] is as important as responding to its visible consequences.", "从这个角度看，应对[原因]与处理其明显后果同样重要。", "总结原因和后果之间的关系。"],
+          ["conclusion", "summary", "Overall, the issue results from [cause], while its most serious consequence is [impact].", "总的来说，该问题源于[原因]，而其最严重的后果是[影响]。", "简洁总结问题、原因和后果。"],
+          ["conclusion", "solutionSummary", "A combination of [measure 1] and [measure 2] would provide the most credible way forward.", "结合[措施1]和[措施2]将提供最可信的解决方向。", "总结两项互补措施。"],
+          ["conclusion", "solutionSummary", "Such measures would address the immediate concern while reducing the likelihood of the problem returning.", "这些措施既能处理眼前担忧，也能降低问题再次出现的可能性。", "总结即时效果和预防作用。"],
+          ["conclusion", "judgment", "The proposed response is convincing because it is both practical and proportionate to the scale of [X].", "所提出的应对具有说服力，因为它既实际，又与[X]的规模相称。", "以可行性和适当性作最终判断。"],
+          ["problem", "introduce", "Another difficulty is the unequal way in which [X] affects different groups.", "另一个困难是[X]对不同群体的影响并不平等。", "补充问题表现。"],
+          ["cause", "core", "A significant contributing factor is the absence of reliable information about [area].", "一个重要促成因素是缺乏关于[领域]的可靠信息。", "从信息不足角度分析原因。"],
+          ["cause", "explanation", "When [group] lack [resource], they are more likely to rely on choices that intensify [problem].", "当[群体]缺乏[资源]时，他们更可能作出加剧[问题]的选择。", "解释资源不足如何造成恶性循环。"],
+          ["problem", "impact", "This places pressure on [system] and can reduce the quality of services available to [group].", "这会给[系统]带来压力，并降低[群体]能够获得的服务质量。", "补充问题对系统和群体的影响。"],
+          ["solution", "measure", "Public authorities could set measurable targets for [area] and publish progress at regular intervals.", "公共机构可以为[领域]设定可衡量的目标，并定期公布进展。", "提出可监督的公共措施。"],
+          ["solution", "implementation", "Before being expanded, the measure should be tested in areas where [condition] is most severe.", "在推广之前，应在[条件]最严重的地区测试该措施。", "说明分阶段试点的实施方式。"],
+        ],
+      };
+      const WRITING_TASK2_STRUCTURE_SEED = Object.entries(WRITING_TASK2_STRUCTURE_SEED_ROWS).flatMap(([task2Type, rows]) => rows.map(([section, functionName, content, translation, note]) => ({ task2Type, section, function: functionName, content, translation, note })));
       const SPEAKING_CONFIG = {
         part1: {
           label: "Part 1",
@@ -1969,6 +2202,7 @@
         writingPanelView: "editor",
         writingView: "task1",
         writingTask1Type: "static",
+        writingTask2Type: "opinion",
         writingCollection: "structures",
         writingCategory: "all",
         writingFunction: "all",
@@ -2007,6 +2241,7 @@
       let cloudSaveTimer = null;
       let cloudHydrating = false;
       let task1MigratedDuringHydration = false;
+      let task2MigratedDuringHydration = false;
       let categorySettingsChangedDuringHydration = false;
       let deferredInstallPrompt = null;
 
@@ -2027,6 +2262,7 @@
           words: state.words,
           writing: state.writing,
           writingTask1SeedVersion: localStorage.getItem(WRITING_TASK1_SEED_KEY) || "",
+          writingTask2SeedVersion: localStorage.getItem(WRITING_TASK2_SEED_KEY) || "",
           speaking: state.speaking,
           categorySettings,
           categorySettingsUpdatedAt,
@@ -2269,6 +2505,10 @@
             localStorage.removeItem(WRITING_TASK1_SEED_KEY);
             task1MigratedDuringHydration = true;
           }
+          if (payload.writingTask2SeedVersion !== WRITING_TASK2_SEED_VERSION) {
+            localStorage.removeItem(WRITING_TASK2_SEED_KEY);
+            task2MigratedDuringHydration = true;
+          }
           localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(payload.writing));
           state.writing = loadWritingData();
         }
@@ -2297,8 +2537,9 @@
         }
         if (data?.payload) {
           applyCloudPayload(data.payload);
-          if (task1MigratedDuringHydration || categorySettingsChangedDuringHydration) {
+          if (task1MigratedDuringHydration || task2MigratedDuringHydration || categorySettingsChangedDuringHydration) {
             task1MigratedDuringHydration = false;
+            task2MigratedDuringHydration = false;
             categorySettingsChangedDuringHydration = false;
             await saveCloudNow();
           }
@@ -2439,6 +2680,12 @@
             { sections: { ...config.sections }, functions: { ...config.functions } },
           ])
         );
+        writing.task2.structures = Object.fromEntries(
+          Object.entries(WRITING_TASK2_STRUCTURE_CONFIG).map(([type, config]) => [
+            type,
+            { sections: { ...config.sections }, functions: { ...config.functions } },
+          ])
+        );
         return {
           speaking: Object.fromEntries(
             Object.entries(SPEAKING_CONFIG).map(([part, config]) => [part, { ...config.categories }])
@@ -2474,15 +2721,15 @@
         }
         for (const task of Object.keys(defaults.writing)) {
           for (const collection of Object.keys(defaults.writing[task])) {
-            if (task === "task1" && collection === "structures") {
-              for (const type of Object.keys(defaults.writing.task1.structures)) {
-                defaults.writing.task1.structures[type].sections = sanitiseCategoryMap(
-                  saved?.writing?.task1?.structures?.[type]?.sections,
-                  defaults.writing.task1.structures[type].sections
+            if (collection === "structures" && ["task1", "task2"].includes(task)) {
+              for (const type of Object.keys(defaults.writing[task].structures)) {
+                defaults.writing[task].structures[type].sections = sanitiseCategoryMap(
+                  saved?.writing?.[task]?.structures?.[type]?.sections,
+                  defaults.writing[task].structures[type].sections
                 );
-                defaults.writing.task1.structures[type].functions = sanitiseCategoryMap(
-                  saved?.writing?.task1?.structures?.[type]?.functions,
-                  defaults.writing.task1.structures[type].functions
+                defaults.writing[task].structures[type].functions = sanitiseCategoryMap(
+                  saved?.writing?.[task]?.structures?.[type]?.functions,
+                  defaults.writing[task].structures[type].functions
                 );
               }
               continue;
@@ -2501,7 +2748,7 @@
         });
         Object.entries(settings.writing).forEach(([task, collections]) => {
           Object.entries(collections).forEach(([collection, categories]) => {
-            if (task === "task1" && collection === "structures") return;
+            if (collection === "structures" && ["task1", "task2"].includes(task)) return;
             if (WRITING_CONFIG[task]?.collections?.[collection]) {
               WRITING_CONFIG[task].collections[collection].categories = { ...categories };
             }
@@ -2520,10 +2767,11 @@
           return Object.entries(SPEAKING_CONFIG).map(([part, config]) => ({ id: part, label: `${config.label} · 结构化表达` }));
         }
         return Object.entries(WRITING_CONFIG).flatMap(([task, taskConfig]) => Object.entries(taskConfig.collections).flatMap(([collection, config]) => {
-          if (task === "task1" && collection === "structures") {
-            return Object.entries(WRITING_TASK1_STRUCTURE_CONFIG).flatMap(([type, typeConfig]) => [
-              { id: `${task}:${collection}:${type}:sections`, label: `${taskConfig.label} · ${typeConfig.sections.intro ? WRITING_CONFIG.task1.types[type].label : type} · 写作阶段` },
-              { id: `${task}:${collection}:${type}:functions`, label: `${taskConfig.label} · ${WRITING_CONFIG.task1.types[type].label} · 核心功能` },
+          if (collection === "structures" && ["task1", "task2"].includes(task)) {
+            const typeConfigMap = task === "task1" ? WRITING_TASK1_STRUCTURE_CONFIG : WRITING_TASK2_STRUCTURE_CONFIG;
+            return Object.entries(typeConfigMap).flatMap(([type, typeConfig]) => [
+              { id: `${task}:${collection}:${type}:sections`, label: `${taskConfig.label} · ${WRITING_CONFIG[task].types?.[type]?.label || typeConfig.label || type} · 写作阶段` },
+              { id: `${task}:${collection}:${type}:functions`, label: `${taskConfig.label} · ${WRITING_CONFIG[task].types?.[type]?.label || typeConfig.label || type} · 核心功能` },
             ]);
           }
           return [{ id: `${task}:${collection}`, label: `${taskConfig.label} · ${config.label}` }];
@@ -2532,7 +2780,7 @@
       function getSettingsCategoryMap(settings, module, libraryId) {
         if (module === "speaking") return settings.speaking[libraryId];
         const [task, collection, type, axis] = libraryId.split(":");
-        if (task === "task1" && collection === "structures" && type && axis) return settings.writing.task1.structures[type]?.[axis];
+        if (collection === "structures" && ["task1", "task2"].includes(task) && type && axis) return settings.writing[task].structures[type]?.[axis];
         return settings.writing[task]?.[collection];
       }
       function createCategoryId(label, categories) {
@@ -2697,7 +2945,9 @@
       function openSettings() {
         state.settingsModule = state.route === "writing" ? "writing" : "speaking";
         if (state.settingsModule === "writing" && state.writingScreen === "branch") {
-          state.settingsLibraryId = `${state.writingView}:${state.writingCollection}`;
+          state.settingsLibraryId = state.writingCollection === "structures"
+            ? `${state.writingView}:${state.writingCollection}:${state.writingView === "task1" ? state.writingTask1Type : state.writingTask2Type}:sections`
+            : `${state.writingView}:${state.writingCollection}`;
         } else if (state.settingsModule === "speaking" && state.speakingScreen === "speaking-structure-branch") {
           state.settingsLibraryId = state.speakingPart;
         } else {
@@ -2802,12 +3052,12 @@
         });
         Object.entries(next.writing).forEach(([task, collections]) => {
           Object.entries(collections).forEach(([collection, categories]) => {
-            if (task === "task1" && collection === "structures") {
+            if (collection === "structures" && ["task1", "task2"].includes(task)) {
               Object.entries(categories).forEach(([type, maps]) => {
                 const fallbackSection = getFirstCategoryId(maps.sections);
                 const fallbackFunction = getFirstCategoryId(maps.functions);
-                state.writing.task1.structures.forEach((item) => {
-                  if (item.task1Type !== type) return;
+                state.writing[task].structures.forEach((item) => {
+                  if ((task === "task1" ? item.task1Type : item.task2Type) !== type) return;
                   if (!maps.sections[item.section]) { item.section = fallbackSection; item.category = fallbackSection; writingChanged = true; }
                   if (!maps.functions[item.function]) { item.function = fallbackFunction; writingChanged = true; }
                 });
@@ -2834,15 +3084,15 @@
         }
         for (const task of Object.keys(next.writing)) {
           for (const collection of Object.keys(next.writing[task])) {
-            if (task === "task1" && collection === "structures") {
-              Object.keys(next.writing.task1.structures).forEach((type) => {
-                next.writing.task1.structures[type].sections = sanitiseCategoryMap(
-                  next.writing.task1.structures[type].sections,
-                  categorySettings.writing.task1.structures[type].sections
+            if (collection === "structures" && ["task1", "task2"].includes(task)) {
+              Object.keys(next.writing[task].structures).forEach((type) => {
+                next.writing[task].structures[type].sections = sanitiseCategoryMap(
+                  next.writing[task].structures[type].sections,
+                  categorySettings.writing[task].structures[type].sections
                 );
-                next.writing.task1.structures[type].functions = sanitiseCategoryMap(
-                  next.writing.task1.structures[type].functions,
-                  categorySettings.writing.task1.structures[type].functions
+                next.writing[task].structures[type].functions = sanitiseCategoryMap(
+                  next.writing[task].structures[type].functions,
+                  categorySettings.writing[task].structures[type].functions
                 );
               });
               continue;
@@ -2901,7 +3151,7 @@
         }
       }
       function loadWritingData() {
-        const blank = { task1: { structures: [], samples: [] }, task2: { topics: [], structures: [] } };
+        const blank = { task1: { structures: [], samples: [] }, task2: { topics: [], structures: [], samples: [] } };
         try {
           const data = JSON.parse(localStorage.getItem(WRITING_STORAGE_KEY));
           for (const task of Object.keys(blank)) {
@@ -2914,13 +3164,18 @@
                     task1Type: WRITING_CONFIG[task].types && WRITING_CONFIG[task].types[item.task1Type]
                       ? item.task1Type
                       : task === "task1" ? "static" : "",
+                    task2Type: task === "task2" && WRITING_TASK2_STRUCTURE_CONFIG[item.task2Type]
+                      ? item.task2Type
+                      : task === "task2" ? "opinion" : "",
                     section: String(item.section || item.category || ""),
                     function: String(item.function || ""),
                     category: (() => {
-                      const requested = task === "task2" && collection === "structures" && item.category === "body"
-                        ? "development"
-                        : item.category;
-                      const categories = WRITING_CONFIG[task].collections[collection].categories;
+                      const requested = item.category;
+                      const categories = task === "task1" && collection === "structures"
+                        ? getTask1TypeConfig(item.task1Type || "static").sections
+                        : task === "task2" && collection === "structures"
+                          ? getTask2TypeConfig(item.task2Type || "opinion").sections
+                          : WRITING_CONFIG[task].collections[collection].categories;
                       return categories[requested] ? requested : Object.keys(categories)[0];
                     })(),
                     title: String(item.title || ""),
@@ -2942,6 +3197,22 @@
                       : [],
                   }))
                 : []);
+              if (task === "task1" && collection === "structures") {
+                blank[task][collection].forEach((item) => {
+                  const config = getTask1TypeConfig(item.task1Type);
+                  item.section = config.sections[item.section] ? item.section : getFirstCategoryId(config.sections);
+                  item.category = item.section;
+                  item.function = config.functions[item.function] ? item.function : getFirstCategoryId(config.functions);
+                });
+              }
+              if (task === "task2" && collection === "structures") {
+                blank[task][collection].forEach((item) => {
+                  const config = getTask2TypeConfig(item.task2Type);
+                  item.section = config.sections[item.section] ? item.section : getFirstCategoryId(config.sections);
+                  item.category = item.section;
+                  item.function = config.functions[item.function] ? item.function : getFirstCategoryId(config.functions);
+                });
+              }
             }
           }
         } catch {}
@@ -2967,6 +3238,32 @@
             blank.task1.samples = [];
             localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(blank));
             localStorage.setItem(WRITING_TASK1_SEED_KEY, WRITING_TASK1_SEED_VERSION);
+          }
+        } catch {}
+        try {
+          if (localStorage.getItem(WRITING_TASK2_SEED_KEY) !== WRITING_TASK2_SEED_VERSION) {
+            const now = Date.now();
+            blank.task2.topics = [];
+            blank.task2.structures = WRITING_TASK2_STRUCTURE_SEED.map((item, index) => ({
+              id: createId(),
+              createdAt: now + index,
+              order: index + 1,
+              task1Type: "",
+              task2Type: item.task2Type,
+              section: item.section,
+              function: item.function,
+              category: item.section,
+              title: "",
+              content: item.content,
+              translation: item.translation,
+              note: `${item.note} Band 7`,
+              noteType: "other",
+              star: 0,
+              highlights: [],
+            }));
+            blank.task2.samples = [];
+            localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(blank));
+            localStorage.setItem(WRITING_TASK2_SEED_KEY, WRITING_TASK2_SEED_VERSION);
           }
         } catch {}
         return blank;
@@ -3331,6 +3628,15 @@
           functions: saved?.functions || fallback.functions,
         };
       }
+      function getTask2TypeConfig(type = state.writingTask2Type) {
+        const fallback = WRITING_TASK2_STRUCTURE_CONFIG[type] || WRITING_TASK2_STRUCTURE_CONFIG.opinion;
+        const saved = categorySettings?.writing?.task2?.structures?.[type];
+        return {
+          ...fallback,
+          sections: saved?.sections || fallback.sections,
+          functions: saved?.functions || fallback.functions,
+        };
+      }
       function getTask1TypeLabel(type = state.writingTask1Type) {
         return WRITING_CONFIG.task1.types[type]?.label || type;
       }
@@ -3383,7 +3689,13 @@
           if (state.writingScreen === "task2") screen = "writing-home";
           if (state.writingScreen === "task1-data") screen = "task1";
           if (state.writingScreen === "task1-type") screen = ["process", "map"].includes(state.writingTask1Type) ? "task1" : "task1-data";
-          if (state.writingScreen === "branch") screen = state.writingView === "task1" ? "task1-type" : "task2";
+          if (state.writingScreen === "task2-general") screen = "task2";
+          if (state.writingScreen === "task2-type") screen = "task2-general";
+          if (state.writingScreen === "branch") {
+            if (state.writingView === "task1") screen = "task1-type";
+            else if (state.writingCollection === "topics") screen = "task2";
+            else screen = "task2-type";
+          }
           openWritingScreen(screen);
         }
       }
@@ -3401,17 +3713,43 @@
         "task1-process-samples": { task: "task1", collection: "samples", task1Type: "process", parent: "task1-type", eyebrow: "TASK 1 · PROCESS", title: "流程图 · 范文收藏", description: "保存流程图范文。", editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡" },
         "task1-map-structures": { task: "task1", collection: "structures", task1Type: "map", parent: "task1-type", eyebrow: "TASK 1 · MAP", title: "地图 · 结构句型", description: "按方位、设施变化和区域改造整理 Band 7 句型。", editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡" },
         "task1-map-samples": { task: "task1", collection: "samples", task1Type: "map", parent: "task1-type", eyebrow: "TASK 1 · MAP", title: "地图 · 范文收藏", description: "保存地图范文。", editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡" },
-        "task2-structures": {
+        "task2-opinion-structures": {
           task: "task2",
           collection: "structures",
-          parent: "task2",
-          eyebrow: "TASK 2 · STRUCTURES",
-          title: "大作文 · 结构句型",
-          description: "按开头段、论点提出、论证展开、让步转折和结尾段整理句型。",
+          task2Type: "opinion",
+          parent: "task2-type",
+          eyebrow: "TASK 2 · OPINION",
+          title: "观点论证型 · 结构句型",
+          description: "按 Introduction、主体段和 Conclusion 结构筛选 Band 7 句型。",
           editorTitle: "编辑短语卡",
           libraryTitle: "短语库",
           smartTitle: "智能添加短语卡",
           buttonTitle: "生成短语卡",
+        },
+        "task2-opinion-samples": {
+          task: "task2", collection: "samples", task2Type: "opinion", parent: "task2-type",
+          eyebrow: "TASK 2 · OPINION", title: "观点论证型 · 范文收藏", description: "保存观点论证型优秀范文。",
+          editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡",
+        },
+        "task2-discussion-structures": {
+          task: "task2", collection: "structures", task2Type: "discussion", parent: "task2-type",
+          eyebrow: "TASK 2 · DISCUSSION", title: "双边讨论型 · 结构句型", description: "按双方观点与个人立场筛选 Band 7 句型。",
+          editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡",
+        },
+        "task2-discussion-samples": {
+          task: "task2", collection: "samples", task2Type: "discussion", parent: "task2-type",
+          eyebrow: "TASK 2 · DISCUSSION", title: "双边讨论型 · 范文收藏", description: "保存双边讨论型优秀范文。",
+          editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡",
+        },
+        "task2-problem-structures": {
+          task: "task2", collection: "structures", task2Type: "problem", parent: "task2-type",
+          eyebrow: "TASK 2 · PROBLEM", title: "问题分析型 · 结构句型", description: "按问题、原因、方案和第二问筛选 Band 7 句型。",
+          editorTitle: "编辑短语卡", libraryTitle: "短语库", smartTitle: "智能添加短语卡", buttonTitle: "生成短语卡",
+        },
+        "task2-problem-samples": {
+          task: "task2", collection: "samples", task2Type: "problem", parent: "task2-type",
+          eyebrow: "TASK 2 · PROBLEM", title: "问题分析型 · 范文收藏", description: "保存问题分析型优秀范文。",
+          editorTitle: "添加范文", libraryTitle: "范文库", smartTitle: "智能添加范文", buttonTitle: "生成范文卡",
         },
         "task2-topics": {
           task: "task2",
@@ -3427,9 +3765,9 @@
         },
       };
       function getWritingBranchId() {
-        return state.writingView === "task1"
-          ? `task1-${state.writingTask1Type}-${state.writingCollection}`
-          : `${state.writingView}-${state.writingCollection}`;
+        if (state.writingView === "task1") return `task1-${state.writingTask1Type}-${state.writingCollection}`;
+        if (state.writingCollection === "topics") return "task2-topics";
+        return `task2-${state.writingTask2Type}-${state.writingCollection}`;
       }
       function getWritingBranchMeta() {
         return WRITING_BRANCHES[getWritingBranchId()];
@@ -3437,13 +3775,15 @@
       function openWritingScreen(screen) {
         if (screen === "branch") screen = getWritingBranchId();
         if (!$("#writing-backdrop").hidden) closeWritingModal();
-        if (screen === "task1" || screen === "task1-data" || screen === "task1-type" || screen === "task2" || screen === "writing-home") {
+        if (screen === "task1" || screen === "task1-data" || screen === "task1-type" || screen === "task2" || screen === "task2-general" || screen === "task2-type" || screen === "writing-home") {
           state.writingScreen = screen;
           if (screen === "task1-type") renderWritingTask1Type();
+          if (screen === "task2-type") renderWritingTask2Type();
         } else if (WRITING_BRANCHES[screen]) {
           const branch = WRITING_BRANCHES[screen];
           state.writingView = branch.task;
           if (branch.task1Type) state.writingTask1Type = branch.task1Type;
+          if (branch.task2Type) state.writingTask2Type = branch.task2Type;
           state.writingCollection = branch.collection;
           state.writingScreen = "branch";
           state.writingCategory = "all";
@@ -3464,6 +3804,14 @@
         $("#writing-task1-type-description").textContent = type.description;
         $("#writing-task1-structures-entry").dataset.writingBranch = `task1-${state.writingTask1Type}-structures`;
         $("#writing-task1-samples-entry").dataset.writingBranch = `task1-${state.writingTask1Type}-samples`;
+      }
+      function renderWritingTask2Type() {
+        const type = WRITING_TASK2_STRUCTURE_CONFIG[state.writingTask2Type] || WRITING_TASK2_STRUCTURE_CONFIG.opinion;
+        $("#writing-task2-type-eyebrow").textContent = `TASK 2 · ${state.writingTask2Type.toUpperCase()}`;
+        $("#writing-task2-type-title").textContent = type.label;
+        $("#writing-task2-type-description").textContent = type.description;
+        $("#writing-task2-structures-entry").dataset.writingBranch = `task2-${state.writingTask2Type}-structures`;
+        $("#writing-task2-samples-entry").dataset.writingBranch = `task2-${state.writingTask2Type}-samples`;
       }
       function renderWritingBranch() {
         const meta = getWritingBranchMeta();
@@ -3490,8 +3838,12 @@
       function renderWritingCategoryFilter() {
         const select = $("#writing-category-filter");
         const meta = getWritingBranchMeta();
-        const isTask1Structure = state.writingView === "task1" && state.writingCollection === "structures";
-        const categories = isTask1Structure ? getTask1TypeConfig(meta?.task1Type || state.writingTask1Type).sections : getWritingConfig().categories;
+        const isStructureCollection = state.writingCollection === "structures";
+        const categories = isStructureCollection
+          ? state.writingView === "task1"
+            ? getTask1TypeConfig(meta?.task1Type || state.writingTask1Type).sections
+            : getTask2TypeConfig(meta?.task2Type || state.writingTask2Type).sections
+          : getWritingConfig().categories;
         if (state.writingCategory !== "all" && !categories[state.writingCategory]) state.writingCategory = "all";
         select.replaceChildren();
         const all = document.createElement("option");
@@ -3505,14 +3857,21 @@
           select.append(option);
         });
         select.value = state.writingCategory;
-        select.setAttribute("aria-label", isTask1Structure ? "写作阶段筛选" : "作文分类");
+        select.setAttribute("aria-label", isStructureCollection ? "写作结构筛选" : "作文分类");
       }
       function renderWritingFunctionFilter() {
         const select = $("#writing-function-filter");
-        const isTask1Structure = state.writingView === "task1" && state.writingCollection === "structures";
-        select.hidden = !isTask1Structure;
-        if (!isTask1Structure) return;
-        const functions = getTask1TypeConfig(getWritingBranchMeta()?.task1Type || state.writingTask1Type).functions;
+        const isStructureCollection = state.writingCollection === "structures";
+        select.hidden = !isStructureCollection;
+        if (!isStructureCollection) return;
+        const meta = getWritingBranchMeta();
+        const type = state.writingView === "task1" ? (meta?.task1Type || state.writingTask1Type) : (meta?.task2Type || state.writingTask2Type);
+        const config = state.writingView === "task1" ? getTask1TypeConfig(type) : getTask2TypeConfig(type);
+        const functions = { ...config.functions };
+        if (state.writingCategory !== "all") {
+          const used = new Set(getWritingItems().filter((item) => (state.writingView === "task1" ? item.task1Type === type : item.task2Type === type) && item.section === state.writingCategory).map((item) => item.function));
+          Object.keys(functions).forEach((id) => { if (!used.has(id)) delete functions[id]; });
+        }
         if (state.writingFunction !== "all" && !functions[state.writingFunction]) state.writingFunction = "all";
         select.replaceChildren();
         const all = document.createElement("option");
@@ -3561,11 +3920,12 @@
         const list = $("#writing-list");
         const branch = getWritingBranchMeta();
         const task1Type = branch?.task1Type || state.writingTask1Type;
-        const isTask1Structure = state.writingView === "task1" && state.writingCollection === "structures";
+        const task2Type = branch?.task2Type || state.writingTask2Type;
+        const isStructureCollection = state.writingCollection === "structures";
         const items = getOrderedItems(getWritingItems()).filter((item) => {
-          const matchesType = state.writingView !== "task1" || item.task1Type === task1Type;
-          const matchesCategory = state.writingCategory === "all" || (isTask1Structure ? item.section === state.writingCategory : item.category === state.writingCategory);
-          const matchesFunction = !isTask1Structure || state.writingFunction === "all" || item.function === state.writingFunction;
+          const matchesType = state.writingView === "task1" ? item.task1Type === task1Type : state.writingCollection !== "topics" ? item.task2Type === task2Type : true;
+          const matchesCategory = state.writingCategory === "all" || (isStructureCollection ? item.section === state.writingCategory : item.category === state.writingCategory);
+          const matchesFunction = !isStructureCollection || state.writingFunction === "all" || item.function === state.writingFunction;
           const matchesStar = state.writingStarFilter !== "starred" || item.star > 0;
           return matchesType && matchesCategory && matchesFunction && matchesStar;
         });
@@ -3610,14 +3970,17 @@
           else titleText.textContent = titleValue;
           const tag = document.createElement("span");
           tag.className = `category-tag${state.writingView === "task2" ? " blue" : ""}`;
-          tag.textContent = isTask1Structure
+          tag.textContent = state.writingView === "task1" && isStructureCollection
             ? getTask1TypeConfig(task1Type).sections[item.section] || item.section
-            : getWritingCategoryLabel(state.writingView, state.writingCollection, item.category);
+            : state.writingView === "task2" && isStructureCollection
+              ? getTask2TypeConfig(task2Type).sections[item.section] || item.section
+              : getWritingCategoryLabel(state.writingView, state.writingCollection, item.category);
           title.append(titleText, tag);
-          if (isTask1Structure) {
+          if (isStructureCollection) {
             const functionTag = document.createElement("span");
             functionTag.className = "category-tag";
-            functionTag.textContent = getTask1TypeConfig(task1Type).functions[item.function] || item.function;
+            const typeConfig = state.writingView === "task1" ? getTask1TypeConfig(task1Type) : getTask2TypeConfig(task2Type);
+            functionTag.textContent = typeConfig.functions[item.function] || item.function;
             title.append(functionTag);
           }
           if (isTopic) {
@@ -3706,8 +4069,11 @@
       function populateWritingModalCategories(preferred = "") {
         const task = $("#writing-task").value;
         const collection = $("#writing-collection").value;
-        const isTask1Structure = task === "task1" && collection === "structures";
-        const categories = isTask1Structure ? getTask1TypeConfig().sections : getWritingConfig(task, collection).categories;
+        const isStructure = collection === "structures";
+        const isTask1Structure = task === "task1" && isStructure;
+        const categories = isStructure
+          ? task === "task1" ? getTask1TypeConfig().sections : getTask2TypeConfig().sections
+          : getWritingConfig(task, collection).categories;
         const select = $("#writing-category");
         select.replaceChildren();
         Object.entries(categories).forEach(([value, label]) => {
@@ -3717,11 +4083,11 @@
           select.append(option);
         });
         select.value = categories[preferred] ? preferred : Object.keys(categories)[0];
-        select.setAttribute("aria-label", isTask1Structure ? "写作阶段" : "写作分类");
+        select.setAttribute("aria-label", isStructure ? "写作结构" : "写作分类");
         const functionSelect = $("#writing-function");
-        functionSelect.hidden = !isTask1Structure;
-        if (!isTask1Structure) return;
-        const functions = getTask1TypeConfig().functions;
+        functionSelect.hidden = !isStructure;
+        if (!isStructure) return;
+        const functions = task === "task1" ? getTask1TypeConfig().functions : getTask2TypeConfig().functions;
         const preferredFunction = String(functionSelect.dataset.value || "");
         functionSelect.replaceChildren();
         Object.entries(functions).forEach(([value, label]) => {
@@ -3918,6 +4284,7 @@
         $("#writing-task").value = task;
         $("#writing-collection").value = collection;
         if (task === "task1" && item?.task1Type) state.writingTask1Type = item.task1Type;
+        if (task === "task2" && item?.task2Type) state.writingTask2Type = item.task2Type;
         $("#writing-function").dataset.value = item?.function || "";
         updateWritingModalFields(category || item?.section || item?.category || "");
         $("#writing-title").value = item?.title || "";
@@ -3972,8 +4339,9 @@
           createdAt: existingLocation?.item.createdAt || Date.now(),
           order: existingLocation?.item.order ?? getNextNewItemOrder(state.writing[task][collection]),
           task1Type: task === "task1" ? state.writingTask1Type : "",
-          section: task === "task1" && collection === "structures" ? $("#writing-category").value : "",
-          function: task === "task1" && collection === "structures" ? $("#writing-function").value : "",
+          task2Type: task === "task2" ? state.writingTask2Type : "",
+          section: collection === "structures" ? $("#writing-category").value : "",
+          function: collection === "structures" ? $("#writing-function").value : "",
           category: $("#writing-category").value,
           title,
           content,
@@ -4048,13 +4416,47 @@
             reason: `已按当前大作文话题收藏识别${getWritingCategoryLabel("task2", "topics", category)}话题。`,
           };
         }
+        if (task === "task2" && collection === "structures") {
+          const config = getTask2TypeConfig();
+          const markers = [
+            ["conclusion", ["in conclusion", "to sum up", "overall"]],
+            ["thesis", ["i believe", "in my view", "i would argue", "this essay argues"]],
+            ["viewA", ["some people", "one view", "supporters of"]],
+            ["viewB", ["others", "another view", "opponents"]],
+            ["problem", ["problem", "issue", "difficulty"]],
+            ["cause", ["cause", "because", "factor"]],
+            ["solution", ["solution", "measure", "tackle", "address"]],
+            ["secondQuestion", ["regarding", "the second question"]],
+            ["body1", ["one reason", "firstly", "for example"]],
+            ["body2", ["another reason", "moreover", "however"]],
+          ];
+          const detectedSection = markers.find(([section, words]) => config.sections[section] && words.some((word) => value.includes(word)))?.[0];
+          const section = detectedSection || getFirstCategoryId(config.sections);
+          const functionMarkers = [
+            ["conclusion", ["in conclusion", "to sum up"]],
+            ["thesis", ["i believe", "in my view", "i would argue"]],
+            ["example", ["for example", "for instance"]],
+            ["explanation", ["because", "this is largely because"]],
+            ["result", ["as a result", "consequently"]],
+            ["solutionIntro", ["solution", "response"]],
+            ["measure", ["measure", "policy", "should"]],
+            ["impact", ["impact", "consequence", "effect"]],
+          ];
+          return {
+            category: section,
+            function: functionMarkers.find(([name, words]) => config.functions[name] && words.some((word) => value.includes(word)))?.[0] || getFirstCategoryId(config.functions),
+            reason: "已按当前大作文题型识别结构与功能。",
+          };
+        }
         const structureMarkers = [
           ["conclusion", ["in conclusion", "to sum up", "finally"]],
           ["concession", ["however", "although", "while", "despite", "on the other hand"]],
           ["development", ["firstly", "moreover", "one reason", "another reason", "because", "for example"]],
           ["thesis", ["i believe", "i argue", "in my view", "should", "must"]],
         ];
-        const categories = getWritingConfig(task, collection).categories;
+        const categories = task === "task2" && collection === "structures"
+          ? getTask2TypeConfig().sections
+          : getWritingConfig(task, collection).categories;
         const detected = structureMarkers.find(([, markers]) => markers.some((marker) => value.includes(marker)))?.[0];
         return {
           category: categories[detected] ? detected : getFirstCategoryId(categories),
@@ -4083,7 +4485,7 @@
           });
           $("#writing-content").value = input;
           $("#writing-translation").value = translation;
-          if (task === "task1" && collection === "structures" && recommendation.function) {
+          if (collection === "structures" && recommendation.function) {
             $("#writing-function").value = recommendation.function;
           }
           if (collection === "topics") $("#writing-note-type-inline").value = recommendation.noteType || "other";
@@ -4748,6 +5150,10 @@
       $$("[data-writing-task1-type]").forEach((element) => element.addEventListener("click", () => {
         state.writingTask1Type = element.dataset.writingTask1Type;
         openWritingScreen("task1-type");
+      }));
+      $$(`[data-writing-task2-type]`).forEach((element) => element.addEventListener("click", () => {
+        state.writingTask2Type = element.dataset.writingTask2Type;
+        openWritingScreen("task2-type");
       }));
       $$("[data-speaking-screen-target]").forEach((element) => element.addEventListener("click", () => openSpeakingScreen(element.dataset.speakingScreenTarget)));
       $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
