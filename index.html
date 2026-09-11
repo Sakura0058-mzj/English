@@ -1531,7 +1531,7 @@
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const SPEAKING_CARD_SEED_KEY = "ielts-study-helper.speaking-cards-seed.v1";
-      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v2";
+      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CATEGORY_UPDATED_AT_KEY = "ielts-study-helper.category-config-updated-at.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
@@ -3088,6 +3088,18 @@
             }
           });
         });
+        const part1Functions = next.speaking["part1-functions"] || {};
+        const fallbackPart1Function = getFirstCategoryId(part1Functions);
+        (state.speaking.cards?.part1 || []).forEach((item) => {
+          const nextFunctions = (item.functions || []).filter((id) => part1Functions[id]);
+          if (!nextFunctions.length && item.functions?.length) {
+            item.functions = fallbackPart1Function ? [fallbackPart1Function] : [];
+            speakingChanged = true;
+          } else if (nextFunctions.length !== (item.functions || []).length) {
+            item.functions = nextFunctions;
+            speakingChanged = true;
+          }
+        });
         Object.entries(next.writing).forEach(([task, collections]) => {
           Object.entries(collections).forEach(([collection, categories]) => {
             if (collection === "structures" && ["task1", "task2"].includes(task)) {
@@ -3340,9 +3352,7 @@
         }
         const next = { cards };
         try {
-          const hasCardLibraries = data?.cards && Array.isArray(data.cards.part1) && Array.isArray(data.cards.part2) && Array.isArray(data.cards.part3) && data.cards.topics && typeof data.cards.topics === "object";
-          const needsPart1Seed = !hasCardLibraries || cards.part1.length === 0;
-          if (needsPart1Seed) {
+          if (localStorage.getItem(SPEAKING_CARD_SEED_KEY) !== SPEAKING_CARD_SEED_VERSION) {
             const now = Date.now();
             const embeddedSeeds = new Set(SPEAKING_SYNONYM_SEED.map((item) => `${item.original}\u0000${item.translation}`));
             const legacyUserCards = (data?.synonyms || [])
@@ -4566,18 +4576,6 @@
         $("#speaking-part-switch").hidden = isTopic;
         ["part1", "part2", "part3"].forEach((part) => {
           $(`#speaking-${part}`).setAttribute("aria-current", String(part === state.speakingPart ? "page" : "false"));
-        });
-        const part1Functions = next.speaking["part1-functions"] || {};
-        const fallbackPart1Function = getFirstCategoryId(part1Functions);
-        (state.speaking.cards?.part1 || []).forEach((item) => {
-          const nextFunctions = (item.functions || []).filter((id) => part1Functions[id]);
-          if (!nextFunctions.length && item.functions?.length) {
-            item.functions = fallbackPart1Function ? [fallbackPart1Function] : [];
-            speakingChanged = true;
-          } else if (nextFunctions.length !== (item.functions || []).length) {
-            item.functions = nextFunctions;
-            speakingChanged = true;
-          }
         });
         $$("[data-speaking-card-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingCardPanelView !== state.speakingPanelView));
         $$("[data-speaking-card-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.speakingCardPanel === state.speakingPanelView)));
