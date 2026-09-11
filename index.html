@@ -1531,7 +1531,7 @@
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const SPEAKING_CARD_SEED_KEY = "ielts-study-helper.speaking-cards-seed.v1";
-      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v1";
+      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v2";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CATEGORY_UPDATED_AT_KEY = "ielts-study-helper.category-config-updated-at.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
@@ -3340,7 +3340,9 @@
         }
         const next = { cards };
         try {
-          if (localStorage.getItem(SPEAKING_CARD_SEED_KEY) !== SPEAKING_CARD_SEED_VERSION) {
+          const hasCardLibraries = data?.cards && Array.isArray(data.cards.part1) && Array.isArray(data.cards.part2) && Array.isArray(data.cards.part3) && data.cards.topics && typeof data.cards.topics === "object";
+          const needsPart1Seed = !hasCardLibraries || cards.part1.length === 0;
+          if (needsPart1Seed) {
             const now = Date.now();
             const embeddedSeeds = new Set(SPEAKING_SYNONYM_SEED.map((item) => `${item.original}\u0000${item.translation}`));
             const legacyUserCards = (data?.synonyms || [])
