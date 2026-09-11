@@ -1112,21 +1112,17 @@
       <section class="view-panel" data-page="speaking" hidden>
         <section class="speaking-screen" data-speaking-screen="speaking-home">
           <div class="module-heading">
-            <div><p class="eyebrow" style="color:var(--coral)">SPEAKING</p><h1>口语模块</h1><p>选择结构化表达或同义替换，整理你的口语素材。</p></div>
+            <div><p class="eyebrow" style="color:var(--coral)">SPEAKING</p><h1>口语模块</h1><p>通过回答结构和话题素材，积累自然的口语表达。</p></div>
           </div>
           <div class="speaking-entry-grid">
             <button class="feature-card" data-speaking-screen-target="speaking-structure-home"><span class="feature-icon coral">句</span><h2>结构化表达</h2><p>按 Part 1、Part 2 和 Part 3 整理自然表达。</p><span class="feature-link" style="color:var(--coral)">进入结构化表达 →</span></button>
-            <button class="feature-card" data-speaking-screen-target="speaking-synonyms"><span class="feature-icon sage">换</span><h2>同义替换</h2><p>收藏更自然、更丰富的口语替换表达。</p><span class="feature-link">进入同义替换 →</span></button>
+            <button class="feature-card" data-speaking-screen-target="speaking-topic-home"><span class="feature-icon sage">题</span><h2>话题</h2><p>按人物、地点和经历等方向积累表达。</p><span class="feature-link">进入话题 →</span></button>
           </div>
         </section>
 
         <section class="speaking-screen" data-speaking-screen="speaking-structure-home" hidden>
           <div class="module-heading">
-            <div><p class="eyebrow">STRUCTURED SPEAKING</p><h1>结构化表达</h1><p>选择 Part，进入对应的短语卡和短语库。</p></div>
-            <div class="speaking-switch" aria-label="口语素材类型切换">
-              <button class="speaking-switch-button" type="button" aria-current="page">结构化表达</button>
-              <button class="speaking-switch-button" type="button" data-speaking-screen-target="speaking-synonyms">同义替换</button>
-            </div>
+            <div><p class="eyebrow">STRUCTURED SPEAKING</p><h1>结构化表达</h1><p>选择 Part，进入对应的表达卡库。</p></div>
           </div>
           <div class="speaking-entry-grid three">
             <button class="feature-card" data-speaking-structure-part="part1"><span class="feature-icon coral">1</span><h2>Part 1</h2><p>整理日常话题、偏好和个人经历表达。</p><span class="feature-link" style="color:var(--coral)">进入 Part 1 →</span></button>
@@ -1135,91 +1131,62 @@
           </div>
         </section>
 
-        <section class="speaking-screen" data-speaking-screen="speaking-structure-branch" hidden>
+        <section class="speaking-screen" data-speaking-screen="speaking-card-branch" hidden>
           <div class="module-heading">
             <div><p id="speaking-branch-eyebrow" class="eyebrow">SPEAKING · STRUCTURED</p><h1 id="speaking-branch-title">Part 1</h1><p id="speaking-branch-description">整理你的结构化口语表达。</p></div>
             <div class="speaking-branch-switches">
-              <div class="speaking-switch" aria-label="口语素材类型切换">
-                <button class="speaking-switch-button" type="button" aria-current="page">结构化表达</button>
-                <button class="speaking-switch-button" type="button" data-speaking-screen-target="speaking-synonyms">同义替换</button>
-              </div>
-              <div class="speaking-switch" aria-label="口语 Part 切换">
+              <div id="speaking-part-switch" class="speaking-switch" aria-label="口语 Part 切换">
                 <button id="speaking-part1" class="speaking-switch-button" type="button" data-speaking-structure-part="part1">Part 1</button>
                 <button id="speaking-part2" class="speaking-switch-button" type="button" data-speaking-structure-part="part2">Part 2</button>
                 <button id="speaking-part3" class="speaking-switch-button" type="button" data-speaking-structure-part="part3">Part 3</button>
               </div>
             </div>
           </div>
-          <div class="word-tabs writing-tabs" role="tablist" aria-label="口语素材视图">
-            <button id="speaking-editor-tab" class="word-tab" data-speaking-panel="editor" aria-selected="true">编辑短语卡</button>
-            <button id="speaking-library-tab" class="word-tab" data-speaking-panel="library" aria-selected="false">短语库 <span id="speaking-count-tab" class="word-tab-count">0</span></button>
+          <div class="word-tabs writing-tabs" role="tablist" aria-label="口语词卡视图">
+            <button id="speaking-editor-tab" class="word-tab" data-speaking-card-panel="editor" aria-selected="true">添加词卡</button>
+            <button id="speaking-library-tab" class="word-tab" data-speaking-card-panel="library" aria-selected="false">词卡库 <span id="speaking-count-tab" class="word-tab-count">0</span></button>
           </div>
 
-          <div class="word-panel" data-speaking-panel-view="editor">
+          <div class="word-panel" data-speaking-card-panel-view="editor">
             <section class="panel writing-smart-panel speaking-panel">
               <div class="writing-smart-heading">
-                <div><p class="section-kicker">SMART ADD</p><h2>智能添加口语短语卡</h2></div>
+                <div><p class="section-kicker">SMART ADD</p><h2>添加口语词卡</h2></div>
                 <span class="status-badge">联网识别</span>
               </div>
-              <textarea id="speaking-structure-input" class="writing-smart-input" placeholder="粘贴英文句子或段落，生成当前 Part 下的口语短语卡"></textarea>
+              <textarea id="speaking-card-input" class="writing-smart-input" placeholder="输入需要整理的英文表达"></textarea>
               <div class="writing-smart-actions">
-                <p id="speaking-structure-status" class="writing-status" role="status" aria-live="polite">生成后可调整左上角分类，再确认收藏。</p>
-                <button id="speaking-structure-button" class="primary-button" type="button">生成短语卡</button>
+                <p id="speaking-card-status" class="writing-status" role="status" aria-live="polite">生成后可补充更自然的替换表达。</p>
+                <button id="speaking-card-button" class="primary-button" type="button">生成词卡</button>
               </div>
             </section>
           </div>
 
-          <div class="word-panel" data-speaking-panel-view="library" hidden>
+          <div class="word-panel" data-speaking-card-panel-view="library" hidden>
             <section class="panel library-panel writing-library speaking-library">
               <div class="library-toolbar">
-                <div class="speaking-library-title"><div><p class="section-kicker">SPEAKING BANK</p><h2>短语库</h2></div><span id="speaking-count" class="word-tab-count">0</span></div>
+                <div class="speaking-library-title"><div><p class="section-kicker">SPEAKING BANK</p><h2 id="speaking-library-heading">词卡库</h2></div><span id="speaking-count" class="word-tab-count">0</span></div>
                 <div class="library-controls">
-                  <select id="speaking-category-filter" class="sort-select" aria-label="口语分类"></select>
-                  <select id="speaking-star-filter" class="sort-select" aria-label="星级筛选"><option value="all">全部句子</option><option value="starred">仅显示带星级句子</option></select>
+                  <select id="speaking-structure-filter" class="sort-select" aria-label="回答结构筛选"></select>
+                  <select id="speaking-function-filter" class="sort-select" aria-label="功能分类筛选"></select>
+                  <select id="speaking-star-filter" class="sort-select" aria-label="星级筛选"><option value="all">全部词卡</option><option value="starred">仅显示带星级词卡</option></select>
                 </div>
               </div>
-              <div id="speaking-structure-list" class="library-list speaking-list"></div>
+              <div id="speaking-card-list" class="library-list speaking-list"></div>
             </section>
           </div>
         </section>
 
-        <section class="speaking-screen" data-speaking-screen="speaking-synonyms" hidden>
+        <section class="speaking-screen" data-speaking-screen="speaking-topic-home" hidden>
           <div class="module-heading">
-            <div><p class="eyebrow">SPEAKING · SYNONYMS</p><h1>同义替换</h1><p>收藏原始表达和更自然的英文替换词。</p></div>
-            <div class="speaking-switch" aria-label="口语素材类型切换">
-              <button class="speaking-switch-button" type="button" data-speaking-screen-target="speaking-structure-home">结构化表达</button>
-              <button class="speaking-switch-button" type="button" aria-current="page">同义替换</button>
-            </div>
+            <div><p class="eyebrow">SPEAKING · TOPICS</p><h1>话题</h1><p>按常见口语话题积累表达；每个话题拥有独立词卡库。</p></div>
           </div>
-          <div class="word-tabs writing-tabs" role="tablist" aria-label="同义替换视图">
-            <button class="word-tab" data-speaking-synonym-panel="editor" aria-selected="true">添加替换</button>
-            <button class="word-tab" data-speaking-synonym-panel="library" aria-selected="false">替换库 <span id="speaking-synonym-count-tab" class="word-tab-count">0</span></button>
-          </div>
-
-          <div class="word-panel" data-speaking-synonym-panel-view="editor">
-            <section class="panel writing-smart-panel speaking-panel">
-              <div class="writing-smart-heading">
-                <div><p class="section-kicker">SMART ADD</p><h2>添加同义替换卡</h2></div>
-                <span class="status-badge">联网翻译</span>
-              </div>
-              <textarea id="speaking-synonym-input" class="writing-smart-input" placeholder="输入需要替换的英文表达"></textarea>
-              <div class="writing-smart-actions">
-                <p id="speaking-synonym-status" class="writing-status" role="status" aria-live="polite">生成后可以继续添加多个替换表达。</p>
-                <button id="speaking-synonym-button" class="primary-button" type="button">生成替换卡</button>
-              </div>
-            </section>
-          </div>
-
-          <div class="word-panel" data-speaking-synonym-panel-view="library" hidden>
-            <section class="panel library-panel writing-library speaking-library">
-              <div class="library-toolbar">
-                <div class="speaking-library-title"><div><p class="section-kicker">SPEAKING BANK</p><h2>替换库</h2></div><span id="speaking-synonym-count" class="word-tab-count">0</span></div>
-                <div class="library-controls">
-                  <select id="speaking-synonym-star-filter" class="sort-select" aria-label="替换库星级筛选"><option value="all">全部替换</option><option value="starred">仅显示带星级替换</option></select>
-                </div>
-              </div>
-              <div id="speaking-synonym-list" class="library-list speaking-list"></div>
-            </section>
+          <div class="speaking-entry-grid three">
+            <button class="feature-card" data-speaking-topic="people"><span class="feature-icon coral">人</span><h2>人物</h2><p>人物特征、关系与故事表达。</p><span class="feature-link" style="color:var(--coral)">进入人物 →</span></button>
+            <button class="feature-card" data-speaking-topic="places"><span class="feature-icon sage">地</span><h2>地点</h2><p>地点描述、氛围和方位表达。</p><span class="feature-link">进入地点 →</span></button>
+            <button class="feature-card" data-speaking-topic="experiences"><span class="feature-icon blue">事</span><h2>经历 / 事件</h2><p>经历、回忆与事件叙述表达。</p><span class="feature-link" style="color:var(--blue)">进入经历 →</span></button>
+            <button class="feature-card" data-speaking-topic="objects"><span class="feature-icon coral">物</span><h2>物品</h2><p>物品用途、特点与感受表达。</p><span class="feature-link" style="color:var(--coral)">进入物品 →</span></button>
+            <button class="feature-card" data-speaking-topic="activities"><span class="feature-icon sage">动</span><h2>活动</h2><p>爱好、日常活动和体验表达。</p><span class="feature-link">进入活动 →</span></button>
+            <button class="feature-card" data-speaking-topic="other"><span class="feature-icon blue">他</span><h2>其他</h2><p>暂未归类的口语素材。</p><span class="feature-link" style="color:var(--blue)">进入其他 →</span></button>
           </div>
         </section>
       </section>
@@ -1457,6 +1424,7 @@
             <div id="speaking-synonym-original" class="speaking-original" aria-label="原始表达，只读"></div>
           </div>
           <label class="writing-form-item wide" style="display:block;margin-top:12px"><span class="writing-form-label">中文翻译</span><textarea id="speaking-synonym-translation" class="writing-form-control" placeholder="联网获取后可手动修改"></textarea></label>
+          <label id="speaking-card-functions-field" class="writing-form-item wide" style="display:block;margin-top:12px" hidden><span class="writing-form-label">Part 1 功能归类（可多选）</span><select id="speaking-card-functions" class="writing-form-control" multiple size="5" aria-label="Part 1 功能归类"></select></label>
           <div class="speaking-original-card">
             <span class="writing-form-label">同义替换表达</span>
             <div id="speaking-substitution-list" class="speaking-substitution-list"></div>
@@ -1562,6 +1530,8 @@
       const WRITING_TASK2_SEED_VERSION = "band7-v2";
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
+      const SPEAKING_CARD_SEED_KEY = "ielts-study-helper.speaking-cards-seed.v1";
+      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CATEGORY_UPDATED_AT_KEY = "ielts-study-helper.category-config-updated-at.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
@@ -1913,6 +1883,35 @@
           },
         },
       };
+      const SPEAKING_PART1_CARD_CONFIG = {
+        structures: {
+          basic: "基础简洁结构",
+          dpf: "DPF · Direct Answer / Persona / Feeling",
+          dwc: "DWC · Direct Answer / 5W1H / Change",
+          dcf: "DCF · Direct Answer / Condition / Feeling",
+          oreo: "OREO · Opinion / Reason / Example / Summary",
+        },
+        functions: {
+          direct: "直接回答", like: "表达喜欢", dislike: "表达不喜欢", reason: "表达原因", feeling: "表达感受",
+          frequency: "表达频率", fromWhen: "表达时间起点", past: "描述过去", change: "描述变化", condition: "表达条件",
+          future: "表达未来愿望", detail: "补充细节", example: "举例", summary: "简单总结", persona: "Persona 建立人设",
+        },
+        structureFunctions: {
+          basic: ["direct", "like", "dislike", "reason", "feeling", "frequency", "detail", "example", "summary"],
+          dpf: ["direct", "persona", "feeling", "frequency", "fromWhen"],
+          dwc: ["direct", "past", "detail", "change", "feeling"],
+          dcf: ["direct", "condition", "future", "feeling"],
+          oreo: ["direct", "reason", "example", "summary"],
+        },
+      };
+      const SPEAKING_TOPIC_CONFIG = {
+        people: { label: "人物", description: "人物特征、关系与故事表达。" },
+        places: { label: "地点", description: "地点描述、氛围和方位表达。" },
+        experiences: { label: "经历 / 事件", description: "经历、回忆与事件叙述表达。" },
+        objects: { label: "物品", description: "物品用途、特点与感受表达。" },
+        activities: { label: "活动", description: "爱好、日常活动和体验表达。" },
+        other: { label: "其他", description: "暂未归类的口语素材。" },
+      };
       // 精选的 Band 7 Task 1 句型：每个写作逻辑类别 25 条，阶段和功能分别可筛选。
       const WRITING_TASK1_STRUCTURE_SEED_ROWS = {
         static: [
@@ -2067,6 +2066,31 @@
         ["important", "重要的", ["crucial", "essential", "vital", "significant", "a key factor"]],
         ["relax", "放松", ["unwind", "chill out", "take it easy", "recharge", "let off steam"]],
       ].map(([original, translation, substitutions]) => ({ original, translation, substitutions }));
+      const SPEAKING_PART1_CARD_SEED = [
+        ["Absolutely.", "当然；绝对是。", ["Definitely.", "No doubt about it.", "One hundred percent."], ["direct"]],
+        ["Not really.", "不太是；不怎么。", ["Not particularly.", "Definitely not.", "No way.", "Not at all."], ["direct", "dislike"]],
+        ["I did, actually.", "是的，我确实做过。", ["Yeah, I did.", "I sure did.", "Yes, quite a lot."], ["direct", "past"]],
+        ["Yeah, I have, actually.", "是的，我确实有过。", ["I've tried that once.", "I've done it a couple of times.", "I've had some experience with it."], ["direct", "past"]],
+        ["I haven't had a chance to yet.", "我还没有机会做这件事。", ["Not yet.", "Unfortunately, I haven't.", "It's still on my bucket list."], ["direct", "future"]],
+        ["I'm really into [activity].", "我真的很喜欢[活动]。", ["I enjoy [activity] a lot.", "I'm quite fond of [activity].", "I'm a big fan of [activity].", "I'm keen on [activity]."], ["like", "direct"]],
+        ["[Activity] is not really my thing.", "[活动]不太适合我；不是我的菜。", ["I'm not that into [activity].", "I'm not the biggest fan of [activity].", "It doesn't really appeal to me."], ["dislike", "direct"]],
+        ["The main reason is that [reason].", "主要原因是[原因]。", ["That's mainly because [reason].", "What I like most is that [reason].", "It works for me because [reason]."], ["reason"]],
+        ["Whenever I do it, I feel [feeling].", "每当我做这件事时，我都会感到[感受]。", ["It really lifts my mood.", "It helps me unwind.", "It relieves stress.", "It gives me a sense of achievement."], ["feeling"]],
+        ["I do it almost every day.", "我几乎每天都做。", ["It's part of my daily routine.", "I tend to do it whenever I have free time.", "I do it whenever I get a chance."], ["frequency"]],
+        ["I do it from time to time.", "我偶尔会做。", ["I do it once in a while.", "I probably do it once or twice a month.", "I do it about three times a week."], ["frequency"]],
+        ["I rarely do it these days.", "我现在很少做。", ["I don't do it very often.", "I only do it once in a blue moon.", "I never really do it."], ["frequency", "dislike"]],
+        ["I've been into [activity] since I was [age/stage].", "我从[年龄/阶段]起就喜欢[活动]。", ["I've enjoyed it since I was a kid.", "I got into it in high school.", "I've liked it ever since university."], ["fromWhen", "like"]],
+        ["I'm quite a [personality] person, so I naturally tend to [activity].", "我是一个比较[性格]的人，所以我自然会倾向于[活动]。", ["I'm naturally curious, so I enjoy trying new things.", "I'm a practical person, so I prefer simple options.", "I'm quite social, so I like being around people."], ["persona", "like"]],
+        ["I grew up in a family that [background], so I've always [habit].", "我在一个[背景]的家庭中长大，所以我一直[习惯]。", ["I was surrounded by [thing] when I was young.", "I was raised in a fairly [adjective] way.", "That is probably why I still [habit] today."], ["persona", "fromWhen"]],
+        ["I'm a big fan of [thing].", "我是[事物]的忠实爱好者。", ["I'm a huge fan of [thing].", "I'm a bit of a [movie/music] buff.", "I've always been fascinated by [thing]."], ["persona", "like"]],
+        ["When I was younger, I used to [activity] with [person] in [place].", "我小时候常和[人]在[地点]做[活动]。", ["I remember doing that at school.", "Back then, I spent a lot of time [activity].", "It gave me a sense of freedom."], ["past", "detail", "feeling"]],
+        ["But now I don't do it as much as I used to.", "但现在我不像以前那么常做了。", ["My attitude towards it has changed over time.", "Actually, I enjoy it even more now.", "These days, I tend to [new habit] instead."], ["change"]],
+        ["If I have a chance, I'll definitely give it a try.", "如果有机会，我一定会试试。", ["If I have enough time and money, I'll do it.", "I'd love to try it when the opportunity comes.", "I'd be willing to give it a go."], ["condition", "future"]],
+        ["It would be an unforgettable experience.", "那会是一次难忘的经历。", ["It sounds amazing.", "It would be a great way to challenge myself.", "I'd get to see things from a different perspective."], ["future", "feeling"]],
+        ["For example, when [situation], I usually [action].", "例如，当[情境]时，我通常会[行动]。", ["For instance, I often [action] when [situation].", "A good example is when [example].", "Take [example] as an example."], ["example", "detail"]],
+        ["Another thing worth mentioning is that [detail].", "另一个值得一提的是[细节]。", ["On top of that, [detail].", "What is more, [detail].", "There is one more thing I really like about it."], ["detail"]],
+        ["So overall, I'd say [summary].", "所以总的来说，我会说[总结]。", ["That is probably why I feel that way.", "So yes, it is definitely part of my life.", "All in all, it suits me quite well."], ["summary"]],
+      ].map(([original, translation, substitutions, functions]) => ({ original, translation, substitutions, functions }));
       const CAMBRIDGE5_SEED = [
         ["minibus", "/ˈmɪnibʌs/", "小型公共汽车", "a small bus that carries a limited number of passengers", "minibus service; airport minibus", "shuttle bus, small bus", "The city could reduce traffic by expanding its minibus service.", "城市可以通过扩大小型公交服务来缓解交通。"],
         ["reptile", "/ˈreptaɪl/", "爬行动物", "an animal such as a snake, lizard, or turtle with cold blood", "reptile species; marine reptile", "cold-blooded animal", "The loss of wetlands threatens many reptile species.", "湿地减少威胁着许多爬行动物物种。"],
@@ -2216,14 +2240,11 @@
         speakingScreen: "speaking-home",
         speakingPanelView: "editor",
         speakingPart: "part1",
-        speakingCategory: "all",
+        speakingTopic: "people",
+        speakingLibraryKind: "part",
+        speakingStructureFilter: "all",
+        speakingFunctionFilter: "all",
         speakingStarFilter: "all",
-        speakingPhraseDetailId: null,
-        speakingPhraseDraftHighlights: [],
-        speakingAnnotationId: null,
-        speakingPendingSelection: null,
-        speakingSynonymPanelView: "editor",
-        speakingSynonymStarFilter: "all",
         speakingSynonymDetailId: null,
         speakingSynonymDraft: null,
         speakingSynonymAddOpen: false,
@@ -2242,6 +2263,7 @@
       let cloudHydrating = false;
       let task1MigratedDuringHydration = false;
       let task2MigratedDuringHydration = false;
+      let speakingMigratedDuringHydration = false;
       let categorySettingsChangedDuringHydration = false;
       let deferredInstallPrompt = null;
 
@@ -2263,6 +2285,7 @@
           writing: state.writing,
           writingTask1SeedVersion: localStorage.getItem(WRITING_TASK1_SEED_KEY) || "",
           writingTask2SeedVersion: localStorage.getItem(WRITING_TASK2_SEED_KEY) || "",
+          speakingCardSeedVersion: localStorage.getItem(SPEAKING_CARD_SEED_KEY) || "",
           speaking: state.speaking,
           categorySettings,
           categorySettingsUpdatedAt,
@@ -2513,6 +2536,10 @@
           state.writing = loadWritingData();
         }
         if (payload.speaking) {
+          if (payload.speakingCardSeedVersion !== SPEAKING_CARD_SEED_VERSION) {
+            localStorage.removeItem(SPEAKING_CARD_SEED_KEY);
+            speakingMigratedDuringHydration = true;
+          }
           localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(payload.speaking));
           state.speaking = loadSpeakingData();
         }
@@ -2520,8 +2547,7 @@
         cacheCloudPayload();
         renderLibrary();
         renderWriting();
-        if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
-        if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+        if (state.speakingScreen === "speaking-card-branch") renderSpeakingCardBranch();
         return true;
       }
       async function hydrateFromCloud() {
@@ -2537,9 +2563,10 @@
         }
         if (data?.payload) {
           applyCloudPayload(data.payload);
-          if (task1MigratedDuringHydration || task2MigratedDuringHydration || categorySettingsChangedDuringHydration) {
+          if (task1MigratedDuringHydration || task2MigratedDuringHydration || speakingMigratedDuringHydration || categorySettingsChangedDuringHydration) {
             task1MigratedDuringHydration = false;
             task2MigratedDuringHydration = false;
+            speakingMigratedDuringHydration = false;
             categorySettingsChangedDuringHydration = false;
             await saveCloudNow();
           }
@@ -2687,9 +2714,11 @@
           ])
         );
         return {
-          speaking: Object.fromEntries(
-            Object.entries(SPEAKING_CONFIG).map(([part, config]) => [part, { ...config.categories }])
-          ),
+          speaking: {
+            ...Object.fromEntries(Object.entries(SPEAKING_CONFIG).map(([part, config]) => [part, { ...config.categories }])),
+            "part1-structures": { ...SPEAKING_PART1_CARD_CONFIG.structures },
+            "part1-functions": { ...SPEAKING_PART1_CARD_CONFIG.functions },
+          },
           writing,
         };
       }
@@ -2746,6 +2775,8 @@
         Object.entries(settings.speaking).forEach(([part, categories]) => {
           if (SPEAKING_CONFIG[part]) SPEAKING_CONFIG[part].categories = { ...categories };
         });
+        if (settings.speaking["part1-structures"]) SPEAKING_PART1_CARD_CONFIG.structures = { ...settings.speaking["part1-structures"] };
+        if (settings.speaking["part1-functions"]) SPEAKING_PART1_CARD_CONFIG.functions = { ...settings.speaking["part1-functions"] };
         Object.entries(settings.writing).forEach(([task, collections]) => {
           Object.entries(collections).forEach(([collection, categories]) => {
             if (collection === "structures" && ["task1", "task2"].includes(task)) return;
@@ -2764,7 +2795,12 @@
       }
       function getSettingsLibraries(module) {
         if (module === "speaking") {
-          return Object.entries(SPEAKING_CONFIG).map(([part, config]) => ({ id: part, label: `${config.label} · 结构化表达` }));
+          return [
+            { id: "part1-structures", label: "Part 1 · 回答结构" },
+            { id: "part1-functions", label: "Part 1 · 功能分类" },
+            { id: "part2", label: "Part 2 · 结构化表达" },
+            { id: "part3", label: "Part 3 · 结构化表达" },
+          ];
         }
         return Object.entries(WRITING_CONFIG).flatMap(([task, taskConfig]) => Object.entries(taskConfig.collections).flatMap(([collection, config]) => {
           if (collection === "structures" && ["task1", "task2"].includes(task)) {
@@ -2948,8 +2984,8 @@
           state.settingsLibraryId = state.writingCollection === "structures"
             ? `${state.writingView}:${state.writingCollection}:${state.writingView === "task1" ? state.writingTask1Type : state.writingTask2Type}:sections`
             : `${state.writingView}:${state.writingCollection}`;
-        } else if (state.settingsModule === "speaking" && state.speakingScreen === "speaking-structure-branch") {
-          state.settingsLibraryId = state.speakingPart;
+        } else if (state.settingsModule === "speaking" && state.speakingScreen === "speaking-card-branch") {
+          state.settingsLibraryId = isPart1CardLibrary() ? "part1-structures" : state.speakingPart;
         } else {
           state.settingsLibraryId = getSettingsLibraries(state.settingsModule)[0]?.id || "";
         }
@@ -3042,6 +3078,8 @@
         let writingChanged = false;
         let speakingChanged = false;
         Object.entries(next.speaking).forEach(([part, categories]) => {
+          if (part === "part1-structures" || part === "part1-functions") return;
+          if (!state.speaking.structures?.[part]) return;
           const fallback = getFirstCategoryId(categories);
           state.speaking.structures[part].forEach((item) => {
             if (!categories[item.category]) {
@@ -3108,8 +3146,7 @@
         applyCategorySettings(categorySettings);
         persistCategorySettings();
         if (state.writingScreen === "branch") renderWritingBranch();
-        if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
-        if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+        if (state.speakingScreen === "speaking-card-branch") renderSpeakingCardBranch();
       }
       function saveSettings() {
         persistSettingsDraft();
@@ -3272,82 +3309,57 @@
         localStorage.setItem(WRITING_STORAGE_KEY, JSON.stringify(state.writing));
         scheduleCloudSave();
       }
+      function normaliseSpeakingCard(item, fallbackFunctions = []) {
+        return {
+          id: item?.id || createId(),
+          createdAt: Number(item?.createdAt) || Date.now(),
+          order: Number(item?.order),
+          original: String(item?.original || ""),
+          translation: String(item?.translation || ""),
+          star: item?.star > 0 ? 1 : 0,
+          functions: [...new Set((Array.isArray(item?.functions) ? item.functions : fallbackFunctions).filter((id) => SPEAKING_PART1_CARD_CONFIG.functions[id]))],
+          substitutions: Array.isArray(item?.substitutions)
+            ? item.substitutions.map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "") })).filter((substitution) => substitution.content)
+            : [],
+        };
+      }
+      function blankSpeakingCards() {
+        return { part1: [], part2: [], part3: [], topics: Object.fromEntries(Object.keys(SPEAKING_TOPIC_CONFIG).map((id) => [id, []])) };
+      }
       function loadSpeakingData() {
-        const blank = { structures: { part1: [], part2: [], part3: [] }, synonyms: [] };
+        let data = {};
+        try { data = JSON.parse(localStorage.getItem(SPEAKING_STORAGE_KEY)) || {}; } catch {}
+        const cards = blankSpeakingCards();
+        if (data?.cards) {
+          ["part1", "part2", "part3"].forEach((library) => {
+            cards[library] = normaliseCollectionOrder((data.cards[library] || []).map((item) => normaliseSpeakingCard(item)));
+          });
+          Object.keys(cards.topics).forEach((topic) => {
+            cards.topics[topic] = normaliseCollectionOrder((data.cards.topics?.[topic] || []).map((item) => normaliseSpeakingCard(item)));
+          });
+        }
+        const next = { cards };
         try {
-          const data = JSON.parse(localStorage.getItem(SPEAKING_STORAGE_KEY));
-          for (const part of Object.keys(blank.structures)) {
-            blank.structures[part] = normaliseCollectionOrder(Array.isArray(data?.structures?.[part])
-              ? data.structures[part].map((item) => ({
-                  id: item.id || createId(),
-                  createdAt: Number(item.createdAt) || Date.now(),
-                  order: Number(item.order),
-                  category: SPEAKING_CONFIG[part].categories[item.category] ? item.category : Object.keys(SPEAKING_CONFIG[part].categories)[0],
-                  content: String(item.content || ""),
-                  translation: String(item.translation || ""),
-                  note: String(item.note || ""),
-                  star: item.star > 0 ? 1 : 0,
-                  highlights: Array.isArray(item.highlights)
-                    ? item.highlights
-                        .filter((highlight) => Number.isInteger(highlight.start) && Number.isInteger(highlight.end) && highlight.end > highlight.start)
-                        .map((highlight) => ({
-                          id: highlight.id || createId(),
-                          start: highlight.start,
-                          end: highlight.end,
-                          text: String(highlight.text || ""),
-                          note: String(highlight.note || ""),
-                        }))
-                    : [],
-                }))
-              : []);
-          }
-          blank.synonyms = normaliseCollectionOrder(Array.isArray(data?.synonyms)
-            ? data.synonyms.map((item) => ({
-                id: item.id || createId(),
-                createdAt: Number(item.createdAt) || Date.now(),
-                order: Number(item.order),
-                original: String(item.original || ""),
-                translation: String(item.translation || ""),
-                star: item.star > 0 ? 1 : 0,
-                substitutions: Array.isArray(item.substitutions)
-                  ? item.substitutions
-                      .map((substitution) => ({
-                        id: substitution.id || createId(),
-                        content: String(substitution.content || ""),
-                      }))
-                      .filter((substitution) => substitution.content)
-                  : [],
-              }))
-            : []);
-        } catch {}
-        try {
-          if (!localStorage.getItem(SPEAKING_PART1_SEED_KEY)) {
+          if (localStorage.getItem(SPEAKING_CARD_SEED_KEY) !== SPEAKING_CARD_SEED_VERSION) {
             const now = Date.now();
-            blank.structures.part1 = SPEAKING_PART1_PHRASE_SEED.map((item, index) => ({
-              id: createId(),
-              createdAt: now + SPEAKING_PART1_PHRASE_SEED.length - index,
-              order: index + 1,
-              category: item.category,
-              content: item.content,
-              translation: item.translation,
-              note: item.note,
-              star: 0,
-              highlights: [],
+            const embeddedSeeds = new Set(SPEAKING_SYNONYM_SEED.map((item) => `${item.original}\u0000${item.translation}`));
+            const legacyUserCards = (data?.synonyms || [])
+              .filter((item) => !embeddedSeeds.has(`${String(item.original || "")}\u0000${String(item.translation || "")}`))
+              .map((item) => normaliseSpeakingCard(item));
+            const part1SeedCards = SPEAKING_PART1_CARD_SEED.map((item, index) => normaliseSpeakingCard({
+              id: createId(), createdAt: now + index, order: index + 1, original: item.original, translation: item.translation, star: 0,
+              substitutions: item.substitutions.map((content) => ({ id: createId(), content })), functions: item.functions,
             }));
-            blank.synonyms = SPEAKING_SYNONYM_SEED.map((item, index) => ({
-              id: createId(),
-              createdAt: now + 1000 + SPEAKING_SYNONYM_SEED.length - index,
-              order: index + 1,
-              original: item.original,
-              translation: item.translation,
-              star: 0,
-              substitutions: item.substitutions.map((content) => ({ id: createId(), content, star: 0 })),
-            }));
-            localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(blank));
-            localStorage.setItem(SPEAKING_PART1_SEED_KEY, "1");
+            cards.part1 = normaliseCollectionOrder([...part1SeedCards, ...legacyUserCards]);
+            cards.part2 = [];
+            cards.part3 = [];
+            cards.topics = Object.fromEntries(Object.keys(SPEAKING_TOPIC_CONFIG).map((id) => [id, []]));
+            localStorage.setItem(SPEAKING_CARD_SEED_KEY, SPEAKING_CARD_SEED_VERSION);
+            localStorage.setItem(SPEAKING_PART1_SEED_KEY, "migrated");
+            localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
           }
         } catch {}
-        return blank;
+        return next;
       }
       function persistSpeakingData() {
         localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(state.speaking));
@@ -3671,11 +3683,9 @@
             navigate("home");
             return;
           }
-          const screen = state.speakingScreen === "speaking-structure-branch"
-            ? "speaking-structure-home"
-            : state.speakingScreen === "speaking-structure-home" || state.speakingScreen === "speaking-synonyms"
-              ? "speaking-home"
-              : "speaking-home";
+          const screen = state.speakingScreen === "speaking-card-branch"
+            ? state.speakingLibraryKind === "topic" ? "speaking-topic-home" : "speaking-structure-home"
+            : "speaking-home";
           openSpeakingScreen(screen);
           return;
         }
@@ -4501,86 +4511,105 @@
       function getSpeakingConfig(part = state.speakingPart) {
         return SPEAKING_CONFIG[part] || SPEAKING_CONFIG.part1;
       }
-      function getSpeakingItems(part = state.speakingPart) {
-        return state.speaking.structures[part] || [];
-      }
       function setSpeakingStatus(message, type = "") {
-        const element = $("#speaking-structure-status");
+        const element = $("#speaking-card-status");
         if (!element) return;
         element.className = `writing-status${type ? ` ${type}` : ""}`;
         element.textContent = message;
       }
-      function setSpeakingSynonymStatus(message, type = "") {
-        const element = $("#speaking-synonym-status");
-        if (!element) return;
-        element.className = `writing-status${type ? ` ${type}` : ""}`;
-        element.textContent = message;
+      function isPart1CardLibrary() {
+        return state.speakingLibraryKind === "part" && state.speakingPart === "part1";
+      }
+      function getSpeakingCards() {
+        if (state.speakingLibraryKind === "topic") return state.speaking.cards.topics[state.speakingTopic] || [];
+        return state.speaking.cards[state.speakingPart] || [];
+      }
+      function setSpeakingCards(cards) {
+        if (state.speakingLibraryKind === "topic") state.speaking.cards.topics[state.speakingTopic] = cards;
+        else state.speaking.cards[state.speakingPart] = cards;
+      }
+      function getSpeakingLibraryLabel() {
+        return state.speakingLibraryKind === "topic" ? SPEAKING_TOPIC_CONFIG[state.speakingTopic].label : getSpeakingConfig().label;
       }
       function openSpeakingScreen(screen) {
-        if (!$("#speaking-phrase-backdrop").hidden) closeSpeakingPhraseModal();
         if (!$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
-        if (screen === "speaking-home" || screen === "speaking-structure-home" || screen === "speaking-synonyms") {
-          state.speakingScreen = screen;
-          if (screen === "speaking-structure-home") {
-            state.speakingPanelView = "editor";
-            state.speakingCategory = "all";
-          }
-          if (screen === "speaking-synonyms") state.speakingSynonymPanelView = "editor";
-        } else if (screen === "speaking-structure-branch") {
-          state.speakingScreen = screen;
-          state.speakingPanelView = "editor";
-          state.speakingCategory = "all";
-        } else {
-          return;
-        }
+        if (!["speaking-home", "speaking-structure-home", "speaking-topic-home", "speaking-card-branch"].includes(screen)) return;
+        state.speakingScreen = screen;
+        if (screen === "speaking-structure-home") { state.speakingLibraryKind = "part"; state.speakingPanelView = "editor"; }
+        if (screen === "speaking-card-branch") { state.speakingPanelView = "editor"; state.speakingStructureFilter = "all"; state.speakingFunctionFilter = "all"; }
         $$("[data-speaking-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingScreen !== state.speakingScreen));
-        if (state.speakingScreen === "speaking-structure-branch") renderSpeakingStructureBranch();
-        if (state.speakingScreen === "speaking-synonyms") renderSpeakingSynonyms();
+        if (state.speakingScreen === "speaking-card-branch") renderSpeakingCardBranch();
         renderBackButton();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       function openSpeakingStructurePart(part) {
         if (!SPEAKING_CONFIG[part]) return;
         state.speakingPart = part;
-        openSpeakingScreen("speaking-structure-branch");
+        state.speakingLibraryKind = "part";
+        openSpeakingScreen("speaking-card-branch");
       }
-      function renderSpeakingStructureBranch() {
+      function openSpeakingTopic(topic) {
+        if (!SPEAKING_TOPIC_CONFIG[topic]) return;
+        state.speakingTopic = topic;
+        state.speakingLibraryKind = "topic";
+        openSpeakingScreen("speaking-card-branch");
+      }
+      function renderSpeakingCardBranch() {
         const config = getSpeakingConfig();
-        $("#speaking-branch-eyebrow").textContent = `SPEAKING · ${config.label.toUpperCase()}`;
-        $("#speaking-branch-title").textContent = config.label;
-        $("#speaking-branch-description").textContent = config.description;
+        const topic = SPEAKING_TOPIC_CONFIG[state.speakingTopic];
+        const isTopic = state.speakingLibraryKind === "topic";
+        $("#speaking-branch-eyebrow").textContent = isTopic ? "SPEAKING · TOPICS" : `SPEAKING · ${config.label.toUpperCase()}`;
+        $("#speaking-branch-title").textContent = isTopic ? topic.label : config.label;
+        $("#speaking-branch-description").textContent = isTopic ? topic.description : config.description;
+        $("#speaking-part-switch").hidden = isTopic;
         ["part1", "part2", "part3"].forEach((part) => {
           $(`#speaking-${part}`).setAttribute("aria-current", String(part === state.speakingPart ? "page" : "false"));
         });
-        $$("[data-speaking-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingPanelView !== state.speakingPanelView));
-        $$("[data-speaking-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.speakingPanel === state.speakingPanelView)));
-        renderSpeakingCategoryFilter();
-        $("#speaking-star-filter").value = state.speakingStarFilter;
-        renderSpeakingStructureList();
-      }
-      function renderSpeakingCategoryFilter() {
-        const select = $("#speaking-category-filter");
-        const config = getSpeakingConfig();
-        if (state.speakingCategory !== "all" && !config.categories[state.speakingCategory]) state.speakingCategory = "all";
-        select.replaceChildren();
-        const all = document.createElement("option");
-        all.value = "all";
-        all.textContent = "全部分类";
-        select.append(all);
-        Object.entries(config.categories).forEach(([value, label]) => {
-          const option = document.createElement("option");
-          option.value = value;
-          option.textContent = label;
-          select.append(option);
+        const part1Functions = next.speaking["part1-functions"] || {};
+        const fallbackPart1Function = getFirstCategoryId(part1Functions);
+        (state.speaking.cards?.part1 || []).forEach((item) => {
+          const nextFunctions = (item.functions || []).filter((id) => part1Functions[id]);
+          if (!nextFunctions.length && item.functions?.length) {
+            item.functions = fallbackPart1Function ? [fallbackPart1Function] : [];
+            speakingChanged = true;
+          } else if (nextFunctions.length !== (item.functions || []).length) {
+            item.functions = nextFunctions;
+            speakingChanged = true;
+          }
         });
-        select.value = state.speakingCategory;
+        $$("[data-speaking-card-panel-view]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingCardPanelView !== state.speakingPanelView));
+        $$("[data-speaking-card-panel]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.speakingCardPanel === state.speakingPanelView)));
+        $("#speaking-library-heading").textContent = `${getSpeakingLibraryLabel()}词卡库`;
+        renderSpeakingCardFilters();
+        $("#speaking-star-filter").value = state.speakingStarFilter;
+        renderSpeakingCardList();
       }
-      function renderSpeakingStructureList() {
-        const list = $("#speaking-structure-list");
-        const items = getOrderedItems(getSpeakingItems()).filter((item) => {
-          const matchesCategory = state.speakingCategory === "all" || item.category === state.speakingCategory;
+      function renderSpeakingCardFilters() {
+        const structureSelect = $("#speaking-structure-filter");
+        const functionSelect = $("#speaking-function-filter");
+        const part1 = isPart1CardLibrary();
+        structureSelect.hidden = !part1;
+        functionSelect.hidden = !part1;
+        if (!part1) return;
+        if (state.speakingStructureFilter !== "all" && !SPEAKING_PART1_CARD_CONFIG.structures[state.speakingStructureFilter]) state.speakingStructureFilter = "all";
+        structureSelect.replaceChildren(new Option("全部回答结构", "all"));
+        Object.entries(SPEAKING_PART1_CARD_CONFIG.structures).forEach(([id, label]) => structureSelect.append(new Option(label, id)));
+        structureSelect.value = state.speakingStructureFilter;
+        const allowed = state.speakingStructureFilter === "all" ? Object.keys(SPEAKING_PART1_CARD_CONFIG.functions) : (SPEAKING_PART1_CARD_CONFIG.structureFunctions[state.speakingStructureFilter] || Object.keys(SPEAKING_PART1_CARD_CONFIG.functions));
+        if (state.speakingFunctionFilter !== "all" && !allowed.includes(state.speakingFunctionFilter)) state.speakingFunctionFilter = "all";
+        functionSelect.replaceChildren(new Option("全部功能", "all"));
+        allowed.forEach((id) => functionSelect.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id)));
+        functionSelect.value = state.speakingFunctionFilter;
+      }
+      function renderSpeakingCardList() {
+        const list = $("#speaking-card-list");
+        const items = getOrderedItems(getSpeakingCards()).filter((item) => {
           const matchesStar = state.speakingStarFilter !== "starred" || item.star > 0;
-          return matchesCategory && matchesStar;
+          if (!isPart1CardLibrary()) return matchesStar;
+        const allowed = state.speakingStructureFilter === "all" ? null : (SPEAKING_PART1_CARD_CONFIG.structureFunctions[state.speakingStructureFilter] || Object.keys(SPEAKING_PART1_CARD_CONFIG.functions));
+          const matchesStructure = !allowed || item.functions.some((id) => allowed.includes(id));
+          const matchesFunction = state.speakingFunctionFilter === "all" || item.functions.includes(state.speakingFunctionFilter);
+          return matchesStar && matchesStructure && matchesFunction;
         });
         $("#speaking-count").textContent = items.length;
         $("#speaking-count-tab").textContent = items.length;
@@ -4590,8 +4619,8 @@
           empty.className = "empty-state writing-empty";
           const strong = document.createElement("strong");
           const note = document.createElement("span");
-          strong.textContent = state.speakingStarFilter === "starred" ? "还没有带星级的句子" : state.speakingCategory === "all" ? "这里还没有收藏内容" : "这个分类还没有收藏内容";
-          note.textContent = "粘贴句子或段落，使用“生成短语卡”收藏。";
+          strong.textContent = state.speakingStarFilter === "starred" ? "还没有带星级的词卡" : "这里还没有词卡";
+          note.textContent = "输入一个英文表达，使用“生成词卡”收藏。";
           empty.append(strong, note);
           list.append(empty);
           return;
@@ -4612,14 +4641,19 @@
           title.className = "speaking-row-title";
           const titleText = document.createElement("span");
           titleText.className = "library-highlight-content";
-          appendListHighlights(titleText, item.content, item.highlights, "未命名口语句");
-          const tag = document.createElement("span");
-          tag.className = "category-tag";
-          tag.textContent = getSpeakingConfig().categories[item.category] || item.category;
-          title.append(titleText, tag);
+          titleText.textContent = item.original || "未命名表达";
+          title.append(titleText);
+          if (isPart1CardLibrary() && item.functions.length) {
+            item.functions.forEach((id) => {
+              const tag = document.createElement("span");
+              tag.className = "category-tag";
+              tag.textContent = SPEAKING_PART1_CARD_CONFIG.functions[id] || id;
+              title.append(tag);
+            });
+          }
           const preview = document.createElement("div");
           preview.className = "speaking-row-preview";
-          preview.textContent = item.translation || item.note || item.content;
+          preview.textContent = item.translation || `${item.substitutions.length} 个替换表达`;
           copy.append(title, preview);
 
           const actions = document.createElement("div");
@@ -4634,7 +4668,7 @@
             event.stopPropagation();
             item.star = item.star > 0 ? 0 : 1;
             persistSpeakingData();
-            renderSpeakingStructureList();
+            renderSpeakingCardList();
           });
           const remove = document.createElement("button");
           remove.className = "delete-button writing-delete";
@@ -4643,42 +4677,30 @@
           remove.addEventListener("click", (event) => {
             event.stopPropagation();
             if (!window.confirm(`确定删除“${titleText.textContent}”吗？`)) return;
-            state.speaking.structures[state.speakingPart] = getSpeakingItems().filter((entry) => entry.id !== item.id);
+            setSpeakingCards(getSpeakingCards().filter((entry) => entry.id !== item.id));
             persistSpeakingData();
-            renderSpeakingStructureList();
-            setSpeakingStatus("口语短语已删除。");
+            renderSpeakingCardList();
+            setSpeakingStatus("词卡已删除。");
           });
           actions.append(star, remove);
           row.append(number, copy, actions);
           row.addEventListener("click", () => {
             if (row.dataset.reorderSuppress) return;
-            openSpeakingPhraseModal({ item });
+            openSpeakingSynonymModal({ item });
           });
           row.addEventListener("keydown", (event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
-              openSpeakingPhraseModal({ item });
+              openSpeakingSynonymModal({ item });
             }
           });
           attachLongPressReorder(row, list, (orderedIds) => {
-            state.speaking.structures[state.speakingPart] = applyVisibleOrder(getSpeakingItems(), orderedIds);
+            setSpeakingCards(applyVisibleOrder(getSpeakingCards(), orderedIds));
             persistSpeakingData();
-            renderSpeakingStructureList();
+            renderSpeakingCardList();
           });
           list.append(row);
         });
-      }
-      function populateSpeakingPhraseCategories(preferred = "") {
-        const select = $("#speaking-phrase-category");
-        const config = getSpeakingConfig();
-        select.replaceChildren();
-        Object.entries(config.categories).forEach(([value, label]) => {
-          const option = document.createElement("option");
-          option.value = value;
-          option.textContent = label;
-          select.append(option);
-        });
-        select.value = config.categories[preferred] ? preferred : Object.keys(config.categories)[0];
       }
       function getNormalizedSpeakingHighlights() {
         const content = $("#speaking-phrase-content").value || "";
@@ -5027,7 +5049,7 @@
       }
       function persistCurrentSpeakingSynonymDraft() {
         if (!state.speakingSynonymDetailId || !state.speakingSynonymDraft) return;
-        const item = state.speaking.synonyms.find((entry) => entry.id === state.speakingSynonymDetailId);
+        const item = getSpeakingCards().find((entry) => entry.id === state.speakingSynonymDetailId);
         if (!item) return;
         item.translation = $("#speaking-synonym-translation").value.trim();
         item.substitutions = state.speakingSynonymDraft.substitutions
@@ -5076,13 +5098,24 @@
         state.speakingSynonymDraft = {
           original: item?.original || "",
           translation: item?.translation || translation || "",
+          functions: item?.functions || [],
           substitutions: item?.substitutions?.map((substitution) => ({ ...substitution })) || [],
         };
         state.speakingSynonymAddOpen = false;
         $("#speaking-synonym-original").textContent = state.speakingSynonymDraft.original;
         $("#speaking-synonym-translation").value = state.speakingSynonymDraft.translation;
-        $("#speaking-synonym-modal-title").textContent = item ? "编辑同义替换卡" : "确认同义替换卡";
-        $("#speaking-synonym-modal-subtitle").textContent = smart ? "中文翻译已自动获取，可以继续补充替换表达。" : "每条替换表达都可以单独编辑或删除，星级请在替换库列表中标记。";
+        const functionField = $("#speaking-card-functions-field");
+        const functionSelect = $("#speaking-card-functions");
+        functionField.hidden = !isPart1CardLibrary();
+        functionSelect.replaceChildren();
+        if (isPart1CardLibrary()) {
+          Object.entries(SPEAKING_PART1_CARD_CONFIG.functions).forEach(([id, label]) => {
+            const option = new Option(label, id, false, state.speakingSynonymDraft.functions.includes(id));
+            functionSelect.append(option);
+          });
+        }
+        $("#speaking-synonym-modal-title").textContent = item ? "编辑口语词卡" : "确认口语词卡";
+        $("#speaking-synonym-modal-subtitle").textContent = smart ? "中文翻译已自动获取，可以继续补充替换表达。" : "每条替换表达都可以单独编辑或删除。";
         $("#speaking-synonym-save").textContent = item ? "保存修改" : "确认收藏";
         $("#speaking-add-substitution-form").hidden = true;
         renderSpeakingSubstitutionList();
@@ -5098,36 +5131,37 @@
         event.preventDefault();
         const original = state.speakingSynonymDraft?.original?.trim();
         if (!original) {
-          setSpeakingSynonymStatus("请先填写原始英文表达。", "error");
+          setSpeakingStatus("请先填写原始英文表达。", "error");
           return;
         }
-        const existing = state.speaking.synonyms.find((item) => item.id === state.speakingSynonymDetailId);
+        const existing = getSpeakingCards().find((item) => item.id === state.speakingSynonymDetailId);
         const item = {
           id: state.speakingSynonymDetailId || createId(),
           createdAt: existing?.createdAt || Date.now(),
-          order: existing?.order ?? getNextNewItemOrder(state.speaking.synonyms),
+          order: existing?.order ?? getNextNewItemOrder(getSpeakingCards()),
           original,
           translation: $("#speaking-synonym-translation").value.trim(),
           star: existing?.star > 0 ? 1 : 0,
+          functions: isPart1CardLibrary() ? [...$("#speaking-card-functions").selectedOptions].map((option) => option.value) : [],
           substitutions: (state.speakingSynonymDraft.substitutions || [])
             .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
             .filter((substitution) => substitution.content),
         };
-        state.speaking.synonyms = existing
-          ? state.speaking.synonyms.map((entry) => entry.id === existing.id ? item : entry)
-          : [...state.speaking.synonyms, item];
+        setSpeakingCards(existing
+          ? getSpeakingCards().map((entry) => entry.id === existing.id ? item : entry)
+          : [...getSpeakingCards(), item]);
         persistSpeakingData();
         closeSpeakingSynonymModal();
-        renderSpeakingSynonyms();
-        setSpeakingSynonymStatus(existing ? "替换卡已更新。" : "替换卡已收藏。");
+        renderSpeakingCardBranch();
+        setSpeakingStatus(existing ? "词卡已更新。" : "词卡已收藏。");
       }
-      async function smartAddSpeakingSynonym() {
-        const input = $("#speaking-synonym-input").value.trim();
+      async function smartAddSpeakingCard() {
+        const input = $("#speaking-card-input").value.trim();
         if (!input) {
-          setSpeakingSynonymStatus("请先输入英文表达。", "error");
+          setSpeakingStatus("请先输入英文表达。", "error");
           return;
         }
-        const button = $("#speaking-synonym-button");
+        const button = $("#speaking-card-button");
         button.disabled = true;
         button.textContent = "生成中...";
         try {
@@ -5135,10 +5169,10 @@
           openSpeakingSynonymModal({ smart: true, translation });
           state.speakingSynonymDraft.original = input;
           $("#speaking-synonym-original").textContent = input;
-          setSpeakingSynonymStatus(translation ? "中文翻译已获取，可以添加替换表达。" : "中文翻译暂未获取，可手动填写。");
+          setSpeakingStatus(translation ? "中文翻译已获取，可以添加替换表达。" : "中文翻译暂未获取，可手动填写。");
         } finally {
           button.disabled = false;
-          button.textContent = "生成替换卡";
+          button.textContent = "生成词卡";
         }
       }
 
@@ -5157,13 +5191,10 @@
       }));
       $$("[data-speaking-screen-target]").forEach((element) => element.addEventListener("click", () => openSpeakingScreen(element.dataset.speakingScreenTarget)));
       $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
-      $$("[data-speaking-panel]").forEach((element) => element.addEventListener("click", () => {
-        state.speakingPanelView = element.dataset.speakingPanel;
-        renderSpeakingStructureBranch();
-      }));
-      $$("[data-speaking-synonym-panel]").forEach((element) => element.addEventListener("click", () => {
-        state.speakingSynonymPanelView = element.dataset.speakingSynonymPanel;
-        renderSpeakingSynonyms();
+      $$("[data-speaking-topic]").forEach((element) => element.addEventListener("click", () => openSpeakingTopic(element.dataset.speakingTopic)));
+      $$("[data-speaking-card-panel]").forEach((element) => element.addEventListener("click", () => {
+        state.speakingPanelView = element.dataset.speakingCardPanel;
+        renderSpeakingCardBranch();
       }));
       $$("[data-writing-panel]").forEach((element) => element.addEventListener("click", () => {
         state.writingPanelView = element.dataset.writingPanel;
@@ -5232,30 +5263,18 @@
         button.dataset.star = Number(button.dataset.star) > 0 ? "0" : "1";
         updateWritingStarButton();
       });
-      $("#speaking-structure-button").addEventListener("click", smartAddSpeakingPhrase);
-      $("#speaking-category-filter").addEventListener("change", (event) => {
-        state.speakingCategory = event.target.value;
-        renderSpeakingStructureList();
+      $("#speaking-card-button").addEventListener("click", smartAddSpeakingCard);
+      $("#speaking-structure-filter").addEventListener("change", (event) => {
+        state.speakingStructureFilter = event.target.value;
+        renderSpeakingCardBranch();
+      });
+      $("#speaking-function-filter").addEventListener("change", (event) => {
+        state.speakingFunctionFilter = event.target.value;
+        renderSpeakingCardList();
       });
       $("#speaking-star-filter").addEventListener("change", (event) => {
         state.speakingStarFilter = event.target.value;
-        renderSpeakingStructureList();
-      });
-      $("#speaking-phrase-form").addEventListener("submit", saveSpeakingPhrase);
-      $$("[data-action='close-speaking-phrase']").forEach((button) => button.addEventListener("click", closeSpeakingPhraseModal));
-      $("#speaking-floating-highlight").addEventListener("click", addSpeakingHighlight);
-      $("#speaking-annotation-close").addEventListener("click", closeSpeakingAnnotation);
-      $("#speaking-annotation-save").addEventListener("click", saveSpeakingAnnotation);
-      $("#speaking-annotation-delete").addEventListener("click", deleteSpeakingAnnotation);
-      $("#speaking-phrase-star-button").addEventListener("click", () => {
-        const button = $("#speaking-phrase-star-button");
-        button.dataset.star = Number(button.dataset.star) > 0 ? "0" : "1";
-        updateSpeakingPhraseStarButton();
-      });
-      $("#speaking-synonym-button").addEventListener("click", smartAddSpeakingSynonym);
-      $("#speaking-synonym-star-filter").addEventListener("change", (event) => {
-        state.speakingSynonymStarFilter = event.target.value;
-        renderSpeakingSynonymList();
+        renderSpeakingCardList();
       });
       $("#speaking-synonym-form").addEventListener("submit", saveSpeakingSynonym);
       $$("[data-action='close-speaking-synonym']").forEach((button) => button.addEventListener("click", closeSpeakingSynonymModal));
@@ -5278,19 +5297,16 @@
       $("#speaking-synonym-translation").addEventListener("input", persistCurrentSpeakingSynonymDraft);
       document.addEventListener("selectionchange", () => {
         updateWritingFloatingHighlightButton();
-        updateSpeakingFloatingHighlightButton();
       });
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !$("#detail-backdrop").hidden) closeDetail();
         if (event.key === "Escape" && !$("#writing-backdrop").hidden) closeWritingModal();
-        if (event.key === "Escape" && !$("#speaking-phrase-backdrop").hidden) closeSpeakingPhraseModal();
         if (event.key === "Escape" && !$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
         if (event.key === "Escape" && !$("#settings-backdrop").hidden) closeSettings();
         if (event.key === "Escape" && !$("#cloud-backdrop").hidden) closeCloudModal();
       });
       $("#detail-backdrop").addEventListener("click", (event) => { if (event.target === $("#detail-backdrop")) closeDetail(); });
       $("#writing-backdrop").addEventListener("click", (event) => { if (event.target === $("#writing-backdrop")) closeWritingModal(); });
-      $("#speaking-phrase-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-phrase-backdrop")) closeSpeakingPhraseModal(); });
       $("#speaking-synonym-backdrop").addEventListener("click", (event) => { if (event.target === $("#speaking-synonym-backdrop")) closeSpeakingSynonymModal(); });
       $("#settings-backdrop").addEventListener("click", (event) => { if (event.target === $("#settings-backdrop")) closeSettings(); });
       $("#cloud-backdrop").addEventListener("click", (event) => { if (event.target === $("#cloud-backdrop")) closeCloudModal(); });
@@ -5327,7 +5343,6 @@
       renderInstallState();
       navigate("home");
       renderWriting();
-      renderSpeakingSynonyms();
       initCloudSync().catch((error) => setCloudStatus(`云同步初始化失败：${error.message}`, "error"));
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
