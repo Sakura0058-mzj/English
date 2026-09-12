@@ -1397,10 +1397,6 @@
         <div class="detail-top">
           <div class="writing-card-heading">
             <p class="section-kicker">SPEAKING CARD</p>
-            <div id="speaking-card-category-row" class="speaking-card-categories" hidden>
-              <select id="speaking-card-structure" class="writing-category-select" form="speaking-synonym-form" aria-label="结构分类" title="结构分类"></select>
-              <select id="speaking-card-functions" class="writing-category-select" form="speaking-synonym-form" aria-label="功能分类" title="功能分类"></select>
-            </div>
             <select id="speaking-phrase-category" class="writing-category-select" aria-label="口语分类"></select>
             <h2 id="speaking-phrase-modal-title">确认口语短语卡</h2>
             <p id="speaking-phrase-modal-subtitle" class="detail-phonetic"></p>
@@ -1441,6 +1437,10 @@
           <button class="close-button" data-action="close-speaking-synonym" aria-label="关闭同义替换卡">×</button>
         </div>
         <form id="speaking-synonym-form">
+          <div id="speaking-card-category-row" class="speaking-card-categories" hidden>
+            <select id="speaking-card-structure" class="writing-category-select" aria-label="结构分类" title="结构分类"></select>
+            <select id="speaking-card-functions" class="writing-category-select" aria-label="功能分类" title="功能分类"></select>
+          </div>
           <div class="speaking-original-card">
             <div id="speaking-synonym-original" class="speaking-original" aria-label="原始表达，只读"></div>
           </div>
