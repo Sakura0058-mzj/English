@@ -1429,22 +1429,23 @@
     <div id="speaking-synonym-backdrop" class="detail-backdrop" hidden>
       <section class="detail-modal speaking-modal" role="dialog" aria-modal="true" aria-labelledby="speaking-synonym-modal-title">
         <div class="detail-top">
-          <div>
+          <div class="writing-card-heading">
             <p class="section-kicker">SPEAKING CARD</p>
+            <div id="speaking-card-category-row" class="speaking-card-categories" hidden>
+              <select id="speaking-card-structure" class="writing-category-select" form="speaking-synonym-form" aria-label="结构分类" title="结构分类"></select>
+              <select id="speaking-card-functions" class="writing-category-select" form="speaking-synonym-form" aria-label="功能分类" title="功能分类"></select>
+            </div>
             <h2 id="speaking-synonym-modal-title">同义替换卡</h2>
             <p id="speaking-synonym-modal-subtitle" class="detail-phonetic"></p>
           </div>
           <button class="close-button" data-action="close-speaking-synonym" aria-label="关闭同义替换卡">×</button>
         </div>
         <form id="speaking-synonym-form">
-          <div id="speaking-card-category-row" class="speaking-card-categories" hidden>
-            <select id="speaking-card-structure" class="writing-category-select" aria-label="结构分类" title="结构分类"></select>
-            <select id="speaking-card-functions" class="writing-category-select" aria-label="功能分类" title="功能分类"></select>
-          </div>
           <div class="speaking-original-card">
             <div id="speaking-synonym-original" class="speaking-original" aria-label="原始表达，只读"></div>
           </div>
           <label class="writing-form-item wide" style="display:block;margin-top:12px"><span class="writing-form-label">中文翻译</span><textarea id="speaking-synonym-translation" class="writing-form-control" placeholder="联网获取后可手动修改"></textarea></label>
+          <label class="writing-form-item wide" style="display:block;margin-top:12px"><span class="writing-form-label">备注</span><textarea id="speaking-synonym-note" class="writing-form-control" placeholder="记录使用场景、回答思路或个人提醒"></textarea></label>
           <div class="speaking-original-card">
             <span class="writing-form-label">同义替换表达</span>
             <div id="speaking-substitution-list" class="speaking-substitution-list"></div>
@@ -1911,16 +1912,15 @@
           oreo: "OREO",
         },
         functions: {
-          direct: "直接回答", like: "表达喜欢", dislike: "表达不喜欢", reason: "表达原因", feeling: "表达感受",
+          direct: "直接回答", yes: "表达 yes", no: "表达 no", like: "表达喜欢", dislike: "表达不喜欢", reason: "表达原因", feeling: "表达感受",
           frequency: "表达频率", fromWhen: "表达时间起点", past: "描述过去", change: "描述变化", condition: "表达条件",
           future: "表达未来愿望", detail: "补充细节", example: "举例", summary: "简单总结", persona: "Persona 建立人设",
         },
         structureFunctions: {
-          basic: ["direct", "like", "dislike", "reason", "feeling", "frequency", "detail", "example", "summary"],
-          dpf: ["direct", "persona", "feeling", "frequency", "fromWhen"],
-          dwc: ["direct", "past", "detail", "change", "feeling"],
+          dpf: ["direct", "persona", "feeling", "frequency", "fromWhen", "like", "dislike"],
+          dwc: ["direct", "past", "detail", "change", "feeling", "reason"],
           dcf: ["direct", "condition", "future", "feeling"],
-          oreo: ["direct", "reason", "example", "summary"],
+          oreo: ["direct", "reason", "example", "summary", "feeling", "detail"],
         },
       };
       const SPEAKING_TOPIC_CONFIG = {
@@ -2110,6 +2110,48 @@
         ["Another thing worth mentioning is that [detail].", "另一个值得一提的是[细节]。", ["On top of that, [detail].", "What is more, [detail].", "There is one more thing I really like about it."], ["detail"]],
         ["So overall, I'd say [summary].", "所以总的来说，我会说[总结]。", ["That is probably why I feel that way.", "So yes, it is definitely part of my life.", "All in all, it suits me quite well."], ["summary"]],
       ].map(([original, translation, substitutions, functions]) => ({ original, translation, substitutions, functions }));
+      const SPEAKING_PART1_ENRICHMENT_VERSION = "steps-notes-v1";
+      // Metadata follows the existing seed order; reuse its wording and substitutions.
+      const SPEAKING_PART1_ENRICHMENT = [
+        ["dpf", "direct", "yes", "肯定回答后可补一句理由。One hundred percent 语气很强，不必每题都用。"],
+        ["dpf", "direct", "no", "Not really 是温和否定；No way 语气很强，不能在所有场景中直接互换。"],
+        ["dwc", "direct", "yes", "回答 Did you...?，使用一般过去时；随后可补充童年经历。"],
+        ["dwc", "direct", "yes", "回答 Have you ever...?，先确认经历，再补充一次具体体验。"],
+        ["dwc", "direct", "no", "回答是否有过某经历。尚未有机会不等于不愿意尝试。"],
+        ["dpf", "direct", "like", "表达喜好。活动占位符通常用名词或动名词；keen on 后也用名词或动名词。"],
+        ["dpf", "direct", "dislike", "委婉表达不喜欢，可再给一个简短理由。"],
+        ["oreo", "reason", "reason", "回答 Why 时直接说明个人原因，避免展开成作文式长段落。"],
+        ["dpf", "feeling", "feeling", "接在活动描述后补感受。放松、成就感等表达应按真实体验选择。"],
+        ["dpf", "feeling", "frequency", "高频习惯：几乎每天。频率后可简短补一句态度。"],
+        ["dpf", "feeling", "frequency", "中低频习惯：偶尔。three times a week 是明确频次，并不等于偶尔。"],
+        ["dpf", "feeling", "frequency", "低频习惯。rarely 是很少，never 是从不，两者程度不同。"],
+        ["dpf", "feeling", "fromWhen", "说明爱好起点。since 后接时间点或过去时从句。"],
+        ["dpf", "persona", "persona", "用性格说明偏好，例如 curious、practical、social；选择与实际行为一致的标签。"],
+        ["dpf", "persona", "persona", "用成长背景解释习惯；家庭经历后接一个现在仍保留的特点。"],
+        ["dpf", "persona", "persona", "用爱好者身份说明偏好。buff 常用于 movie、history 等兴趣领域。"],
+        ["dwc", "why", "past", "按人物、活动、地点、时间串联经历；只选必要细节，原因可另加一句。"],
+        ["dwc", "change", "change", "对比过去与现在的频率；enjoy it even more 表达喜好增强，含义与原句不同。"],
+        ["dcf", "condition", "condition", "表达真实可实现的条件。if 从句用一般现在时，主句可用 will。"],
+        ["dcf", "feeling", "future", "描述尚未发生的体验，would 表示设想。选择与活动相符的预期感受。"],
+        ["oreo", "example", "example", "给一个个人生活中的短例子；不必每次都使用相同引导语。"],
+        ["dwc", "why", "detail", "补充经历细节；Part 1 中也可直接说 Also，保持自然简短。"],
+        ["oreo", "summary", "summary", "可选收尾。前文已回答清楚时可以省略，避免机械重复。"],
+      ].map(([part1Category, structure, functionId, note], index) => ({
+        ...SPEAKING_PART1_CARD_SEED[index], part1Category, structure, functions: [functionId], note,
+      })).concat([
+        { part1Category: "dpf", structure: "feeling", functions: ["frequency"], original: "I never do [activity], mainly because [reason].", translation: "我从不做[活动]，主要因为[原因]。", note: "零频习惯；never 不一定表示不喜欢，也可能没有时间或条件。", substitutions: ["I don't do [activity] at all.", "[Activity] isn't part of my routine.", "I've never really got into [activity]."] },
+        { part1Category: "dwc", structure: "direct", functions: ["no"], original: "No, I didn't really do that as a child.", translation: "没有，我小时候不怎么做那件事。", note: "回答 Did you...? 的否定形式。可再说明当时更常做的事情。", substitutions: ["Not really. I wasn't interested in it back then.", "I'm afraid I didn't.", "I didn't have many opportunities to do that when I was young."] },
+        { part1Category: "dwc", structure: "why", functions: ["reason"], original: "I used to [activity] because [reason].", translation: "我过去常常[活动]，因为[原因]。", note: "为童年习惯补充原因。used to 后接动词原形。", substitutions: ["Back then, I enjoyed [activity] because [reason].", "The reason I did that was [reason].", "[Reason], so I spent quite a lot of time [activity]."] },
+        { part1Category: "dwc", structure: "change", functions: ["change"], original: "I actually enjoy [activity] even more now than I did before.", translation: "其实我现在比以前更喜欢[活动]。", note: "对比喜好增强；可补充兴趣增长的原因。", substitutions: ["I've grown to appreciate [activity] more over time.", "It's become a bigger part of my life.", "I find it more enjoyable now, mainly because [reason]."] },
+        { part1Category: "dcf", structure: "direct", functions: ["yes"], original: "Yes, I'd love to try [activity].", translation: "是的，我很想尝试[活动]。", note: "回答未来愿望；try 后可接活动名词或动名词。", substitutions: ["That's something I'd really like to do.", "I'd definitely be interested in giving it a go.", "It's something I hope to try one day."] },
+        { part1Category: "dcf", structure: "direct", functions: ["no"], original: "Not really. I don't think [activity] would suit me.", translation: "不太想。我觉得[活动]可能不适合我。", note: "温和表达没有尝试意愿，可补一句原因。", substitutions: ["I'm not particularly interested in trying [activity].", "I don't really see myself doing that.", "I'd rather try [alternative] instead."] },
+        { part1Category: "dcf", structure: "condition", functions: ["condition"], original: "If I had more [time/money], I'd give [activity] a try.", translation: "如果我有更多[时间/钱]，我会尝试[活动]。", note: "假设目前尚未具备的条件：if + 过去式，主句 would + 动词原形。", substitutions: ["I'd like to do it once I can afford it.", "I'd consider it if I had enough time.", "With a bit more free time, I'd be able to try it."] },
+        { part1Category: "dcf", structure: "feeling", functions: ["feeling"], original: "I think I'd feel [feeling] if I tried it.", translation: "我想如果尝试一下，我会感到[感受]。", note: "说出具体预期感受，比如 excited、proud 或 relaxed。", substitutions: ["It sounds like something I'd really enjoy.", "I'd probably find it quite rewarding.", "I imagine it would give me a real sense of achievement."] },
+        { part1Category: "oreo", structure: "opinion", functions: ["feeling"], original: "I find [activity] really [adjective].", translation: "我觉得[活动]很[形容词]。", note: "直接给出个人评价；可用 relaxing、interesting、challenging，并解释原因。", substitutions: ["For me, [activity] is quite [adjective].", "I'd say it's a pretty [adjective] experience.", "I feel [feeling] whenever I do it."] },
+        { part1Category: "oreo", structure: "reason", functions: ["reason"], original: "It gives me a chance to [benefit].", translation: "它让我有机会[好处]。", note: "用个人收获解释观点，to 后接动词原形。", substitutions: ["I like it because it helps me [benefit].", "What I appreciate most is being able to [benefit].", "It's a good way for me to [benefit]."] },
+        { part1Category: "oreo", structure: "example", functions: ["example"], original: "Just last [week/month], I [example].", translation: "就在上[周/月]，我[例子]。", note: "用近期真实经历展开观点，例子使用过去时。", substitutions: ["For instance, the other day I [example].", "One example that comes to mind is [example].", "I remember a time when [example]."] },
+        { part1Category: "oreo", structure: "summary", functions: ["summary"], original: "That's what makes it worthwhile for me.", translation: "这就是我觉得它值得做的原因。", note: "可选总结个人价值；回答已经完整时无需额外总结。", substitutions: ["That's the main reason I enjoy it.", "So it works quite well for me.", "That's why I'd like to keep doing it."] },
+      ]);
       const CAMBRIDGE5_SEED = [
         ["minibus", "/ˈmɪnibʌs/", "小型公共汽车", "a small bus that carries a limited number of passengers", "minibus service; airport minibus", "shuttle bus, small bus", "The city could reduce traffic by expanding its minibus service.", "城市可以通过扩大小型公交服务来缓解交通。"],
         ["reptile", "/ˈreptaɪl/", "爬行动物", "an animal such as a snake, lizard, or turtle with cold blood", "reptile species; marine reptile", "cold-blooded animal", "The loss of wetlands threatens many reptile species.", "湿地减少威胁着许多爬行动物物种。"],
@@ -2556,6 +2598,7 @@
           state.writing = loadWritingData();
         }
         if (payload.speaking) {
+          if (payload.speaking.part1EnrichmentVersion !== SPEAKING_PART1_ENRICHMENT_VERSION) speakingMigratedDuringHydration = true;
           if (payload.speakingCardSeedVersion !== SPEAKING_CARD_SEED_VERSION) {
             localStorage.removeItem(SPEAKING_CARD_SEED_KEY);
             speakingMigratedDuringHydration = true;
@@ -2734,6 +2777,7 @@
           ])
         );
         return {
+          speakingPart1FunctionsVersion: "steps-notes-v1",
           speaking: {
             ...Object.fromEntries(Object.entries(SPEAKING_CONFIG).map(([part, config]) => [part, { ...config.categories }])),
             "part1-structures": { ...SPEAKING_PART1_CARD_CONFIG.structures },
@@ -2767,6 +2811,9 @@
         const defaults = cloneCategorySettings(DEFAULT_CATEGORY_SETTINGS);
         for (const part of Object.keys(defaults.speaking)) {
           defaults.speaking[part] = sanitiseCategoryMap(saved?.speaking?.[part], defaults.speaking[part]);
+        }
+        if (saved?.speakingPart1FunctionsVersion !== defaults.speakingPart1FunctionsVersion) {
+          for (const id of ["yes", "no"]) defaults.speaking["part1-functions"][id] ||= DEFAULT_CATEGORY_SETTINGS.speaking["part1-functions"][id];
         }
         for (const task of Object.keys(defaults.writing)) {
           for (const collection of Object.keys(defaults.writing[task])) {
@@ -3348,6 +3395,7 @@
           order: Number(item?.order),
           original: String(item?.original || ""),
           translation: String(item?.translation || ""),
+          note: String(item?.note || ""),
           part1Category: ["dpf", "dwc", "dcf", "oreo"].includes(item?.part1Category) ? item.part1Category : "",
           structure: String(item?.structure || ""),
           star: item?.star > 0 ? 1 : 0,
@@ -3373,7 +3421,7 @@
           });
           cards.otherSynonyms = normaliseCollectionOrder((data.cards.otherSynonyms || []).map((item) => normaliseSpeakingCard(item)));
         }
-        const next = { cards };
+        const next = { cards, part1EnrichmentVersion: data.part1EnrichmentVersion || "" };
         try {
           if (!data?.cards && localStorage.getItem(SPEAKING_CARD_SEED_KEY) !== SPEAKING_CARD_SEED_VERSION) {
             const now = Date.now();
@@ -3396,7 +3444,7 @@
           }
         } catch {}
         try {
-          if (data?.cards || localStorage.getItem(SPEAKING_CARD_SEED_KEY) === SPEAKING_CARD_SEED_VERSION) {
+          if (next.part1EnrichmentVersion !== SPEAKING_PART1_ENRICHMENT_VERSION) {
             const classify = (item) => {
               if (item.part1Category) return item.part1Category;
               const ids = item.functions || [];
@@ -3410,6 +3458,38 @@
             cards.part1 = normaliseCollectionOrder(cards.part1.filter((item) => classify(item)).map((item) => ({ ...item, part1Category: classify(item) })));
             cards.part1.forEach((item) => { item.structure = getSpeakingCardStructure(item, item.part1Category); });
             cards.otherSynonyms = normaliseCollectionOrder([...cards.otherSynonyms, ...uncertain]);
+            const key = (text) => String(text).trim().toLowerCase().replace(/\s+/g, " ");
+            SPEAKING_PART1_ENRICHMENT.forEach((seed, index) => {
+              let existing = cards.part1.find((item) => key(item.original) === key(seed.original));
+              if (!existing) {
+                existing = cards.otherSynonyms.find((item) => key(item.original) === key(seed.original));
+                if (existing) {
+                  cards.otherSynonyms = cards.otherSynonyms.filter((item) => item.id !== existing.id);
+                  cards.part1.push(existing);
+                }
+              }
+              if (existing) {
+                existing.part1Category ||= seed.part1Category;
+                existing.structure ||= seed.structure;
+                // Retain an explicit single selection; refine legacy broad/multiple tags.
+                if (existing.functions.length !== 1 || existing.functions[0] === "direct") existing.functions = [...seed.functions];
+              } else {
+                cards.part1.push(normaliseSpeakingCard({
+                  ...seed, id: `speaking-${SPEAKING_PART1_ENRICHMENT_VERSION}-${index}`,
+                  createdAt: Date.now() + index,
+                  order: Math.max(0, ...cards.part1.map((item) => Number(item.order) || 0)) + 1,
+                  substitutions: seed.substitutions.map((content, subIndex) => ({ id: `speaking-seed-${index}-${subIndex}`, content })),
+                }));
+              }
+            });
+            cards.part1.forEach((item) => {
+              item.structure = getSpeakingCardStructure(item, item.part1Category);
+              item.functions = item.functions.slice(0, 1);
+            });
+            cards.otherSynonyms.forEach((item) => { item.part1Category = ""; item.structure = ""; item.functions = []; });
+            cards.part1 = normaliseCollectionOrder(cards.part1);
+            cards.otherSynonyms = normaliseCollectionOrder(cards.otherSynonyms);
+            next.part1EnrichmentVersion = SPEAKING_PART1_ENRICHMENT_VERSION;
             localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
             localStorage.setItem(SPEAKING_CARD_SEED_KEY, SPEAKING_CARD_SEED_VERSION);
           }
@@ -4588,6 +4668,17 @@
         };
         return map[category] || [];
       }
+      function getPart1StructureFunctions(category, structure) {
+        const map = {
+          dpf: { direct: ["yes", "no", "like", "dislike", "direct"], persona: ["persona", "like"], feeling: ["feeling", "frequency", "fromWhen"] },
+          dwc: { direct: ["yes", "no", "direct", "past"], why: ["past", "reason", "detail"], change: ["change", "feeling"] },
+          dcf: { direct: ["yes", "no", "direct"], condition: ["condition"], feeling: ["feeling", "future"] },
+          oreo: { opinion: ["direct", "feeling"], reason: ["reason"], example: ["example", "detail"], summary: ["summary"] },
+        };
+        const allowed = map[category]?.[structure] || Object.keys(SPEAKING_PART1_CARD_CONFIG.functions);
+        const custom = Object.keys(SPEAKING_PART1_CARD_CONFIG.functions).filter((id) => !DEFAULT_CATEGORY_SETTINGS.speaking["part1-functions"][id]);
+        return [...new Set([...allowed, ...custom])].filter((id) => SPEAKING_PART1_CARD_CONFIG.functions[id]);
+      }
       function getSpeakingCardStructure(item, category) {
         const steps = getPart1Structures(category);
         if (steps.some(([id]) => id === item.structure)) return item.structure;
@@ -4682,7 +4773,7 @@
         structureSelect.replaceChildren(new Option("全部结构", "all"));
         structures.forEach(([id, label]) => structureSelect.append(new Option(label, id)));
         structureSelect.value = state.speakingStructureFilter;
-        const allowed = Object.keys(SPEAKING_PART1_CARD_CONFIG.functions);
+        const allowed = getPart1StructureFunctions(category, state.speakingStructureFilter);
         if (state.speakingFunctionFilter !== "all" && !allowed.includes(state.speakingFunctionFilter)) state.speakingFunctionFilter = "all";
         functionSelect.replaceChildren(new Option("全部功能", "all"));
         allowed.forEach((id) => functionSelect.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id)));
@@ -4730,6 +4821,13 @@
           titleText.className = "library-highlight-content";
           titleText.textContent = item.original || "未命名表达";
           title.append(titleText);
+          if (isPart1CardLibrary()) {
+            const structureTag = document.createElement("span");
+            structureTag.className = "category-tag";
+            structureTag.textContent = getPart1Structures(item.part1Category).find(([id]) => id === item.structure)?.[1] || "未分类";
+            structureTag.title = "结构分类";
+            title.append(structureTag);
+          }
           if (isPart1CardLibrary() && item.functions.length) {
             item.functions.forEach((id) => {
               const tag = document.createElement("span");
@@ -5139,6 +5237,7 @@
         const item = getSpeakingCards().find((entry) => entry.id === state.speakingSynonymDetailId);
         if (!item) return;
         item.translation = $("#speaking-synonym-translation").value.trim();
+        item.note = $("#speaking-synonym-note").value.trim();
         item.substitutions = state.speakingSynonymDraft.substitutions
           .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
           .filter((substitution) => substitution.content);
@@ -5185,12 +5284,14 @@
         state.speakingSynonymDraft = {
           original: item?.original || "",
           translation: item?.translation || translation || "",
+          note: item?.note || "",
           functions: item?.functions || [],
           substitutions: item?.substitutions?.map((substitution) => ({ ...substitution })) || [],
         };
         state.speakingSynonymAddOpen = false;
         $("#speaking-synonym-original").textContent = state.speakingSynonymDraft.original;
         $("#speaking-synonym-translation").value = state.speakingSynonymDraft.translation;
+        $("#speaking-synonym-note").value = state.speakingSynonymDraft.note;
         const functionSelect = $("#speaking-card-functions");
         const structureSelect = $("#speaking-card-structure");
         $("#speaking-card-category-row").hidden = !isPart1CardLibrary();
@@ -5200,7 +5301,7 @@
           const category = item?.part1Category || state.speakingPart1Category || "dpf";
           const structure = item ? getSpeakingCardStructure(item, category) : (state.speakingStructureFilter === "all" ? getPart1Structures(category)[0]?.[0] : state.speakingStructureFilter);
           getPart1Structures(category).forEach(([id, label]) => structureSelect.append(new Option(label, id, false, id === structure)));
-          const allowedFunctions = Object.keys(SPEAKING_PART1_CARD_CONFIG.functions);
+          const allowedFunctions = getPart1StructureFunctions(category, structure);
           functionSelect.append(new Option("选择功能分类", "", false, !state.speakingSynonymDraft.functions.length));
           const selectedFunction = item ? item.functions.find((id) => id !== "direct") || item.functions[0] : state.speakingFunctionFilter;
           allowedFunctions.forEach((id) => functionSelect.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id, false, selectedFunction === id)));
@@ -5232,6 +5333,7 @@
           order: existing?.order ?? getNextNewItemOrder(getSpeakingCards()),
           original,
           translation: $("#speaking-synonym-translation").value.trim(),
+          note: $("#speaking-synonym-note").value.trim(),
           star: existing?.star > 0 ? 1 : 0,
           part1Category: isPart1CardLibrary() ? (existing?.part1Category || state.speakingPart1Category || "dpf") : "",
           structure: isPart1CardLibrary() ? $("#speaking-card-structure").value : "",
@@ -5392,6 +5494,14 @@
         renderSpeakingSubstitutionList();
       });
       $("#speaking-synonym-translation").addEventListener("input", persistCurrentSpeakingSynonymDraft);
+      $("#speaking-synonym-note").addEventListener("input", persistCurrentSpeakingSynonymDraft);
+      $("#speaking-card-structure").addEventListener("change", () => {
+        const select = $("#speaking-card-functions");
+        const previous = select.value;
+        const allowed = getPart1StructureFunctions(state.speakingPart1Category, $("#speaking-card-structure").value);
+        select.replaceChildren(new Option("选择功能分类", ""));
+        allowed.forEach((id) => select.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id, false, id === previous)));
+      });
       document.addEventListener("selectionchange", () => {
         updateWritingFloatingHighlightButton();
       });
