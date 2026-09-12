@@ -1117,7 +1117,13 @@
           <div class="speaking-entry-grid">
             <button class="feature-card" data-speaking-screen-target="speaking-structure-home"><span class="feature-icon coral">句</span><h2>结构化表达</h2><p>按 Part 1、Part 2 和 Part 3 整理自然表达。</p><span class="feature-link" style="color:var(--coral)">进入结构化表达 →</span></button>
             <button class="feature-card" data-speaking-screen-target="speaking-topic-home"><span class="feature-icon sage">题</span><h2>话题</h2><p>按人物、地点和经历等方向积累表达。</p><span class="feature-link">进入话题 →</span></button>
+            <button class="feature-card" data-speaking-screen-target="speaking-other-home"><span class="feature-icon blue">他</span><h2>其它同义替换</h2><p>保存暂未归入 Part 1 结构的同义替换表达。</p><span class="feature-link" style="color:var(--blue)">进入其它同义替换 →</span></button>
           </div>
+        </section>
+
+        <section class="speaking-screen" data-speaking-screen="speaking-other-home" hidden>
+          <div class="module-heading"><div><p class="eyebrow">SPEAKING · OTHER</p><h1>其它同义替换</h1><p>保存暂未归入 Part 1 结构的同义替换表达。</p></div></div>
+          <div class="speaking-entry-grid"><button class="feature-card" data-speaking-library-kind="other"><span class="feature-icon blue">卡</span><h2>词卡库</h2><p>查看和管理其它同义替换词卡。</p><span class="feature-link" style="color:var(--blue)">进入词卡库 →</span></button></div>
         </section>
 
         <section class="speaking-screen" data-speaking-screen="speaking-structure-home" hidden>
@@ -1425,6 +1431,7 @@
           </div>
           <label class="writing-form-item wide" style="display:block;margin-top:12px"><span class="writing-form-label">中文翻译</span><textarea id="speaking-synonym-translation" class="writing-form-control" placeholder="联网获取后可手动修改"></textarea></label>
           <label id="speaking-card-functions-field" class="writing-form-item wide" style="display:block;margin-top:12px" hidden><span class="writing-form-label">Part 1 功能归类（可多选）</span><select id="speaking-card-functions" class="writing-form-control" multiple size="5" aria-label="Part 1 功能归类"></select></label>
+          <label id="speaking-card-structure-field" class="writing-form-item wide" style="display:block;margin-top:12px" hidden><span class="writing-form-label">结构选择</span><select id="speaking-card-structure" class="writing-form-control" aria-label="结构选择"></select></label>
           <div class="speaking-original-card">
             <span class="writing-form-label">同义替换表达</span>
             <div id="speaking-substitution-list" class="speaking-substitution-list"></div>
@@ -1531,7 +1538,7 @@
       const SPEAKING_STORAGE_KEY = "ielts-study-helper.speaking.v1";
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const SPEAKING_CARD_SEED_KEY = "ielts-study-helper.speaking-cards-seed.v1";
-      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v1";
+      const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v2";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CATEGORY_UPDATED_AT_KEY = "ielts-study-helper.category-config-updated-at.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
@@ -1885,11 +1892,10 @@
       };
       const SPEAKING_PART1_CARD_CONFIG = {
         structures: {
-          basic: "基础简洁结构",
-          dpf: "DPF · Direct Answer / Persona / Feeling",
-          dwc: "DWC · Direct Answer / 5W1H / Change",
-          dcf: "DCF · Direct Answer / Condition / Feeling",
-          oreo: "OREO · Opinion / Reason / Example / Summary",
+          dpf: "DPF",
+          dwc: "DWC",
+          dcf: "DCF",
+          oreo: "OREO",
         },
         functions: {
           direct: "直接回答", like: "表达喜欢", dislike: "表达不喜欢", reason: "表达原因", feeling: "表达感受",
@@ -3328,6 +3334,8 @@
           order: Number(item?.order),
           original: String(item?.original || ""),
           translation: String(item?.translation || ""),
+          part1Category: ["dpf", "dwc", "dcf", "oreo"].includes(item?.part1Category) ? item.part1Category : "",
+          structure: String(item?.structure || ""),
           star: item?.star > 0 ? 1 : 0,
           functions: [...new Set((Array.isArray(item?.functions) ? item.functions : fallbackFunctions).filter((id) => SPEAKING_PART1_CARD_CONFIG.functions[id]))],
           substitutions: Array.isArray(item?.substitutions)
@@ -3336,7 +3344,7 @@
         };
       }
       function blankSpeakingCards() {
-        return { part1: [], part2: [], part3: [], topics: Object.fromEntries(Object.keys(SPEAKING_TOPIC_CONFIG).map((id) => [id, []])) };
+        return { part1: [], part2: [], part3: [], otherSynonyms: [], topics: Object.fromEntries(Object.keys(SPEAKING_TOPIC_CONFIG).map((id) => [id, []])) };
       }
       function loadSpeakingData() {
         let data = {};
@@ -3349,6 +3357,7 @@
           Object.keys(cards.topics).forEach((topic) => {
             cards.topics[topic] = normaliseCollectionOrder((data.cards.topics?.[topic] || []).map((item) => normaliseSpeakingCard(item)));
           });
+          cards.otherSynonyms = normaliseCollectionOrder((data.cards.otherSynonyms || []).map((item) => normaliseSpeakingCard(item)));
         }
         const next = { cards };
         try {
@@ -3366,8 +3375,26 @@
             cards.part2 = [];
             cards.part3 = [];
             cards.topics = Object.fromEntries(Object.keys(SPEAKING_TOPIC_CONFIG).map((id) => [id, []]));
+            cards.otherSynonyms = [];
             localStorage.setItem(SPEAKING_CARD_SEED_KEY, SPEAKING_CARD_SEED_VERSION);
             localStorage.setItem(SPEAKING_PART1_SEED_KEY, "migrated");
+            localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
+          }
+        } catch {}
+        try {
+          if (localStorage.getItem(SPEAKING_CARD_SEED_KEY) === SPEAKING_CARD_SEED_VERSION) {
+            const classify = (item) => {
+              if (item.part1Category) return item.part1Category;
+              const ids = item.functions || [];
+              if (ids.includes("persona") || ids.includes("fromWhen")) return "dpf";
+              if (ids.includes("past") || ids.includes("change")) return "dwc";
+              if (ids.includes("condition") || ids.includes("future")) return "dcf";
+              if (ids.includes("reason") || ids.includes("example") || ids.includes("summary")) return "oreo";
+              return "";
+            };
+            const uncertain = cards.part1.filter((item) => !classify(item));
+            cards.part1 = normaliseCollectionOrder(cards.part1.filter((item) => classify(item)).map((item) => ({ ...item, part1Category: classify(item) })));
+            cards.otherSynonyms = normaliseCollectionOrder([...cards.otherSynonyms, ...uncertain]);
             localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
           }
         } catch {}
@@ -3696,7 +3723,7 @@
             return;
           }
           const screen = state.speakingScreen === "speaking-card-branch"
-            ? state.speakingLibraryKind === "topic" ? "speaking-topic-home" : "speaking-structure-home"
+            ? state.speakingLibraryKind === "other" ? "speaking-other-home" : state.speakingLibraryKind === "topic" ? "speaking-topic-home" : "speaking-structure-home"
             : "speaking-home";
           openSpeakingScreen(screen);
           return;
@@ -4532,20 +4559,32 @@
       function isPart1CardLibrary() {
         return state.speakingLibraryKind === "part" && state.speakingPart === "part1";
       }
+      function getPart1Structures(category) {
+        const map = {
+          dpf: [["direct", "直接回答"], ["persona", "建立人设"], ["feeling", "感受 / 频率 / 起点"]],
+          dwc: [["direct", "直接回答"], ["why", "5W1H / 原因"], ["change", "变化 / 补充评价"]],
+          dcf: [["direct", "直接回答"], ["condition", "条件补充"], ["feeling", "感受 / 预期结果"]],
+          oreo: [["opinion", "观点"], ["reason", "原因"], ["example", "举例"], ["summary", "简单总结"]],
+        };
+        return map[category] || [];
+      }
       function getSpeakingCards() {
+        if (state.speakingLibraryKind === "other") return state.speaking.cards.otherSynonyms || [];
         if (state.speakingLibraryKind === "topic") return state.speaking.cards.topics[state.speakingTopic] || [];
         return state.speaking.cards[state.speakingPart] || [];
       }
       function setSpeakingCards(cards) {
-        if (state.speakingLibraryKind === "topic") state.speaking.cards.topics[state.speakingTopic] = cards;
+        if (state.speakingLibraryKind === "other") state.speaking.cards.otherSynonyms = cards;
+        else if (state.speakingLibraryKind === "topic") state.speaking.cards.topics[state.speakingTopic] = cards;
         else state.speaking.cards[state.speakingPart] = cards;
       }
       function getSpeakingLibraryLabel() {
+        if (state.speakingLibraryKind === "other") return "其它同义替换";
         return state.speakingLibraryKind === "topic" ? SPEAKING_TOPIC_CONFIG[state.speakingTopic].label : getSpeakingConfig().label;
       }
       function openSpeakingScreen(screen) {
         if (!$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
-        if (!["speaking-home", "speaking-structure-home", "speaking-topic-home", "speaking-card-branch"].includes(screen)) return;
+        if (!["speaking-home", "speaking-structure-home", "speaking-topic-home", "speaking-other-home", "speaking-card-branch"].includes(screen)) return;
         state.speakingScreen = screen;
         if (screen === "speaking-structure-home") { state.speakingLibraryKind = "part"; state.speakingPanelView = "editor"; }
         if (screen === "speaking-card-branch") { state.speakingPanelView = "editor"; state.speakingStructureFilter = "all"; state.speakingFunctionFilter = "all"; }
@@ -4566,14 +4605,19 @@
         state.speakingLibraryKind = "topic";
         openSpeakingScreen("speaking-card-branch");
       }
+      function openSpeakingOther() {
+        state.speakingLibraryKind = "other";
+        openSpeakingScreen("speaking-card-branch");
+      }
       function renderSpeakingCardBranch() {
         const config = getSpeakingConfig();
         const topic = SPEAKING_TOPIC_CONFIG[state.speakingTopic];
         const isTopic = state.speakingLibraryKind === "topic";
-        $("#speaking-branch-eyebrow").textContent = isTopic ? "SPEAKING · TOPICS" : `SPEAKING · ${config.label.toUpperCase()}`;
-        $("#speaking-branch-title").textContent = isTopic ? topic.label : config.label;
-        $("#speaking-branch-description").textContent = isTopic ? topic.description : config.description;
-        $("#speaking-part-switch").hidden = isTopic;
+        const isOther = state.speakingLibraryKind === "other";
+        $("#speaking-branch-eyebrow").textContent = isOther ? "SPEAKING · OTHER" : isTopic ? "SPEAKING · TOPICS" : `SPEAKING · ${config.label.toUpperCase()}`;
+        $("#speaking-branch-title").textContent = isOther ? "其它同义替换" : isTopic ? topic.label : config.label;
+        $("#speaking-branch-description").textContent = isOther ? "保存暂未归入 Part 1 结构的同义替换表达。" : isTopic ? topic.description : config.description;
+        $("#speaking-part-switch").hidden = isTopic || isOther;
         ["part1", "part2", "part3"].forEach((part) => {
           $(`#speaking-${part}`).setAttribute("aria-current", String(part === state.speakingPart ? "page" : "false"));
         });
@@ -4607,7 +4651,7 @@
           const matchesStar = state.speakingStarFilter !== "starred" || item.star > 0;
           if (!isPart1CardLibrary()) return matchesStar;
         const allowed = state.speakingStructureFilter === "all" ? null : (SPEAKING_PART1_CARD_CONFIG.structureFunctions[state.speakingStructureFilter] || Object.keys(SPEAKING_PART1_CARD_CONFIG.functions));
-          const matchesStructure = !allowed || item.functions.some((id) => allowed.includes(id));
+          const matchesStructure = !allowed || item.part1Category === state.speakingStructureFilter;
           const matchesFunction = state.speakingFunctionFilter === "all" || item.functions.includes(state.speakingFunctionFilter);
           return matchesStar && matchesStructure && matchesFunction;
         });
@@ -5106,10 +5150,16 @@
         $("#speaking-synonym-translation").value = state.speakingSynonymDraft.translation;
         const functionField = $("#speaking-card-functions-field");
         const functionSelect = $("#speaking-card-functions");
+        const structureField = $("#speaking-card-structure-field");
+        const structureSelect = $("#speaking-card-structure");
         functionField.hidden = !isPart1CardLibrary();
+        structureField.hidden = !isPart1CardLibrary();
         functionSelect.replaceChildren();
+        structureSelect.replaceChildren();
         if (isPart1CardLibrary()) {
-          Object.entries(SPEAKING_PART1_CARD_CONFIG.functions).forEach(([id, label]) => {
+          const category = item?.part1Category || "dpf";
+          getPart1Structures(category).forEach(([id, label]) => structureSelect.append(new Option(label, id, false, id === (item?.structure || "direct"))));
+          Object.entries(SPEAKING_PART1_CARD_CONFIG.functions).filter(([id]) => (SPEAKING_PART1_CARD_CONFIG.structureFunctions[category] || []).includes(id)).forEach(([id, label]) => {
             const option = new Option(label, id, false, state.speakingSynonymDraft.functions.includes(id));
             functionSelect.append(option);
           });
@@ -5142,6 +5192,8 @@
           original,
           translation: $("#speaking-synonym-translation").value.trim(),
           star: existing?.star > 0 ? 1 : 0,
+          part1Category: isPart1CardLibrary() ? (existing?.part1Category || "dpf") : "",
+          structure: isPart1CardLibrary() ? $("#speaking-card-structure").value : "",
           functions: isPart1CardLibrary() ? [...$("#speaking-card-functions").selectedOptions].map((option) => option.value) : [],
           substitutions: (state.speakingSynonymDraft.substitutions || [])
             .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
@@ -5192,6 +5244,9 @@
       $$("[data-speaking-screen-target]").forEach((element) => element.addEventListener("click", () => openSpeakingScreen(element.dataset.speakingScreenTarget)));
       $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
       $$("[data-speaking-topic]").forEach((element) => element.addEventListener("click", () => openSpeakingTopic(element.dataset.speakingTopic)));
+      $$ ("[data-speaking-library-kind]").forEach((element) => element.addEventListener("click", () => {
+        if (element.dataset.speakingLibraryKind === "other") openSpeakingOther();
+      }));
       $$("[data-speaking-card-panel]").forEach((element) => element.addEventListener("click", () => {
         state.speakingPanelView = element.dataset.speakingCardPanel;
         renderSpeakingCardBranch();
