@@ -665,6 +665,8 @@
         font-size: 11px;
       }
       .writing-card-heading { min-width: 0; }
+      .speaking-card-categories { display: flex; flex-wrap: wrap; gap: 10px; margin: 9px 0 16px; }
+      .speaking-card-categories .writing-category-select { min-width: 0; width: 195px; max-width: 100%; margin-top: 0; }
       .writing-category-select {
         display: block;
         min-width: 150px;
@@ -1172,7 +1174,7 @@
               <div class="library-toolbar">
                 <div class="speaking-library-title"><div><p class="section-kicker">SPEAKING BANK</p><h2 id="speaking-library-heading">词卡库</h2></div><span id="speaking-count" class="word-tab-count">0</span></div>
                 <div class="library-controls">
-                  <select id="speaking-structure-filter" class="sort-select" aria-label="回答结构筛选"></select>
+                  <select id="speaking-structure-filter" class="sort-select" aria-label="结构分类筛选"></select>
                   <select id="speaking-function-filter" class="sort-select" aria-label="功能分类筛选"></select>
                   <select id="speaking-star-filter" class="sort-select" aria-label="星级筛选"><option value="all">全部词卡</option><option value="starred">仅显示带星级词卡</option></select>
                 </div>
@@ -1395,6 +1397,10 @@
         <div class="detail-top">
           <div class="writing-card-heading">
             <p class="section-kicker">SPEAKING CARD</p>
+            <div id="speaking-card-category-row" class="speaking-card-categories" hidden>
+              <select id="speaking-card-structure" class="writing-category-select" form="speaking-synonym-form" aria-label="结构分类" title="结构分类"></select>
+              <select id="speaking-card-functions" class="writing-category-select" form="speaking-synonym-form" aria-label="功能分类" title="功能分类"></select>
+            </div>
             <select id="speaking-phrase-category" class="writing-category-select" aria-label="口语分类"></select>
             <h2 id="speaking-phrase-modal-title">确认口语短语卡</h2>
             <p id="speaking-phrase-modal-subtitle" class="detail-phonetic"></p>
@@ -1436,12 +1442,9 @@
         </div>
         <form id="speaking-synonym-form">
           <div class="speaking-original-card">
-            <span class="writing-form-label">原始表达（只读）</span>
             <div id="speaking-synonym-original" class="speaking-original" aria-label="原始表达，只读"></div>
           </div>
           <label class="writing-form-item wide" style="display:block;margin-top:12px"><span class="writing-form-label">中文翻译</span><textarea id="speaking-synonym-translation" class="writing-form-control" placeholder="联网获取后可手动修改"></textarea></label>
-          <label id="speaking-card-functions-field" class="writing-form-item wide" style="display:block;margin-top:12px" hidden><span class="writing-form-label">Part 1 功能归类（可多选）</span><select id="speaking-card-functions" class="writing-form-control" multiple size="5" aria-label="Part 1 功能归类"></select></label>
-          <label id="speaking-card-structure-field" class="writing-form-item wide" style="display:block;margin-top:12px" hidden><span class="writing-form-label">结构选择</span><select id="speaking-card-structure" class="writing-form-control" aria-label="结构选择"></select></label>
           <div class="speaking-original-card">
             <span class="writing-form-label">同义替换表达</span>
             <div id="speaking-substitution-list" class="speaking-substitution-list"></div>
@@ -3372,7 +3375,7 @@
         }
         const next = { cards };
         try {
-          if (localStorage.getItem(SPEAKING_CARD_SEED_KEY) !== SPEAKING_CARD_SEED_VERSION) {
+          if (!data?.cards && localStorage.getItem(SPEAKING_CARD_SEED_KEY) !== SPEAKING_CARD_SEED_VERSION) {
             const now = Date.now();
             const embeddedSeeds = new Set(SPEAKING_SYNONYM_SEED.map((item) => `${item.original}\u0000${item.translation}`));
             const legacyUserCards = (data?.synonyms || [])
@@ -3393,7 +3396,7 @@
           }
         } catch {}
         try {
-          if (localStorage.getItem(SPEAKING_CARD_SEED_KEY) === SPEAKING_CARD_SEED_VERSION) {
+          if (data?.cards || localStorage.getItem(SPEAKING_CARD_SEED_KEY) === SPEAKING_CARD_SEED_VERSION) {
             const classify = (item) => {
               if (item.part1Category) return item.part1Category;
               const ids = item.functions || [];
@@ -3405,8 +3408,10 @@
             };
             const uncertain = cards.part1.filter((item) => !classify(item));
             cards.part1 = normaliseCollectionOrder(cards.part1.filter((item) => classify(item)).map((item) => ({ ...item, part1Category: classify(item) })));
+            cards.part1.forEach((item) => { item.structure = getSpeakingCardStructure(item, item.part1Category); });
             cards.otherSynonyms = normaliseCollectionOrder([...cards.otherSynonyms, ...uncertain]);
             localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
+            localStorage.setItem(SPEAKING_CARD_SEED_KEY, SPEAKING_CARD_SEED_VERSION);
           }
         } catch {}
         return next;
@@ -4576,12 +4581,23 @@
       }
       function getPart1Structures(category) {
         const map = {
-          dpf: [["direct", "直接回答"], ["persona", "建立人设"], ["feeling", "感受 / 频率 / 起点"]],
-          dwc: [["direct", "直接回答"], ["why", "5W1H / 原因"], ["change", "变化 / 补充评价"]],
+          dpf: [["direct", "直接回答"], ["persona", "建立人设"], ["feeling", "感受 / 频率 / 时间起点"]],
+          dwc: [["direct", "直接回答"], ["why", "5W1H 经历展开"], ["change", "变化"]],
           dcf: [["direct", "直接回答"], ["condition", "条件补充"], ["feeling", "感受 / 预期结果"]],
           oreo: [["opinion", "观点"], ["reason", "原因"], ["example", "举例"], ["summary", "简单总结"]],
         };
         return map[category] || [];
+      }
+      function getSpeakingCardStructure(item, category) {
+        const steps = getPart1Structures(category);
+        if (steps.some(([id]) => id === item.structure)) return item.structure;
+        const functions = item.functions || [];
+        const has = (...ids) => ids.some((id) => functions.includes(id));
+        if (category === "dpf") return has("persona") ? "persona" : has("fromWhen", "frequency", "feeling") ? "feeling" : "direct";
+        if (category === "dwc") return has("change") ? "change" : has("direct") ? "direct" : "why";
+        if (category === "dcf") return has("condition") ? "condition" : has("direct") ? "direct" : "feeling";
+        if (category === "oreo") return has("reason") ? "reason" : has("example") ? "example" : has("summary") ? "summary" : "opinion";
+        return "";
       }
       function getSpeakingCards() {
         if (state.speakingLibraryKind === "other") return state.speaking.cards.otherSynonyms || [];
@@ -4595,6 +4611,7 @@
       }
       function getSpeakingLibraryLabel() {
         if (state.speakingLibraryKind === "other") return "其它同义替换";
+        if (isPart1CardLibrary()) return `Part 1 · ${state.speakingPart1Category.toUpperCase()} `;
         return state.speakingLibraryKind === "topic" ? SPEAKING_TOPIC_CONFIG[state.speakingTopic].label : getSpeakingConfig().label;
       }
       function openSpeakingScreen(screen) {
@@ -4621,8 +4638,6 @@
         state.speakingPart = "part1";
         state.speakingLibraryKind = "part";
         openSpeakingScreen("speaking-card-branch");
-        state.speakingStructureFilter = category;
-        renderSpeakingCardBranch();
       }
       function openSpeakingTopic(topic) {
         if (!SPEAKING_TOPIC_CONFIG[topic]) return;
@@ -4641,6 +4656,7 @@
         const isOther = state.speakingLibraryKind === "other";
         $("#speaking-branch-eyebrow").textContent = isOther ? "SPEAKING · OTHER" : isTopic ? "SPEAKING · TOPICS" : `SPEAKING · ${config.label.toUpperCase()}`;
         $("#speaking-branch-title").textContent = isOther ? "其它同义替换" : isTopic ? topic.label : config.label;
+        if (isPart1CardLibrary()) $("#speaking-branch-title").textContent = `Part 1 · ${state.speakingPart1Category.toUpperCase()}`;
         $("#speaking-branch-description").textContent = isOther ? "保存暂未归入 Part 1 结构的同义替换表达。" : isTopic ? topic.description : config.description;
         $("#speaking-part-switch").hidden = isTopic || isOther;
         ["part1", "part2", "part3"].forEach((part) => {
@@ -4660,11 +4676,13 @@
         structureSelect.hidden = !part1;
         functionSelect.hidden = !part1;
         if (!part1) return;
-        if (state.speakingStructureFilter !== "all" && !SPEAKING_PART1_CARD_CONFIG.structures[state.speakingStructureFilter]) state.speakingStructureFilter = "all";
-        structureSelect.replaceChildren(new Option("全部回答结构", "all"));
-        Object.entries(SPEAKING_PART1_CARD_CONFIG.structures).forEach(([id, label]) => structureSelect.append(new Option(label, id)));
+        const category = state.speakingPart1Category || "dpf";
+        const structures = getPart1Structures(category);
+        if (state.speakingStructureFilter !== "all" && !structures.some(([id]) => id === state.speakingStructureFilter)) state.speakingStructureFilter = "all";
+        structureSelect.replaceChildren(new Option("全部结构", "all"));
+        structures.forEach(([id, label]) => structureSelect.append(new Option(label, id)));
         structureSelect.value = state.speakingStructureFilter;
-        const allowed = state.speakingStructureFilter === "all" ? Object.keys(SPEAKING_PART1_CARD_CONFIG.functions) : (SPEAKING_PART1_CARD_CONFIG.structureFunctions[state.speakingStructureFilter] || Object.keys(SPEAKING_PART1_CARD_CONFIG.functions));
+        const allowed = Object.keys(SPEAKING_PART1_CARD_CONFIG.functions);
         if (state.speakingFunctionFilter !== "all" && !allowed.includes(state.speakingFunctionFilter)) state.speakingFunctionFilter = "all";
         functionSelect.replaceChildren(new Option("全部功能", "all"));
         allowed.forEach((id) => functionSelect.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id)));
@@ -4675,10 +4693,10 @@
         const items = getOrderedItems(getSpeakingCards()).filter((item) => {
           const matchesStar = state.speakingStarFilter !== "starred" || item.star > 0;
           if (!isPart1CardLibrary()) return matchesStar;
-        const allowed = state.speakingStructureFilter === "all" ? null : (SPEAKING_PART1_CARD_CONFIG.structureFunctions[state.speakingStructureFilter] || Object.keys(SPEAKING_PART1_CARD_CONFIG.functions));
-          const matchesStructure = !allowed || item.part1Category === state.speakingStructureFilter;
+          const matchesCategory = item.part1Category === state.speakingPart1Category;
+          const matchesStructure = state.speakingStructureFilter === "all" || item.structure === state.speakingStructureFilter;
           const matchesFunction = state.speakingFunctionFilter === "all" || item.functions.includes(state.speakingFunctionFilter);
-          return matchesStar && matchesStructure && matchesFunction;
+          return matchesStar && matchesCategory && matchesStructure && matchesFunction;
         });
         $("#speaking-count").textContent = items.length;
         $("#speaking-count-tab").textContent = items.length;
@@ -5173,21 +5191,19 @@
         state.speakingSynonymAddOpen = false;
         $("#speaking-synonym-original").textContent = state.speakingSynonymDraft.original;
         $("#speaking-synonym-translation").value = state.speakingSynonymDraft.translation;
-        const functionField = $("#speaking-card-functions-field");
         const functionSelect = $("#speaking-card-functions");
-        const structureField = $("#speaking-card-structure-field");
         const structureSelect = $("#speaking-card-structure");
-        functionField.hidden = !isPart1CardLibrary();
-        structureField.hidden = !isPart1CardLibrary();
+        $("#speaking-card-category-row").hidden = !isPart1CardLibrary();
         functionSelect.replaceChildren();
         structureSelect.replaceChildren();
         if (isPart1CardLibrary()) {
           const category = item?.part1Category || state.speakingPart1Category || "dpf";
-          getPart1Structures(category).forEach(([id, label]) => structureSelect.append(new Option(label, id, false, id === (item?.structure || "direct"))));
-          Object.entries(SPEAKING_PART1_CARD_CONFIG.functions).filter(([id]) => (SPEAKING_PART1_CARD_CONFIG.structureFunctions[category] || []).includes(id)).forEach(([id, label]) => {
-            const option = new Option(label, id, false, state.speakingSynonymDraft.functions.includes(id));
-            functionSelect.append(option);
-          });
+          const structure = item ? getSpeakingCardStructure(item, category) : (state.speakingStructureFilter === "all" ? getPart1Structures(category)[0]?.[0] : state.speakingStructureFilter);
+          getPart1Structures(category).forEach(([id, label]) => structureSelect.append(new Option(label, id, false, id === structure)));
+          const allowedFunctions = Object.keys(SPEAKING_PART1_CARD_CONFIG.functions);
+          functionSelect.append(new Option("选择功能分类", "", false, !state.speakingSynonymDraft.functions.length));
+          const selectedFunction = item ? item.functions.find((id) => id !== "direct") || item.functions[0] : state.speakingFunctionFilter;
+          allowedFunctions.forEach((id) => functionSelect.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id, false, selectedFunction === id)));
         }
         $("#speaking-synonym-modal-title").textContent = item ? "编辑口语词卡" : "确认口语词卡";
         $("#speaking-synonym-modal-subtitle").textContent = smart ? "中文翻译已自动获取，可以继续补充替换表达。" : "每条替换表达都可以单独编辑或删除。";
@@ -5219,7 +5235,7 @@
           star: existing?.star > 0 ? 1 : 0,
           part1Category: isPart1CardLibrary() ? (existing?.part1Category || state.speakingPart1Category || "dpf") : "",
           structure: isPart1CardLibrary() ? $("#speaking-card-structure").value : "",
-          functions: isPart1CardLibrary() ? [...$("#speaking-card-functions").selectedOptions].map((option) => option.value) : [],
+          functions: isPart1CardLibrary() ? [$("#speaking-card-functions").value].filter(Boolean) : [],
           substitutions: (state.speakingSynonymDraft.substitutions || [])
             .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
             .filter((substitution) => substitution.content),
