@@ -1195,6 +1195,16 @@
             <button class="feature-card" data-speaking-topic="other"><span class="feature-icon blue">他</span><h2>其他</h2><p>暂未归类的口语素材。</p><span class="feature-link" style="color:var(--blue)">进入其他 →</span></button>
           </div>
         </section>
+
+        <section class="speaking-screen" data-speaking-screen="speaking-part1-home" hidden>
+          <div class="module-heading"><div><p class="eyebrow">SPEAKING · PART 1</p><h1>Part 1</h1><p>先选择回答结构，再查看对应的口语词卡。</p></div></div>
+          <div class="speaking-entry-grid two">
+            <button class="feature-card" data-speaking-part1-category="dpf"><span class="feature-icon coral">D</span><h2>DPF</h2><p>Direct Answer → Persona → Further Detail<br>直接回答 → 建立人设 → 进一步展开</p><span class="feature-link" style="color:var(--coral)">适用于回答并解释原因的问题 →</span></button>
+            <button class="feature-card" data-speaking-part1-category="dwc"><span class="feature-icon sage">D</span><h2>DWC</h2><p>Direct Answer → Why → Change / Comment<br>直接回答 → 原因 → 变化或补充评价</p><span class="feature-link">适用于经历、过去与现在的问题 →</span></button>
+            <button class="feature-card" data-speaking-part1-category="dcf"><span class="feature-icon blue">D</span><h2>DCF</h2><p>Direct Answer → Condition → Feeling<br>直接回答 → 条件补充 → 感受或预期结果</p><span class="feature-link" style="color:var(--blue)">适用于未来计划和愿望问题 →</span></button>
+            <button class="feature-card" data-speaking-part1-category="oreo"><span class="feature-icon coral">O</span><h2>OREO</h2><p>Opinion → Reason → Example → Optional Summary<br>观点 → 原因 → 举例 → 简单总结</p><span class="feature-link" style="color:var(--coral)">适用于细节描述和感受问题 →</span></button>
+          </div>
+        </section>
       </section>
       <section class="view-panel" data-page="writing" hidden>
         <section class="writing-screen" data-writing-screen="writing-home">
@@ -2246,6 +2256,7 @@
         speakingScreen: "speaking-home",
         speakingPanelView: "editor",
         speakingPart: "part1",
+        speakingPart1Category: "dpf",
         speakingTopic: "people",
         speakingLibraryKind: "part",
         speakingStructureFilter: "all",
@@ -3723,8 +3734,12 @@
             return;
           }
           const screen = state.speakingScreen === "speaking-card-branch"
-            ? state.speakingLibraryKind === "other" ? "speaking-other-home" : state.speakingLibraryKind === "topic" ? "speaking-topic-home" : "speaking-structure-home"
+            ? state.speakingLibraryKind === "other" ? "speaking-other-home" : state.speakingLibraryKind === "topic" ? "speaking-topic-home" : state.speakingPart === "part1" ? "speaking-part1-home" : "speaking-structure-home"
             : "speaking-home";
+          if (state.speakingScreen === "speaking-part1-home") {
+            openSpeakingScreen("speaking-structure-home");
+            return;
+          }
           openSpeakingScreen(screen);
           return;
         }
@@ -4584,9 +4599,10 @@
       }
       function openSpeakingScreen(screen) {
         if (!$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
-        if (!["speaking-home", "speaking-structure-home", "speaking-topic-home", "speaking-other-home", "speaking-card-branch"].includes(screen)) return;
+        if (!["speaking-home", "speaking-structure-home", "speaking-part1-home", "speaking-topic-home", "speaking-other-home", "speaking-card-branch"].includes(screen)) return;
         state.speakingScreen = screen;
         if (screen === "speaking-structure-home") { state.speakingLibraryKind = "part"; state.speakingPanelView = "editor"; }
+        if (screen === "speaking-part1-home") { state.speakingLibraryKind = "part"; state.speakingPart = "part1"; state.speakingPanelView = "editor"; }
         if (screen === "speaking-card-branch") { state.speakingPanelView = "editor"; state.speakingStructureFilter = "all"; state.speakingFunctionFilter = "all"; }
         $$("[data-speaking-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingScreen !== state.speakingScreen));
         if (state.speakingScreen === "speaking-card-branch") renderSpeakingCardBranch();
@@ -4597,7 +4613,16 @@
         if (!SPEAKING_CONFIG[part]) return;
         state.speakingPart = part;
         state.speakingLibraryKind = "part";
+        openSpeakingScreen(part === "part1" ? "speaking-part1-home" : "speaking-card-branch");
+      }
+      function openSpeakingPart1Category(category) {
+        if (!SPEAKING_PART1_CARD_CONFIG.structures[category]) return;
+        state.speakingPart1Category = category;
+        state.speakingPart = "part1";
+        state.speakingLibraryKind = "part";
         openSpeakingScreen("speaking-card-branch");
+        state.speakingStructureFilter = category;
+        renderSpeakingCardBranch();
       }
       function openSpeakingTopic(topic) {
         if (!SPEAKING_TOPIC_CONFIG[topic]) return;
@@ -5157,7 +5182,7 @@
         functionSelect.replaceChildren();
         structureSelect.replaceChildren();
         if (isPart1CardLibrary()) {
-          const category = item?.part1Category || "dpf";
+          const category = item?.part1Category || state.speakingPart1Category || "dpf";
           getPart1Structures(category).forEach(([id, label]) => structureSelect.append(new Option(label, id, false, id === (item?.structure || "direct"))));
           Object.entries(SPEAKING_PART1_CARD_CONFIG.functions).filter(([id]) => (SPEAKING_PART1_CARD_CONFIG.structureFunctions[category] || []).includes(id)).forEach(([id, label]) => {
             const option = new Option(label, id, false, state.speakingSynonymDraft.functions.includes(id));
@@ -5192,7 +5217,7 @@
           original,
           translation: $("#speaking-synonym-translation").value.trim(),
           star: existing?.star > 0 ? 1 : 0,
-          part1Category: isPart1CardLibrary() ? (existing?.part1Category || "dpf") : "",
+          part1Category: isPart1CardLibrary() ? (existing?.part1Category || state.speakingPart1Category || "dpf") : "",
           structure: isPart1CardLibrary() ? $("#speaking-card-structure").value : "",
           functions: isPart1CardLibrary() ? [...$("#speaking-card-functions").selectedOptions].map((option) => option.value) : [],
           substitutions: (state.speakingSynonymDraft.substitutions || [])
@@ -5244,6 +5269,7 @@
       $$("[data-speaking-screen-target]").forEach((element) => element.addEventListener("click", () => openSpeakingScreen(element.dataset.speakingScreenTarget)));
       $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
       $$("[data-speaking-topic]").forEach((element) => element.addEventListener("click", () => openSpeakingTopic(element.dataset.speakingTopic)));
+      $$(`[data-speaking-part1-category]`).forEach((element) => element.addEventListener("click", () => openSpeakingPart1Category(element.dataset.speakingPart1Category)));
       $$ ("[data-speaking-library-kind]").forEach((element) => element.addEventListener("click", () => {
         if (element.dataset.speakingLibraryKind === "other") openSpeakingOther();
       }));
