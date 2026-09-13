@@ -1198,6 +1198,11 @@
           </div>
         </section>
 
+        <section class="speaking-screen" data-speaking-screen="speaking-part3-home" hidden>
+          <div class="module-heading"><div><p class="eyebrow">SPEAKING · PART 3</p><h1>Part 3</h1><p>按问题类型选择讨论结构，再进入对应词卡库。</p></div></div>
+          <div id="speaking-part3-entry-grid" class="speaking-entry-grid three"></div>
+        </section>
+
         <section class="speaking-screen" data-speaking-screen="speaking-part1-home" hidden>
           <div class="module-heading"><div><p class="eyebrow">SPEAKING · PART 1</p><h1>Part 1</h1><p>先选择回答结构，再查看对应的口语词卡。</p></div></div>
           <div class="speaking-entry-grid two">
@@ -1553,6 +1558,8 @@
       const SPEAKING_PART1_SEED_KEY = "ielts-study-helper.speaking-part1-seed.v1";
       const SPEAKING_CARD_SEED_KEY = "ielts-study-helper.speaking-cards-seed.v1";
       const SPEAKING_CARD_SEED_VERSION = "part1-structure-functions-v2";
+      const SPEAKING_PART3_SEED_KEY = "ielts-study-helper.speaking-part3-seed.v1";
+      const SPEAKING_PART3_SEED_VERSION = "part3-six-types-v1";
       const CATEGORY_STORAGE_KEY = "ielts-study-helper.category-config.v1";
       const CATEGORY_UPDATED_AT_KEY = "ielts-study-helper.category-config-updated-at.v1";
       const CLOUD_CACHE_KEY = "ielts-study-helper.cloud-cache.v1";
@@ -1923,6 +1930,50 @@
           oreo: ["direct", "reason", "example", "summary", "feeling", "detail"],
         },
       };
+      const SPEAKING_PART3_CONFIG = {
+        categories: {
+          why: "为什么 / 原因", groups: "人群差异", prosCons: "优缺点", future: "未来变化", opinion: "观点判断", solution: "解决办法",
+        },
+        descriptions: {
+          why: "回答为什么会这样，以及原因带来的结果。", groups: "回答不同人群之间的差异及其原因。", prosCons: "回答某事物的主要好处和问题。", future: "回答未来可能出现的外部和观念变化。", opinion: "回答是否同意、是否值得以及理由。", solution: "回答问题应采取什么措施以及预期效果。",
+        },
+        structures: {
+          why: [["opening", "总起"], ["inner", "内在原因"], ["external", "外在原因"], ["result", "结果 / 小结"]],
+          groups: [["acknowledge", "承认差异"], ["groupA", "A 群体"], ["groupB", "B 群体"], ["summary", "总结差异"]],
+          prosCons: [["opening", "总起"], ["advantage", "优点"], ["disadvantage", "缺点"], ["summary", "总结 / 结果"]],
+          future: [["trend", "未来趋势"], ["external", "外部变化"], ["internal", "内在观念变化"], ["result", "未来结果"]],
+          opinion: [["position", "明确观点"], ["reason", "核心理由"], ["explanation", "进一步解释"], ["concession", "让步"], ["return", "回到观点"]],
+          solution: [["problem", "指出问题"], ["measure1", "措施 1"], ["measure2", "措施 2"], ["result", "预期结果"]],
+        },
+        functions: { general: "总起", cause: "原因", external: "外部因素", result: "结果", comparison: "比较", advantage: "优点", disadvantage: "缺点", trend: "趋势", opinion: "观点", explanation: "解释", concession: "让步", problem: "问题", measure: "措施" },
+      };
+      const SPEAKING_PART3_CARD_SEED = [
+        ["why","opening","general","There are several reasons why [X] has become increasingly common.","[X]越来越常见有几个原因。","用于自然引出原因分析。","The growing popularity of [X] can be explained by several factors.","A number of factors help explain this trend."],
+        ["why","inner","cause","One underlying reason is that people increasingly [VALUE], which makes them more likely to [ACTION].","一个根本原因是人们越来越重视[VALUE]，因此更可能[ACTION]。","填写个人观念、需求或心理。","This is partly because [GROUP] tend to [VALUE].","At an individual level, [FEELING] may encourage people to [ACTION]."],
+        ["why","external","external","Besides personal motives, external conditions also play an important role, especially [EXTERNAL].","除了个人动机，外部条件也很重要，尤其是[EXTERNAL]。","填写技术、政策、家庭或社会环境。","Another factor is that [EXTERNAL] makes it easier to [ACTION].","People's choices are often shaped by [EXTERNAL]."],
+        ["why","result","result","As a result, [X] can lead to [EFFECT], particularly among [GROUP].","因此，[X]可能导致[EFFECT]，尤其是在[GROUP]中。","总结原因带来的直接结果。","This helps explain why [EFFECT] has become more noticeable.","Taken together, these factors make [X] more likely to continue."],
+        ["groups","acknowledge","comparison","People do not respond to [X] in exactly the same way, and the difference is often linked to their circumstances.","人们对[X]的反应并不完全相同，这种差异通常与处境有关。","先承认群体差异，再分别展开。","Views on [X] vary considerably between different groups.","The impact of [X] is not evenly distributed across society."],
+        ["groups","groupA","comparison","For [GROUP A], [X] is more likely to be seen as [VIEW], because [REASON].","对[群体A]而言，[X]更可能被看作[观点]，因为[原因]。","描述第一群体及其原因。","People in this group tend to [ACTION] when [CONDITION].","This may reflect the fact that [GROUP A] often [BEHAVIOUR]."],
+        ["groups","groupB","comparison","By contrast, [GROUP B] may be more concerned about [PRIORITY], so they tend to [ACTION].","相比之下，[群体B]可能更关注[重点]，因此倾向于[ACTION]。","描述第二群体，保持与 A 群体的对比。","The second group is more likely to prioritise [PRIORITY].","For [GROUP B], the main consideration is often [FACTOR]."],
+        ["groups","summary","comparison","Overall, the difference between the two groups comes down to their priorities and access to [RESOURCE].","总的来说，两群体的差异取决于其重点和获得[资源]的机会。","归纳差异的核心来源。","This contrast shows that [X] affects groups in different ways.","The distinction is therefore more about circumstances than personal preference."],
+        ["prosCons","opening","general","[X] has both clear benefits and possible drawbacks, so its overall value depends on how it is used.","[X]既有明显好处，也有潜在缺点，因此总体价值取决于使用方式。","利弊题的总起句。","The effects of [X] are mixed rather than entirely positive or negative.","A balanced assessment should consider both sides of [X]."],
+        ["prosCons","advantage","advantage","The main advantage is that [ADVANTAGE], which allows people to [RESULT].","主要优点是[ADVANTAGE]，这使人们能够[结果]。","备注中填写具体优势和结果。","One major benefit is [ADVANTAGE], as this enables [GROUP] to [RESULT].","Perhaps the biggest positive point is [ADVANTAGE]."],
+        ["prosCons","disadvantage","disadvantage","The main concern is that [DISADVANTAGE], particularly when [CONDITION].","主要问题是[缺点]，尤其是在[条件]时。","说明风险、成本或限制。","One possible drawback is [DISADVANTAGE], which may put pressure on [GROUP].","This approach can also create problems if [CONDITION]."],
+        ["prosCons","summary","result","On balance, [X] is worthwhile provided that [CONDITION] is properly managed.","总的来说，只要妥善处理[条件]，[X]就是值得的。","用条件平衡利弊并收束。","Overall, the benefits appear to outweigh the drawbacks when [CONDITION].","Its value ultimately depends on whether the main risks can be reduced."],
+        ["future","trend","trend","In the coming years, [X] is likely to become more widespread, although the pace of change is uncertain.","未来几年，[X]可能会更加普遍，不过变化速度尚不确定。","预测总体趋势。","[X] seems set to play a larger role in the future.","The most likely development is a gradual shift towards [X]."],
+        ["future","external","external","Externally, changes in [TECHNOLOGY / POLICY / SOCIETY] are likely to make [X] more accessible.","从外部看，[技术/政策/社会]的变化可能使[X]更容易获得。","先写外部变化。","Advances in [EXTERNAL] may accelerate this trend.","Future demand will also be affected by changes in [EXTERNAL]."],
+        ["future","internal","opinion","Internally, people's attitudes may gradually shift as they gain more experience with [X].","从内部看，随着人们对[X]经验增加，其态度可能逐渐改变。","外部变化之后写观念变化。","Over time, [GROUP] may become more willing to [ACTION].","A change in social attitudes could make people less concerned about [CONCERN]."],
+        ["future","result","result","As these external and internal changes interact, [X] may produce [FUTURE EFFECT].","随着外部和内部变化相互作用，[X]可能产生[未来影响]。","总结未来结果。","This could result in a society that is more [QUALITY].","The long-term outcome will depend on whether [CONDITION] keeps pace with the change."],
+        ["opinion","position","opinion","I would argue that [X] is a positive development, mainly because [REASON].","我认为[X]是积极的发展，主要因为[原因]。","明确回答观点题。","In my view, [X] should be regarded as beneficial overall.","My position is that the advantages of [X] are more significant."],
+        ["opinion","reason","explanation","The strongest reason for this view is that [REASON], which directly affects [GROUP].","支持这一观点最有力的理由是[原因]，它直接影响[群体]。","提出核心理由。","This matters because [EXPLANATION].","The key point is that [X] can [RESULT]."],
+        ["opinion","explanation","explanation","This is not simply a matter of [SURFACE], since it also influences [DEEPER EFFECT].","这不只是[表面因素]的问题，因为它还影响[更深层结果]。","进一步解释核心理由。","In other words, [X] affects the way people [ACTION].","The wider implication is that [RESULT]."],
+        ["opinion","concession","concession","Admittedly, [COUNTERARGUMENT] may be a valid concern, but it does not outweigh [MAIN POINT].","诚然，[反方观点]可能是合理担忧，但它无法超过[主要观点]。","先让步，再回到主张。","Although [LIMITATION] exists, the overall impact remains positive.","It is true that [COUNTERARGUMENT]; nevertheless, [MAIN POINT]."],
+        ["opinion","return","opinion","For this reason, I remain convinced that [X] is the more sensible approach in the long term.","因此，我仍然认为从长远看[X]是更合理的做法。","重申观点并收束。","Taking these points together, I believe [X] should be encouraged.","This is why my overall view of [X] remains positive."],
+        ["solution","problem","problem","The first step is to recognise that [PROBLEM] is largely caused by [CAUSE].","第一步是认识到[问题]主要由[原因]造成。","先指出问题和成因。","Any effective response must address the fact that [PROBLEM].","The difficulty cannot be solved unless [CAUSE] is taken seriously."],
+        ["solution","measure1","measure","One practical measure would be for [AUTHORITY] to [ACTION], with priority given to [GROUP].","一项实际措施是[机构]执行[行动]，并优先帮助[群体]。","提出第一项可执行措施。","[AUTHORITY] could tackle this by [ACTION].","A targeted programme could provide [RESOURCE] to [GROUP]."],
+        ["solution","measure2","measure","A second measure is to improve [SYSTEM] so that people can [ACTION] more easily.","第二项措施是改善[系统]，让人们更容易[ACTION]。","提出第二项互补措施。","Another useful step would be to invest in [AREA].","This could be supported by clearer rules and better access to [RESOURCE]."],
+        ["solution","result","result","If these measures are implemented consistently, they should reduce [PROBLEM] and improve [OUTCOME].","如果持续实施这些措施，就应能减少[问题]并改善[结果]。","说明预期效果。","The expected outcome is a gradual improvement in [AREA].","In the long run, this would make [X] more sustainable and equitable."],
+      ];
       const SPEAKING_TOPIC_CONFIG = {
         people: { label: "人物", description: "人物特征、关系与故事表达。" },
         places: { label: "地点", description: "地点描述、氛围和方位表达。" },
@@ -2302,6 +2353,7 @@
         speakingPanelView: "editor",
         speakingPart: "part1",
         speakingPart1Category: "dpf",
+        speakingPart3Category: "why",
         speakingTopic: "people",
         speakingLibraryKind: "part",
         speakingStructureFilter: "all",
@@ -2603,6 +2655,7 @@
             localStorage.removeItem(SPEAKING_CARD_SEED_KEY);
             speakingMigratedDuringHydration = true;
           }
+          if (payload.speakingPart3SeedVersion !== SPEAKING_PART3_SEED_VERSION) localStorage.removeItem(SPEAKING_PART3_SEED_KEY);
           localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(payload.speaking));
           state.speaking = loadSpeakingData();
         }
@@ -3397,6 +3450,7 @@
           translation: String(item?.translation || ""),
           note: String(item?.note || ""),
           part1Category: ["dpf", "dwc", "dcf", "oreo"].includes(item?.part1Category) ? item.part1Category : "",
+          part3Category: Object.keys(SPEAKING_PART3_CONFIG.categories).includes(item?.part3Category) ? item.part3Category : "",
           structure: String(item?.structure || ""),
           star: item?.star > 0 ? 1 : 0,
           functions: [...new Set((Array.isArray(item?.functions) ? item.functions : fallbackFunctions).filter((id) => SPEAKING_PART1_CARD_CONFIG.functions[id]))],
@@ -3440,6 +3494,21 @@
             cards.otherSynonyms = [];
             localStorage.setItem(SPEAKING_CARD_SEED_KEY, SPEAKING_CARD_SEED_VERSION);
             localStorage.setItem(SPEAKING_PART1_SEED_KEY, "migrated");
+            localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
+          }
+        } catch {}
+        try {
+          if (localStorage.getItem(SPEAKING_PART3_SEED_KEY) !== SPEAKING_PART3_SEED_VERSION) {
+            const now = Date.now();
+            cards.part3 = SPEAKING_PART3_CARD_SEED.map((seed, index) => normaliseSpeakingCard({
+              id: `speaking-part3-${index}`, createdAt: now + index, order: index + 1,
+              part3Category: seed[0], structure: seed[1], functions: [seed[2]], original: seed[3], translation: seed[4],
+              note: `填空提示：${seed[3].match(/\[[^\]]+\]/g)?.join("、") || "根据题目替换变量"}。`,
+              substitutions: seed.slice(6).map((content, subIndex) => ({ id: `speaking-part3-${index}-${subIndex}`, content })),
+            }));
+            next.cards = cards;
+            next.part3SeedVersion = SPEAKING_PART3_SEED_VERSION;
+            localStorage.setItem(SPEAKING_PART3_SEED_KEY, SPEAKING_PART3_SEED_VERSION);
             localStorage.setItem(SPEAKING_STORAGE_KEY, JSON.stringify(next));
           }
         } catch {}
@@ -4659,6 +4728,20 @@
       function isPart1CardLibrary() {
         return state.speakingLibraryKind === "part" && state.speakingPart === "part1";
       }
+      function isPart3SpeakingLibrary() {
+        return state.speakingLibraryKind === "part" && state.speakingPart === "part3";
+      }
+      function renderSpeakingPart3Home() {
+        const grid = $("#speaking-part3-entry-grid");
+        if (!grid) return;
+        grid.replaceChildren();
+        Object.entries(SPEAKING_PART3_CONFIG.categories).forEach(([id, label]) => {
+          const button = document.createElement("button"); button.className = "feature-card"; button.type = "button";
+          button.innerHTML = `<span class="feature-icon coral">3</span><h2></h2><p></p><span class="feature-link" style="color:var(--coral)">进入词卡库 →</span>`;
+          button.querySelector("h2").textContent = label; button.querySelector("p").textContent = SPEAKING_PART3_CONFIG.descriptions[id];
+          button.addEventListener("click", () => openSpeakingPart3Category(id)); grid.append(button);
+        });
+      }
       function getPart1Structures(category) {
         const map = {
           dpf: [["direct", "直接回答"], ["persona", "建立人设"], ["feeling", "感受 / 频率 / 时间起点"]],
@@ -4703,14 +4786,16 @@
       function getSpeakingLibraryLabel() {
         if (state.speakingLibraryKind === "other") return "其它同义替换";
         if (isPart1CardLibrary()) return `Part 1 · ${state.speakingPart1Category.toUpperCase()} `;
+        if (state.speakingPart === "part3" && state.speakingLibraryKind === "part") return `Part 3 · ${SPEAKING_PART3_CONFIG.categories[state.speakingPart3Category]} `;
         return state.speakingLibraryKind === "topic" ? SPEAKING_TOPIC_CONFIG[state.speakingTopic].label : getSpeakingConfig().label;
       }
       function openSpeakingScreen(screen) {
         if (!$("#speaking-synonym-backdrop").hidden) closeSpeakingSynonymModal();
-        if (!["speaking-home", "speaking-structure-home", "speaking-part1-home", "speaking-topic-home", "speaking-other-home", "speaking-card-branch"].includes(screen)) return;
+        if (!["speaking-home", "speaking-structure-home", "speaking-part1-home", "speaking-part3-home", "speaking-topic-home", "speaking-other-home", "speaking-card-branch"].includes(screen)) return;
         state.speakingScreen = screen;
         if (screen === "speaking-structure-home") { state.speakingLibraryKind = "part"; state.speakingPanelView = "editor"; }
         if (screen === "speaking-part1-home") { state.speakingLibraryKind = "part"; state.speakingPart = "part1"; state.speakingPanelView = "editor"; }
+        if (screen === "speaking-part3-home") { state.speakingLibraryKind = "part"; state.speakingPart = "part3"; state.speakingPanelView = "editor"; }
         if (screen === "speaking-card-branch") { state.speakingPanelView = "editor"; state.speakingStructureFilter = "all"; state.speakingFunctionFilter = "all"; }
         $$("[data-speaking-screen]").forEach((panel) => panel.toggleAttribute("hidden", panel.dataset.speakingScreen !== state.speakingScreen));
         if (state.speakingScreen === "speaking-card-branch") renderSpeakingCardBranch();
@@ -4721,7 +4806,12 @@
         if (!SPEAKING_CONFIG[part]) return;
         state.speakingPart = part;
         state.speakingLibraryKind = "part";
-        openSpeakingScreen(part === "part1" ? "speaking-part1-home" : "speaking-card-branch");
+        openSpeakingScreen(part === "part1" ? "speaking-part1-home" : part === "part3" ? "speaking-part3-home" : "speaking-card-branch");
+      }
+      function openSpeakingPart3Category(category) {
+        if (!SPEAKING_PART3_CONFIG.categories[category]) return;
+        state.speakingPart = "part3"; state.speakingPart3Category = category; state.speakingLibraryKind = "part";
+        openSpeakingScreen("speaking-card-branch");
       }
       function openSpeakingPart1Category(category) {
         if (!SPEAKING_PART1_CARD_CONFIG.structures[category]) return;
@@ -4748,6 +4838,7 @@
         $("#speaking-branch-eyebrow").textContent = isOther ? "SPEAKING · OTHER" : isTopic ? "SPEAKING · TOPICS" : `SPEAKING · ${config.label.toUpperCase()}`;
         $("#speaking-branch-title").textContent = isOther ? "其它同义替换" : isTopic ? topic.label : config.label;
         if (isPart1CardLibrary()) $("#speaking-branch-title").textContent = `Part 1 · ${state.speakingPart1Category.toUpperCase()}`;
+        if (state.speakingPart === "part3" && state.speakingLibraryKind === "part") { $("#speaking-branch-title").textContent = SPEAKING_PART3_CONFIG.categories[state.speakingPart3Category]; $("#speaking-branch-description").textContent = SPEAKING_PART3_CONFIG.descriptions[state.speakingPart3Category]; }
         $("#speaking-branch-description").textContent = isOther ? "保存暂未归入 Part 1 结构的同义替换表达。" : isTopic ? topic.description : config.description;
         $("#speaking-part-switch").hidden = isTopic || isOther;
         ["part1", "part2", "part3"].forEach((part) => {
@@ -4764,8 +4855,18 @@
         const structureSelect = $("#speaking-structure-filter");
         const functionSelect = $("#speaking-function-filter");
         const part1 = isPart1CardLibrary();
-        structureSelect.hidden = !part1;
-        functionSelect.hidden = !part1;
+        const part3 = state.speakingPart === "part3" && state.speakingLibraryKind === "part";
+        structureSelect.hidden = !(part1 || part3); functionSelect.hidden = !(part1 || part3);
+        if (part3) {
+          const structures = SPEAKING_PART3_CONFIG.structures[state.speakingPart3Category] || [];
+          if (state.speakingStructureFilter !== "all" && !structures.some(([id]) => id === state.speakingStructureFilter)) state.speakingStructureFilter = "all";
+          structureSelect.replaceChildren(new Option("全部结构", "all")); structures.forEach(([id, label]) => structureSelect.append(new Option(label, id)));
+          structureSelect.value = state.speakingStructureFilter;
+          const functions = [...new Set(SPEAKING_PART3_CARD_SEED.filter((row) => row[0] === state.speakingPart3Category && (state.speakingStructureFilter === "all" || row[1] === state.speakingStructureFilter)).map((row) => row[2]))];
+          functionSelect.replaceChildren(new Option("全部功能", "all")); functions.forEach((id) => functionSelect.append(new Option(SPEAKING_PART3_CONFIG.functions[id] || id, id)));
+          functionSelect.value = functions.includes(state.speakingFunctionFilter) ? state.speakingFunctionFilter : "all";
+          return;
+        }
         if (!part1) return;
         const category = state.speakingPart1Category || "dpf";
         const structures = getPart1Structures(category);
@@ -4783,6 +4884,7 @@
         const list = $("#speaking-card-list");
         const items = getOrderedItems(getSpeakingCards()).filter((item) => {
           const matchesStar = state.speakingStarFilter !== "starred" || item.star > 0;
+          if (state.speakingPart === "part3" && state.speakingLibraryKind === "part") return matchesStar && item.part3Category === state.speakingPart3Category && (state.speakingStructureFilter === "all" || item.structure === state.speakingStructureFilter) && (state.speakingFunctionFilter === "all" || item.functions.includes(state.speakingFunctionFilter));
           if (!isPart1CardLibrary()) return matchesStar;
           const matchesCategory = item.part1Category === state.speakingPart1Category;
           const matchesStructure = state.speakingStructureFilter === "all" || item.structure === state.speakingStructureFilter;
@@ -4835,6 +4937,10 @@
               tag.textContent = SPEAKING_PART1_CARD_CONFIG.functions[id] || id;
               title.append(tag);
             });
+          }
+          if (state.speakingPart === "part3" && state.speakingLibraryKind === "part") {
+            const tag = document.createElement("span"); tag.className = "category-tag"; tag.textContent = SPEAKING_PART3_CONFIG.structures[state.speakingPart3Category]?.find(([id]) => id === item.structure)?.[1] || "未分类"; title.append(tag);
+            (item.functions || []).forEach((id) => { const f = document.createElement("span"); f.className = "category-tag"; f.textContent = SPEAKING_PART3_CONFIG.functions[id] || id; title.append(f); });
           }
           const preview = document.createElement("div");
           preview.className = "speaking-row-preview";
@@ -5294,7 +5400,8 @@
         $("#speaking-synonym-note").value = state.speakingSynonymDraft.note;
         const functionSelect = $("#speaking-card-functions");
         const structureSelect = $("#speaking-card-structure");
-        $("#speaking-card-category-row").hidden = !isPart1CardLibrary();
+        const isPart3 = state.speakingPart === "part3" && state.speakingLibraryKind === "part";
+        $("#speaking-card-category-row").hidden = !(isPart1CardLibrary() || isPart3);
         functionSelect.replaceChildren();
         structureSelect.replaceChildren();
         if (isPart1CardLibrary()) {
@@ -5305,6 +5412,15 @@
           functionSelect.append(new Option("选择功能分类", "", false, !state.speakingSynonymDraft.functions.length));
           const selectedFunction = item ? item.functions.find((id) => id !== "direct") || item.functions[0] : state.speakingFunctionFilter;
           allowedFunctions.forEach((id) => functionSelect.append(new Option(SPEAKING_PART1_CARD_CONFIG.functions[id], id, false, selectedFunction === id)));
+        }
+        if (isPart3) {
+          const category = item?.part3Category || state.speakingPart3Category || "why";
+          const structures = SPEAKING_PART3_CONFIG.structures[category] || [];
+          const structure = item?.structure || (state.speakingStructureFilter === "all" ? structures[0]?.[0] : state.speakingStructureFilter);
+          structures.forEach(([id, label]) => structureSelect.append(new Option(label, id, false, id === structure)));
+          const funcs = [...new Set(SPEAKING_PART3_CARD_SEED.filter((row) => row[0] === category && row[1] === structure).map((row) => row[2]))];
+          functionSelect.append(new Option("选择功能分类", "", false, !state.speakingSynonymDraft.functions.length));
+          funcs.forEach((id) => functionSelect.append(new Option(SPEAKING_PART3_CONFIG.functions[id] || id, id, false, (item?.functions || [])[0] === id || (!item && state.speakingFunctionFilter === id))));
         }
         $("#speaking-synonym-modal-title").textContent = item ? "编辑口语词卡" : "确认口语词卡";
         $("#speaking-synonym-modal-subtitle").textContent = smart ? "中文翻译已自动获取，可以继续补充替换表达。" : "每条替换表达都可以单独编辑或删除。";
@@ -5336,8 +5452,9 @@
           note: $("#speaking-synonym-note").value.trim(),
           star: existing?.star > 0 ? 1 : 0,
           part1Category: isPart1CardLibrary() ? (existing?.part1Category || state.speakingPart1Category || "dpf") : "",
-          structure: isPart1CardLibrary() ? $("#speaking-card-structure").value : "",
-          functions: isPart1CardLibrary() ? [$("#speaking-card-functions").value].filter(Boolean) : [],
+          part3Category: isPart3SpeakingLibrary() ? (existing?.part3Category || state.speakingPart3Category || "why") : "",
+          structure: (isPart1CardLibrary() || isPart3SpeakingLibrary()) ? $("#speaking-card-structure").value : "",
+          functions: (isPart1CardLibrary() || isPart3SpeakingLibrary()) ? [$("#speaking-card-functions").value].filter(Boolean) : [],
           substitutions: (state.speakingSynonymDraft.substitutions || [])
             .map((substitution) => ({ id: substitution.id || createId(), content: String(substitution.content || "").trim() }))
             .filter((substitution) => substitution.content),
@@ -5388,6 +5505,7 @@
       $$("[data-speaking-structure-part]").forEach((element) => element.addEventListener("click", () => openSpeakingStructurePart(element.dataset.speakingStructurePart)));
       $$("[data-speaking-topic]").forEach((element) => element.addEventListener("click", () => openSpeakingTopic(element.dataset.speakingTopic)));
       $$(`[data-speaking-part1-category]`).forEach((element) => element.addEventListener("click", () => openSpeakingPart1Category(element.dataset.speakingPart1Category)));
+      renderSpeakingPart3Home();
       $$ ("[data-speaking-library-kind]").forEach((element) => element.addEventListener("click", () => {
         if (element.dataset.speakingLibraryKind === "other") openSpeakingOther();
       }));
