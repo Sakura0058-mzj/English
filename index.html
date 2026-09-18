@@ -1551,6 +1551,10 @@
       const CAMBRIDGE5_IMPORT_KEY = "ielts-study-helper.cambridge5-imported.v1";
       const CAMBRIDGE6_IMPORT_KEY = "ielts-study-helper.cambridge6-imported.v1";
       const CAMBRIDGE6_IMPORT_VERSION = "cambridge6-v1";
+      const CAMBRIDGE7_IMPORT_KEY = "ielts-study-helper.cambridge7-imported.v1";
+      const CAMBRIDGE7_IMPORT_VERSION = "cambridge7-v1";
+      const CAMBRIDGE8_IMPORT_KEY = "ielts-study-helper.cambridge8-imported.v1";
+      const CAMBRIDGE8_IMPORT_VERSION = "cambridge8-v1";
       const WRITING_STORAGE_KEY = "ielts-study-helper.writing.v1";
       const WRITING_TASK1_SEED_KEY = "ielts-study-helper.writing-task1-seed.v1";
       const WRITING_TASK1_SEED_VERSION = "band7-v1";
@@ -2412,6 +2416,162 @@
         synonyms,
         examples: `${english}\n${chinese}`,
       }));
+      const CAMBRIDGE7_SEED = [
+        ["scrutiny", "/ˈskruːtəni/", "细看；细阅；仔细审查", "If a person or thing is under scrutiny, they are being studied or observed very carefully.", "under scrutiny; close scrutiny; public scrutiny", "careful examination, inspection", "Public spending should be subject to close scrutiny.", "公共支出应接受仔细审查。"],
+        ["propagate", "/ˈprɒpəɡeɪt/", "传播；繁殖；繁衍", "to spread ideas or information, or to produce new plants or animals", "propagate plants; propagate ideas", "spread, reproduce", "Gardeners can propagate many plants from cuttings.", "园丁可以通过扦插繁殖许多植物。"],
+        ["sustainable", "/səˈsteɪnəbəl/", "可持续的", "able to continue over time without using up resources or causing lasting damage", "sustainable development; sustainable transport", "viable, environmentally responsible（依语境）", "Investing in public transport can make urban growth more sustainable.", "投资公共交通可以使城市发展更具可持续性。"],
+        ["cellulose", "/ˈseljələʊs/", "纤维素", "a substance that forms plant cell walls and is used to make paper and other materials", "cellulose fibres; cellulose production", "plant cell-wall material（释义改写）", "Paper is largely made from cellulose fibres obtained from plants.", "纸主要由从植物中提取的纤维素纤维制成。"],
+        ["antibiotic", "/ˌæntibaɪˈɒtɪk/", "抗生素", "a medicine that kills bacteria or stops them from growing", "prescribe antibiotics; antibiotic resistance", "antibacterial medicine", "Unnecessary use of antibiotics can contribute to antibiotic resistance.", "不必要地使用抗生素可能导致抗生素耐药性。"],
+        ["fertilise", "/ˈfɜːtəlaɪz/", "施肥；使受精", "to add nutrients to soil to help plants grow, or to join reproductive cells to start new life", "fertilise the soil; fertilise an egg", "enrich the soil（施肥义）", "Farmers can fertilise the soil with compost instead of relying entirely on chemicals.", "农民可以用堆肥给土壤施肥，而不完全依赖化学品。"],
+        ["fertilizer", "/ˈfɜːtəlaɪzə/", "肥料", "a substance added to soil to supply nutrients for plants", "organic fertilizer; apply fertilizer", "plant nutrients; fertiliser（英式拼写）", "Excess fertilizer can wash into rivers and damage aquatic ecosystems.", "过量肥料可能被冲入河流并破坏水生生态系统。"],
+        ["outstrip", "/ˌaʊtˈstrɪp/", "胜过；超过", "If one thing outstrips another, the first thing becomes larger in amount, or more successful or important, than the second thing.", "outstrip demand; outstrip supply; outstrip expectations", "surpass, exceed", "Demand for affordable housing continues to outstrip supply.", "对可负担住房的需求仍然超过供给。"],
+        ["intricately", "/ˈɪntrɪkətli/", "复杂地；精细地", "in a way that involves many small details or closely connected parts", "intricately linked; intricately carved", "complexly, elaborately", "Economic development and public health are intricately linked.", "经济发展与公共健康之间存在复杂而紧密的联系。"],
+        ["maze", "/meɪz/", "迷宫", "a network of paths in which it is difficult to find the correct route", "a maze of streets; find a way through a maze", "labyrinth", "The old town contains a maze of narrow streets.", "老城区有许多迷宫般的狭窄街道。"],
+        ["scout", "/skaʊt/", "侦察；搜寻；侦察员", "If you scout somewhere for something, you go through that area searching for it.", "scout for locations; scout out a site", "search, explore", "The research team scouted the area for a suitable field site.", "研究团队在该地区寻找合适的实地研究地点。"],
+        ["odour", "/ˈəʊdə/", "气味；臭气", "a noticeable smell, especially an unpleasant one", "strong odour; unpleasant odour", "smell, scent", "Residents complained about an unpleasant odour from the factory.", "居民抱怨工厂散发出难闻的气味。"],
+        ["bearing", "/ˈbeərɪŋ/", "方位；方向", "a direction measured from a reference point, or an understanding of one's location", "take a bearing; get one's bearings", "direction, orientation", "We used a compass to get our bearings before continuing the walk.", "继续步行前，我们用指南针辨明了方向。"],
+        ["prehistorical", "/ˌpriːhɪˈstɒrɪkəl/", "史前的", "relating to the period before written historical records", "prehistorical settlements; prehistorical remains", "prehistoric（更常用）", "The museum displays tools from prehistorical settlements.", "博物馆展出了史前聚落使用的工具。"],
+        ["edible", "/ˈedəbəl/", "可食用的", "safe or suitable to eat", "edible plants; edible mushrooms", "safe to eat, eatable", "Visitors should not assume that every wild berry is edible.", "游客不应认为所有野生浆果都可以食用。"],
+        ["dental", "/ˈdentəl/", "牙科的；牙齿的", "relating to teeth or their treatment", "dental care; dental treatment; dental check-up", "tooth-related（释义改写）", "Regular dental check-ups can help prevent serious problems.", "定期进行牙科检查有助于预防严重问题。"],
+        ["variant", "/ˈveəriənt/", "变体；变种", "a form of something that differs slightly from other forms", "regional variant; genetic variant", "version, variation", "The survey recorded several regional variants of the same expression.", "调查记录了同一表达的几种地域变体。"],
+        ["ancestral", "/ænˈsestrəl/", "祖先的；祖传的", "relating to or inherited from people in earlier generations of a family", "ancestral home; ancestral traditions", "inherited, forefathers'（依语境）", "Some families return to their ancestral homes during important festivals.", "一些家庭会在重要节日期间返回祖居。"],
+        ["emigrate", "/ˈemɪɡreɪt/", "由本国移居国外", "to leave one's country to live permanently in another", "emigrate from; emigrate to", "move abroad, leave one's country", "Her parents emigrated from their home country to seek better job opportunities.", "她的父母移居国外，以寻求更好的就业机会。"],
+        ["immigrate", "/ˈɪmɪɡreɪt/", "由其他国家移居本国", "to come to live permanently in a country other than one's country of origin", "immigrate to a country; immigrate legally", "settle in a new country（释义改写）", "Many people immigrate to countries where their skills are in demand.", "许多人移居到需要其专业技能的国家。"],
+        ["prudent", "/ˈpruːdənt/", "谨慎的；审慎的", "careful and sensible when making decisions, especially about future risks", "prudent decision; prudent investment", "cautious, sensible", "It is prudent to compare the long-term costs before choosing a heating system.", "选择供暖系统前比较长期成本是审慎的做法。"],
+        ["priority", "/praɪˈɒrəti/", "优先权；优先事项", "If something is a priority, it is the most important thing you have to do or deal with, or must be done or dealt with before everything else you have to do.", "top priority; give priority to", "precedence; main concern", "Improving access to clean water should be a priority.", "改善清洁用水的获取条件应是优先事项。"],
+        ["obstacle", "/ˈɒbstəkəl/", "障碍", "something that blocks movement or makes progress difficult", "overcome an obstacle; major obstacle", "barrier, hindrance", "High tuition fees can be an obstacle to higher education.", "高昂的学费可能成为接受高等教育的障碍。"],
+        ["submarine", "/ˌsʌbməˈriːn/", "潜水艇；潜艇", "a vessel that can travel and operate underwater", "research submarine; submarine crew", "underwater vessel（释义改写）", "The submarine collected data from deep below the ocean surface.", "潜艇从海面以下的深处收集了数据。"],
+        ["manipulate", "/məˈnɪpjəleɪt/", "操作；操纵", "If you manipulate something that requires skill, such as a complicated piece of equipment or a difficult idea, you operate it or process it.", "manipulate equipment; manipulate data", "handle, operate; influence unfairly（操纵义）", "The robotic arm can manipulate objects too small for human hands.", "这只机械臂可以操作小到人手无法处理的物体。"],
+        ["sophisticated", "/səˈfɪstɪkeɪtɪd/", "复杂精密的；老于世故的", "highly developed and complex, or experienced in social and cultural matters", "sophisticated technology; sophisticated equipment", "advanced, refined", "Sophisticated sensors can detect small changes in air quality.", "精密的传感器可以检测空气质量的微小变化。"],
+        ["limb", "/lɪm/", "肢体；四肢", "an arm or leg of a person or animal", "upper limb; artificial limb", "arm or leg（释义改写）", "The new device helps patients regain movement in an injured limb.", "新设备帮助患者恢复受伤肢体的活动能力。"],
+        ["navigation", "/ˌnævɪˈɡeɪʃən/", "航行；导航", "the process of finding and following a route to a destination", "satellite navigation; navigation system", "route-finding, guidance", "Satellite navigation has changed how drivers plan their journeys.", "卫星导航改变了司机规划行程的方式。"],
+        ["jeopardize", "/ˈdʒepədaɪz/", "危及；损害", "To jeopardize a situation or activity means to do something that may destroy it or cause it to fail.", "jeopardize safety; jeopardize a project", "endanger, put at risk", "Cutting maintenance costs could jeopardize passenger safety.", "削减维护费用可能危及乘客安全。"],
+        ["irrigation", "/ˌɪrɪˈɡeɪʃən/", "灌溉", "the supply of water to land to help crops grow", "irrigation system; drip irrigation", "watering, artificial water supply", "Efficient irrigation systems can reduce agricultural water use.", "高效的灌溉系统可以减少农业用水。"],
+        ["warrant", "/ˈwɒrənt/", "保证；担保；授权证；使有必要", "an official document authorising an action; to justify or guarantee something", "search warrant; warrant further investigation", "authorisation; justify, guarantee（依语境）", "The findings warrant further investigation before a policy is introduced.", "在推行政策前，这些发现值得进一步调查。"],
+        ["ritual", "/ˈrɪtʃuəl/", "仪式；典礼；惯例", "a set of actions performed regularly or as part of a ceremony", "religious ritual; daily ritual", "ceremony, customary practice", "Preparing tea has become a relaxing daily ritual for me.", "泡茶已成为我每天放松身心的惯例。"],
+        ["notoriety", "/ˌnəʊtəˈraɪəti/", "恶名；声名狼藉", "the state of being widely known for something bad", "gain notoriety; achieve notoriety", "infamy, bad reputation", "The company gained notoriety for its poor treatment of workers.", "这家公司因苛待员工而声名狼藉。"],
+        ["spectacular", "/spekˈtækjələ/", "壮观的；令人惊叹的", "very impressive or striking to look at", "spectacular view; spectacular scenery", "impressive, magnificent", "The train journey offers spectacular views of the mountains.", "这段火车旅程沿途可欣赏壮观的山景。"],
+        ["placebo", "/pləˈsiːbəʊ/", "安慰剂", "a substance with no active treatment ingredient used in medical research or treatment", "placebo effect; placebo group", "inactive treatment（释义改写）", "One group received the medicine while the other received a placebo.", "一组接受了药物，另一组接受了安慰剂。"],
+        ["valid", "/ˈvælɪd/", "有效的；合理的", "officially acceptable or supported by sound reasons or evidence", "valid ticket; valid argument", "acceptable, sound", "A valid comparison requires data collected using similar methods.", "有效的比较需要用相似方法收集的数据。"],
+        ["suspend", "/səˈspend/", "暂停；延缓；悬挂；使悬浮", "to stop something temporarily or hang something from above", "suspend services; suspend a decision", "pause, postpone; hang", "The airline suspended flights because of severe weather.", "航空公司因恶劣天气暂停了航班。"],
+        ["pendulum", "/ˈpendjələm/", "摆；钟摆", "a weight hanging from a fixed point that swings from side to side", "pendulum clock; swing of a pendulum", "swinging weight（释义改写）", "The pendulum swings at a steady rate to help the clock keep time.", "钟摆以稳定的速率摆动，帮助时钟计时。"],
+        ["dynamic", "/daɪˈnæmɪk/", "动态的；充满活力的", "constantly changing or showing energy and new ideas", "dynamic system; dynamic economy", "changing, energetic", "Cities are dynamic environments that change as people's needs evolve.", "城市是随着人们需求发展而变化的动态环境。"],
+        ["cab", "/kæb/", "出租车；驾驶室", "a taxi, or the enclosed part of a vehicle where the driver sits", "take a cab; cab driver", "taxi（出租车义）", "We took a cab to the station because we had heavy luggage.", "因为行李很重，我们乘出租车去了车站。"],
+        ["reserve", "/rɪˈzɜːv/", "预约；预订；保留", "to arrange for something to be kept for later use", "reserve a room; reserve a table", "book, set aside", "You need to reserve a room in advance during the summer.", "夏季需要提前预订房间。"],
+        ["reserve a seat", "/rɪˈzɜːv ə siːt/", "订座", "to arrange for a seat to be kept for you", "reserve a seat online; reserve a seat in advance", "book a seat", "I usually reserve a seat online when I travel by train.", "乘火车旅行时，我通常在网上订座。"],
+        ["reservation", "/ˌrezəˈveɪʃən/", "预订；保留意见", "an arrangement to have a seat, room, or place kept for you", "make a reservation; confirm a reservation", "booking; doubt（保留意见义）", "I called the hotel to confirm my reservation.", "我给酒店打电话确认预订。"],
+        ["luxury", "/ˈlʌkʃəri/", "奢侈；豪华；奢侈品", "great comfort or something enjoyable that is expensive and not essential", "luxury goods; a life of luxury", "lavishness; indulgence", "For many students, eating out regularly is a luxury.", "对许多学生而言，经常外出就餐是一种奢侈。"],
+        ["majority", "/məˈdʒɒrəti/", "大多数；大部分", "more than half of a group or total", "the vast majority; a majority of", "most, greater part", "The majority of respondents supported the proposed transport improvements.", "大多数受访者支持拟议的交通改善措施。"],
+        ["barbecue", "/ˈbɑːbɪkjuː/", "烤肉；烧烤", "a meal cooked outdoors over an open fire or hot coals, or the equipment used", "have a barbecue; barbecue grill", "cookout; grill（动词义）", "We often have a barbecue in the garden when the weather is warm.", "天气暖和时，我们经常在花园里烧烤。"],
+        ["mop", "/mɒp/", "拖把；拖洗", "a tool with a long handle used to clean floors with water", "mop the floor; a bucket and mop", "floor-cleaning tool（释义改写）", "Staff use a mop to clean the floor after the café closes.", "咖啡馆关门后，员工用拖把清洁地板。"],
+        ["bucket", "/ˈbʌkɪt/", "水桶；桶", "an open container with a handle used for carrying liquids or other materials", "a bucket of water; fill a bucket", "pail", "We collected rainwater in a bucket to water the plants.", "我们用桶收集雨水浇植物。"],
+        ["attitude", "/ˈætɪtjuːd/", "态度；看法", "the way someone thinks or feels about something", "positive attitude; attitude towards", "outlook, viewpoint", "People's attitudes towards remote work have changed considerably.", "人们对远程工作的态度已发生很大变化。"],
+        ["gender", "/ˈdʒendə/", "性别", "a category such as male, female, or another identity, including its social aspects", "gender equality; gender roles", "social gender（释义改写）", "Schools should provide equal opportunities regardless of gender.", "学校应该提供不分性别的平等机会。"],
+        ["creativity", "/ˌkriːeɪˈtɪvəti/", "创造性；创造力", "the ability to produce original ideas or make new things", "encourage creativity; artistic creativity", "inventiveness, imagination", "Open-ended projects can encourage students' creativity.", "开放式项目可以激发学生的创造力。"],
+        ["incentive", "/ɪnˈsentɪv/", "激励；刺激；鼓励措施", "something that encourages a person to do something", "financial incentive; provide an incentive", "motivation, inducement", "Tax reductions can provide an incentive to invest in clean energy.", "减税可以激励人们投资清洁能源。"],
+        ["stress", "/stres/", "压力；强调；重音", "mental or physical strain; emphasis placed on something", "cope with stress; reduce stress; stress the importance of", "pressure, strain; emphasis", "Regular exercise helps me manage stress during busy periods.", "定期锻炼帮助我在忙碌时应对压力。"],
+        ["demonstrate", "/ˈdemənstreɪt/", "证明；展示；示范", "to show clearly that something is true or how something works", "demonstrate a skill; demonstrate the benefits", "show, illustrate", "The experiment demonstrates how insulation reduces heat loss.", "这个实验证明了保温材料如何减少热量流失。"],
+        ["profit", "/ˈprɒfɪt/", "利润；利益；获益", "money gained after costs are paid, or a benefit obtained from something", "make a profit; net profit", "earnings, gain", "The business reinvests part of its profit in staff training.", "这家企业将部分利润重新投入员工培训。"],
+        ["magic", "/ˈmædʒɪk/", "魔法；魔术；魅力", "the use of apparently supernatural powers or tricks that seem impossible", "magic trick; perform magic", "sorcery; illusion（魔术义）", "The performer used simple magic tricks to entertain the audience.", "表演者用简单的魔术逗乐了观众。"],
+        ["camp", "/kæmp/", "营地；露营", "a place where people stay temporarily in tents or simple shelters", "summer camp; set up camp", "campsite, encampment", "We set up camp near the lake before sunset.", "我们在日落前在湖边扎营。"],
+        ["intact", "/ɪnˈtækt/", "完整无缺的；完好无损的", "complete and not damaged or changed", "remain intact; leave intact", "undamaged, whole", "The historic building remained largely intact after the storm.", "暴风雨过后，这座历史建筑基本完好无损。"],
+        ["dentist", "/ˈdentɪst/", "牙医", "a professional who treats problems with teeth and gums", "visit the dentist; dental appointment", "dental practitioner", "I visit the dentist regularly for a check-up.", "我定期去看牙医做检查。"],
+        ["bridge", "/brɪdʒ/", "桥；起连接作用的事物", "a structure carrying a road or path over a river, road, or gap", "build a bridge; cross a bridge; bridge the gap", "crossing; link（比喻义）", "The new bridge has shortened the journey between the two towns.", "新桥缩短了两个城镇之间的行程。"],
+        ["restaurant", "/ˈrestrɒnt/", "餐馆", "a place where people pay to sit and eat prepared meals", "local restaurant; book a restaurant table", "eatery, dining establishment", "The restaurant uses seasonal ingredients from nearby farms.", "这家餐馆使用附近农场的时令食材。"],
+        ["screen", "/skriːn/", "屏幕；银幕；筛查", "a surface on which images appear; to test or examine for a particular condition", "computer screen; screen time", "display; examine（筛查义）", "I try to reduce my screen time before going to bed.", "我尽量减少睡前看屏幕的时间。"],
+        ["confidence", "/ˈkɒnfɪdəns/", "信心；自信", "a belief in someone's ability or in the reliability of something", "build confidence; confidence in", "self-assurance, trust", "Giving short presentations helped me build confidence.", "做简短展示帮助我建立了自信。"],
+        ["escape", "/ɪˈskeɪp/", "逃避；逃脱", "to get away from a place, danger, or an unpleasant situation", "escape from; escape the pressure", "get away, flee", "Walking in the countryside helps me escape the pressures of city life.", "在乡间散步帮助我暂时摆脱城市生活的压力。"],
+        ["chocolate", "/ˈtʃɒklət/", "巧克力", "a food made from cocoa, often with sugar and milk", "dark chocolate; a bar of chocolate", "cocoa-based confection（释义改写）", "I sometimes have a small piece of dark chocolate after dinner.", "晚饭后我有时会吃一小块黑巧克力。"],
+        ["kitchen", "/ˈkɪtʃɪn/", "厨房", "a room or area where food is prepared and cooked", "shared kitchen; kitchen appliances", "cooking area（释义改写）", "The student accommodation includes a shared kitchen.", "学生宿舍设有共用厨房。"],
+        ["nationality", "/ˌnæʃəˈnæləti/", "国籍", "the legal status of belonging to a particular nation", "state one's nationality; dual nationality", "citizenship（依法律语境）", "The application form asks for your name and nationality.", "申请表要求填写姓名和国籍。"],
+        ["assess", "/əˈses/", "评估；评定", "to judge the value, quality, or likely effects of something", "assess the impact; assess progress", "evaluate, appraise", "The study aims to assess the impact of traffic noise on sleep.", "这项研究旨在评估交通噪音对睡眠的影响。"],
+        ["statistics", "/stəˈtɪstɪks/", "统计；统计数据；统计学", "numerical facts about a subject, or the study of collecting and analysing such data", "official statistics; analyse statistics", "numerical data; statistical science", "Official statistics show a gradual increase in life expectancy.", "官方统计数据显示预期寿命逐渐增长。"],
+        ["embassy", "/ˈembəsi/", "大使馆", "the offices and representatives of one country in another country", "foreign embassy; contact the embassy", "diplomatic mission", "Travellers can contact their embassy if they lose their passport abroad.", "旅行者在国外丢失护照时可以联系本国大使馆。"],
+        ["cheese", "/tʃiːz/", "奶酪", "a food made from milk by separating and processing its solid parts", "grated cheese; a slice of cheese", "milk-based food（释义改写）", "The region is famous for cheese made using traditional methods.", "这个地区以用传统方法制作的奶酪而闻名。"],
+        ["mineral", "/ˈmɪnərəl/", "矿物；矿物质", "a naturally occurring substance in the earth, or an element needed in small amounts for health", "mineral resources; essential minerals", "inorganic substance（释义改写）", "A varied diet helps supply the minerals the body needs.", "多样化的饮食有助于提供人体所需的矿物质。"],
+        ["electricity", "/ɪˌlekˈtrɪsəti/", "电；电力", "a form of energy associated with electric charges and used to power equipment", "generate electricity; electricity supply", "electric power", "Solar panels can generate electricity without burning fuel.", "太阳能电池板可以不燃烧燃料而发电。"],
+        ["relevant", "/ˈreləvənt/", "有关的；相关的", "closely connected to the subject being considered", "relevant information; relevant to", "pertinent, applicable", "Students should select evidence that is relevant to their argument.", "学生应该选择与其论点相关的证据。"],
+        ["sledge", "/sledʒ/", "雪橇", "a vehicle with runners used for travelling over snow or ice", "pull a sledge; wooden sledge", "sled", "The team used a sledge to carry supplies across the snow.", "团队用雪橇在雪地上运输物资。"],
+        ["technology", "/tekˈnɒlədʒi/", "技术（总称）；科技", "the practical application of scientific knowledge, especially in tools and systems", "digital technology; advances in technology", "applied science; technical methods", "Technology can support learning, but it cannot replace good teaching.", "技术可以辅助学习，但不能取代良好的教学。"],
+      ].map(([word, phonetic, meaning, definition, collocations, synonyms, english, chinese]) => ({
+        word, phonetic, meaning, definition, collocations, synonyms, examples: `${english}\n${chinese}`,
+      }));
+      const CAMBRIDGE8_SEED = [
+        ["chronic", "/ˈkrɒnɪk/", "慢性的；长期的", "A chronic illness or disability lasts for a very long time.", "chronic illness; chronic pain", "persistent, long-term", "Chronic sleep problems can affect a person's ability to concentrate.", "长期睡眠问题会影响一个人的注意力。"],
+        ["timekeeping", "/ˈtaɪmkiːpɪŋ/", "时间记录；计时；守时", "the measurement or recording of time, or the habit of arriving at the expected time", "accurate timekeeping; good timekeeping", "time measurement; punctuality（守时义）", "Accurate timekeeping is essential in competitive sport.", "准确计时在竞技体育中至关重要。"],
+        ["artificial", "/ˌɑːtɪˈfɪʃəl/", "人工的；人造的", "made by people rather than occurring naturally", "artificial light; artificial intelligence", "man-made, synthetic", "Artificial light allows crops to be grown indoors throughout the year.", "人工光照使农作物可以全年在室内种植。"],
+        ["equator", "/ɪˈkweɪtə/", "赤道", "the imaginary line around the earth halfway between the North and South Poles", "near the equator; cross the equator", "zero-degree latitude（释义改写）", "Places near the equator generally have little seasonal variation in day length.", "赤道附近地区的昼长通常很少随季节变化。"],
+        ["conspicuous", "/kənˈspɪkjuəs/", "明显的；显眼的", "If someone or something is conspicuous, people can see or notice them very easily.", "conspicuous feature; conspicuous consumption", "noticeable, prominent", "The new tower is a conspicuous feature of the city's skyline.", "新塔是这座城市天际线的一处显眼景观。"],
+        ["latitude", "/ˈlætɪtjuːd/", "纬度", "the distance north or south of the equator measured in degrees", "high latitude; latitude and longitude", "angular distance from the equator（释义改写）", "Latitude influences the amount of sunlight a region receives.", "纬度影响一个地区接收的日照量。"],
+        ["altitude", "/ˈæltɪtjuːd/", "高度；海拔", "the height of a place or object above sea level or the ground", "high altitude; gain altitude", "height, elevation", "The temperature usually falls as altitude increases.", "气温通常随海拔升高而下降。"],
+        ["lunar", "/ˈluːnə/", "月球的；月亮的", "relating to the moon", "lunar calendar; lunar surface", "moon-related（释义改写）", "The lunar calendar is still used to determine the dates of some festivals.", "农历仍被用来确定一些节日的日期。"],
+        ["solar", "/ˈsəʊlə/", "太阳的", "relating to the sun or using energy from it", "solar energy; solar panel", "sun-related; sun-powered（依语境）", "Solar energy is becoming more affordable for households.", "太阳能对家庭而言正变得更加经济实惠。"],
+        ["Egyptian", "/ɪˈdʒɪpʃən/", "埃及人；埃及的", "a person from Egypt, or relating to Egypt and its people", "ancient Egyptian; Egyptian civilisation", "a person from Egypt（名词释义）", "The exhibition explores the daily lives of ancient Egyptians.", "这场展览探讨了古埃及人的日常生活。"],
+        ["municipal", "/mjuːˈnɪsɪpəl/", "市的；市政的", "relating to a town or city and its local government", "municipal services; municipal council", "civic, local-government", "The municipal council plans to improve waste collection services.", "市议会计划改善垃圾收集服务。"],
+        ["virtually", "/ˈvɜːtʃuəli/", "事实上；几乎", "You can use virtually to indicate that something is so nearly true that for most purposes it can be regarded as true.", "virtually impossible; virtually all", "almost, practically", "The village was virtually cut off after the bridge collapsed.", "桥梁倒塌后，村庄几乎与外界隔绝。"],
+        ["disseminate", "/dɪˈsemɪneɪt/", "散布；传播", "To disseminate information or knowledge means to distribute it so that it reaches many people or organizations.", "disseminate information; disseminate knowledge", "spread, circulate", "Local radio can disseminate important health information quickly.", "当地广播可以迅速传播重要的健康信息。"],
+        ["counterpart", "/ˈkaʊntəpɑːt/", "对应的人或事物；比较对象", "Someone's or something's counterpart is another person or thing that has a similar function or position in a different place.", "foreign counterpart; overseas counterpart", "equivalent, opposite number", "The minister met her counterpart from a neighbouring country.", "这位部长会见了邻国的对应部长。"],
+        ["basin", "/ˈbeɪsən/", "盆地；流域；盆", "a low area of land, a region drained by a river, or a container for washing", "river basin; drainage basin", "depression; catchment area（流域义）", "Changes in rainfall can affect agriculture across the river basin.", "降雨变化会影响整个流域的农业。"],
+        ["denote", "/dɪˈnəʊt/", "表示；指示", "If one thing denotes another, it is a sign or indication of it.", "denote a change; denote a category", "indicate, signify", "On this map, blue lines denote rivers.", "这张地图上的蓝线表示河流。"],
+        ["pendulum", "/ˈpendjələm/", "摆；钟摆", "The pendulum of a clock is a rod with a weight at the end which swings from side to side in order to make the clock work.", "pendulum clock; pendulum movement", "swinging weight（释义改写）", "The length of a pendulum affects how quickly it swings.", "钟摆的长度影响其摆动快慢。"],
+        ["arc", "/ɑːk/", "弧；弧线", "part of the curved edge of a circle, or a similar curved path", "an arc of a circle; move in an arc", "curve", "The pendulum moves through an arc with each swing.", "钟摆每次摆动都会经过一段弧线。"],
+        ["grid", "/ɡrɪd/", "格子；网格；电网", "a pattern of crossing lines forming squares, or a connected network", "grid pattern; electricity grid", "lattice, network", "The city streets were laid out in a grid pattern.", "这座城市的街道按网格形布局。"],
+        ["oversimplify", "/ˌəʊvəˈsɪmplɪfaɪ/", "使过于简单化", "to explain or present something so simply that important details are lost", "oversimplify an issue; oversimplify the problem", "simplify excessively（释义改写）", "Blaming a single factor can oversimplify a complex social problem.", "归咎于单一因素可能会过度简化复杂的社会问题。"],
+        ["congest", "/kənˈdʒest/", "充斥；使拥挤；使堵塞", "to crowd or become crowded to excess", "congest the roads; congested streets", "clog, overcrowd", "Large numbers of delivery vehicles can congest narrow city streets.", "大量送货车辆可能堵塞狭窄的城市街道。"],
+        ["margin", "/ˈmɑːdʒɪn/", "边缘；页边空白；差额", "the edge of something or the difference between two amounts", "page margin; margin of error; profit margin", "edge, border; difference", "The survey results should be interpreted with the margin of error in mind.", "解读调查结果时应该考虑误差范围。"],
+        ["vicinity", "/vəˈsɪnəti/", "附近；邻近地区", "the area near a particular place", "in the vicinity of; immediate vicinity", "surrounding area, neighbourhood", "Several bus stops are located in the vicinity of the hospital.", "医院附近设有几个公交站。"],
+        ["meteorological", "/ˌmiːtiərəˈlɒdʒɪkəl/", "气象的；气象学的", "relating to the scientific study of weather", "meteorological data; meteorological station", "weather-related（释义改写）", "Meteorological data helps farmers decide when to plant crops.", "气象数据帮助农民决定何时播种。"],
+        ["panel", "/ˈpænəl/", "板；面板；专家小组", "a flat section of a surface, or a group chosen to discuss or judge something", "solar panel; control panel; expert panel", "board; committee（小组义）", "An expert panel reviewed the evidence before making recommendations.", "专家小组审查证据后提出了建议。"],
+        ["alphabet", "/ˈælfəbet/", "字母表", "the complete set of letters used in a writing system", "English alphabet; letters of the alphabet", "set of letters（释义改写）", "Children often learn the alphabet through songs and games.", "孩子们常通过歌曲和游戏学习字母表。"],
+        ["telepathy", "/təˈlepəθi/", "心灵感应", "the supposed ability to communicate thoughts directly without using the senses", "claims of telepathy; telepathy experiment", "mind-to-mind communication（假定能力）", "Claims of telepathy require rigorous scientific testing.", "关于心灵感应的说法需要经过严格的科学检验。"],
+        ["psychologist", "/saɪˈkɒlədʒɪst/", "心理学家", "a person who studies the mind and behaviour or works professionally in psychology", "clinical psychologist; educational psychologist", "specialist in psychology（释义改写）", "The psychologist studied how sleep affects memory.", "这位心理学家研究了睡眠如何影响记忆。"],
+        ["derision", "/dɪˈrɪʒən/", "嘲笑；讥讽", "behaviour or comments showing that someone or something is considered ridiculous", "meet with derision; treat with derision", "ridicule, mockery", "The proposal was initially met with derision but later gained support.", "这项提议起初遭到嘲笑，后来却获得了支持。"],
+        ["rigorous", "/ˈrɪɡərəs/", "严格的；严密的", "very careful, thorough, and exact", "rigorous testing; rigorous analysis", "thorough, strict", "New medicines must undergo rigorous testing before they are approved.", "新药必须经过严格测试才能获批。"],
+        ["brink", "/brɪŋk/", "边缘；临界点", "the edge of a place or the point just before a significant event", "on the brink of; brink of collapse", "edge, verge", "Habitat loss has brought some species to the brink of extinction.", "栖息地丧失已使一些物种濒临灭绝。"],
+        ["sceptic", "/ˈskeptɪk/", "怀疑论者；持怀疑态度的人", "a person who doubts whether a claim or belief is true", "remain a sceptic; convince the sceptics", "doubter; skeptic（美式拼写）", "Even sceptics accepted the findings after several independent studies.", "在多项独立研究之后，就连持怀疑态度的人也接受了这些发现。"],
+        ["meditation", "/ˌmedɪˈteɪʃən/", "冥想；沉思", "the practice of focusing the mind, often to become calmer or more aware", "practise meditation; meditation session", "contemplation, mindful reflection", "A short period of meditation helps me relax after work.", "工作后短暂冥想有助于我放松。"],
+        ["sensory", "/ˈsensəri/", "感官的；感觉的", "relating to senses such as sight, hearing, touch, taste, and smell", "sensory information; sensory experience", "sense-related（释义改写）", "The exhibition offers a range of sensory experiences for visitors.", "展览为参观者提供了多种感官体验。"],
+        ["leakage", "/ˈliːkɪdʒ/", "泄漏；泄漏量", "A leakage is an amount of liquid or gas that is escaping from a pipe or container by means of a crack, hole, or other fault.", "water leakage; prevent leakage", "escape, seepage", "Repairing old pipes can reduce water leakage significantly.", "修理旧水管可以显著减少漏水。"],
+        ["outright", "/ˌaʊtˈraɪt/", "彻底地；完全的；直截了当地", "complete and total; completely or without hesitation", "reject outright; an outright ban", "complete, absolute; completely", "An outright ban may be less effective than carefully targeted restrictions.", "全面禁止可能不如有针对性的限制有效。"],
+        ["fraud", "/frɔːd/", "欺诈；诈骗", "dishonest behaviour intended to gain money or another benefit", "financial fraud; prevent fraud", "deception, swindling", "Banks use monitoring systems to detect possible fraud.", "银行使用监控系统来发现可能的欺诈行为。"],
+        ["esoteric", "/ˌesəˈterɪk/", "深奥的；只有少数人懂的", "understood or known by only a small group with specialist knowledge", "esoteric knowledge; esoteric subject", "obscure, specialised", "The lecturer explained an esoteric topic in accessible language.", "讲师用易懂的语言解释了一个深奥的话题。"],
+        ["consistency", "/kənˈsɪstənsi/", "一致性；连贯性；稠度", "the quality of staying the same or following the same principles; the thickness of a substance", "consistency in results; ensure consistency", "uniformity, coherence; thickness", "Clear guidelines help ensure consistency in marking exams.", "明确的标准有助于确保考试评分的一致性。"],
+        ["tint", "/tɪnt/", "色彩；色泽；染色", "a slight colour or shade, or to give something a slight colour", "a blue tint; tinted glass", "tinge, shade; colour", "The windows have a slight tint to reduce glare.", "窗户带有淡淡的色调，以减少眩光。"],
+        ["tin", "/tɪn/", "锡；罐头盒", "a soft silvery metal, or a metal container used for food", "tin ore; a tin of beans", "Sn（元素符号）; can（容器义）", "A thin layer of tin can protect steel from corrosion.", "一层薄锡可以保护钢材免受腐蚀。"],
+        ["molten", "/ˈməʊltən/", "熔化的；熔融的", "Molten rock, metal, or glass has been heated to a very high temperature and has become a hot, thick liquid.", "molten metal; molten glass", "melted, liquefied", "Molten glass is shaped before it cools and hardens.", "熔融玻璃在冷却变硬之前被塑形。"],
+        ["embark", "/ɪmˈbɑːk/", "上船（飞机等）；embark on 着手，开始做某事", "to board a ship or aircraft; to begin a new activity or project", "embark on a project; embark on a journey", "board; begin, undertake", "The university plans to embark on a major research project.", "这所大学计划开展一项大型研究项目。"],
+        ["episode", "/ˈepɪsəʊd/", "插曲；片段；一集", "a separate event within a longer series, or one part of a television or radio programme", "an episode of a series; a brief episode", "incident, instalment", "Each episode of the documentary examines a different environmental issue.", "这部纪录片的每一集都探讨一个不同的环境问题。"],
+        ["amplify", "/ˈæmplɪfaɪ/", "放大；增强", "to make a sound, signal, or effect stronger", "amplify sound; amplify an effect", "magnify, intensify", "Social media can amplify both useful information and misleading claims.", "社交媒体既能扩大有用信息的传播，也能放大误导性说法。"],
+        ["Antarctica", "/ænˈtɑːktɪkə/", "南极洲", "the continent surrounding the South Pole", "research in Antarctica; Antarctica's ice sheet", "the Antarctic continent", "Scientists study ice in Antarctica to learn about past climates.", "科学家研究南极洲的冰，以了解过去的气候。"],
+        ["hemisphere", "/ˈhemɪsfɪə/", "半球", "one half of the earth or of a sphere, or one half of the brain", "northern hemisphere; southern hemisphere", "half-sphere（释义改写）", "The seasons are reversed in the northern and southern hemispheres.", "南北半球的季节相反。"],
+        ["reroute", "/ˌriːˈruːt/", "变更旅程；改变路线", "to send traffic or a person along a different route", "reroute traffic; reroute a flight", "redirect, divert", "The council rerouted buses while the bridge was being repaired.", "修桥期间，市政部门调整了公交路线。"],
+        ["perish", "/ˈperɪʃ/", "死亡；丧生；腐坏", "to die, especially in an accident or difficult conditions, or to decay", "perish in a fire; perish from exposure", "die, decay", "Many young plants perish if they do not receive enough water.", "许多幼苗如果水分不足就会枯死。"],
+        ["commodity", "/kəˈmɒdəti/", "商品；大宗商品", "a product or raw material that can be bought and sold", "agricultural commodity; commodity prices", "goods, traded product", "Changes in commodity prices can affect the incomes of farmers.", "大宗商品价格变化会影响农民收入。"],
+        ["fodder", "/ˈfɒdə/", "草料；饲料", "food such as hay or straw given to farm animals", "animal fodder; fodder crops", "feed, forage", "The drought reduced the supply of fodder for livestock.", "干旱减少了牲畜饲料的供应。"],
+        ["regime", "/reɪˈʒiːm/", "政治制度；政权；管理体制", "a government or political system, or an organised system of management", "political regime; regulatory regime", "administration, system", "A clear regulatory regime can help businesses plan long-term investments.", "清晰的监管体制可以帮助企业规划长期投资。"],
+        ["medieval", "/ˌmediˈiːvəl/", "中世纪的", "relating to the period in European history between ancient and modern times", "medieval castle; medieval history", "of the Middle Ages", "The town attracts visitors with its well-preserved medieval buildings.", "这座城镇凭借保存完好的中世纪建筑吸引游客。"],
+        ["olfaction", "/ɒlˈfækʃən/", "嗅觉", "the sense or process of smelling", "sense of olfaction; olfaction research", "sense of smell", "Olfaction plays an important role in how we perceive flavour.", "嗅觉在我们感知风味的过程中起着重要作用。"],
+        ["aromas", "/əˈrəʊməz/", "芳香；香气（aroma 的复数）", "noticeable, usually pleasant smells, especially from food or drink", "coffee aromas; rich aromas", "scents, fragrances", "The aromas of fresh bread filled the kitchen.", "新鲜面包的香气弥漫在厨房里。"],
+        ["psychology", "/saɪˈkɒlədʒi/", "心理学；心理", "the scientific study of the mind and behaviour", "study psychology; social psychology", "study of mind and behaviour（释义改写）", "Psychology can help explain how people make decisions under pressure.", "心理学可以帮助解释人们如何在压力下作决定。"],
+        ["proposal", "/prəˈpəʊzəl/", "建议；提议；方案", "a suggested plan put forward for others to consider", "submit a proposal; research proposal", "suggestion, plan", "The council is considering a proposal to create more cycle lanes.", "市议会正在考虑增设自行车道的提案。"],
+        ["degradation", "/ˌdeɡrəˈdeɪʃən/", "退化；降解；恶化", "Degradation is the process of something becoming worse or weaker, or being made worse or weaker.", "environmental degradation; soil degradation", "deterioration; breakdown（降解义）", "Overgrazing can accelerate soil degradation in dry regions.", "过度放牧会加速干旱地区的土壤退化。"],
+        ["overgraze", "/ˌəʊvəˈɡreɪz/", "过度放牧", "to allow animals to eat so much vegetation that the land cannot recover", "overgraze pasture; overgrazed land", "graze excessively（释义改写）", "Farmers rotate livestock between fields to avoid overgrazing the land.", "农民让牲畜在不同田块间轮流放牧，以避免过度放牧。"],
+        ["laser", "/ˈleɪzə/", "激光；激光器", "a device that produces a narrow, intense beam of light, or the beam itself", "laser beam; laser surgery", "concentrated light source（释义改写）", "A laser can cut materials with a high degree of precision.", "激光可以极其精确地切割材料。"],
+        ["allure", "/əˈlʊə/", "魅力；吸引力", "a quality that makes something strongly attractive or interesting", "the allure of; retain its allure", "appeal, attraction", "The allure of city life draws many young people away from rural areas.", "城市生活的吸引力使许多年轻人离开农村。"],
+        ["add up", "/ˌæd ˈʌp/", "累计；加起来；合乎情理", "to calculate a total, accumulate, or seem reasonable", "add up the costs; small amounts add up", "total, accumulate; make sense", "Small daily expenses can add up to a substantial amount over a year.", "每天的小额开支一年下来可能累积成一笔可观的金额。"],
+        ["linger", "/ˈlɪŋɡə/", "逗留；迟迟不消失", "to stay somewhere longer than expected or remain for a long time", "linger over a meal; a lingering smell", "stay, remain", "We lingered in the café after lunch to finish our conversation.", "午餐后我们在咖啡馆多待了一会儿，把话聊完。"],
+        ["hang out", "/ˌhæŋ ˈaʊt/", "出去玩；消遣；闲逛", "to spend time relaxing or socialising in a place or with someone", "hang out with friends; hang out at a café", "socialise, spend time together", "I like to hang out with friends in the park at weekends.", "周末我喜欢和朋友在公园里消遣。"],
+        ["rush", "/rʌʃ/", "匆忙赶去；急忙；冲", "to move or do something very quickly, often because there is little time", "rush to work; in a rush", "hurry, dash", "I leave home early so I do not have to rush to catch the train.", "我提早出门，这样就不必匆忙赶火车。"],
+        ["ambience", "/ˈæmbiəns/", "氛围；周围环境", "the character or atmosphere of a place", "relaxed ambience; create an ambience", "atmosphere, mood", "Soft lighting gives the restaurant a relaxed ambience.", "柔和的灯光使餐馆具有轻松的氛围。"],
+        ["like-minded", "/ˌlaɪk ˈmaɪndɪd/", "志同道合的；志趣相投的", "having similar interests, opinions, or goals", "like-minded people; like-minded friends", "sharing similar interests（释义改写）", "Joining a local club is a good way to meet like-minded people.", "加入当地俱乐部是结识志同道合者的好方法。"],
+      ].map(([word, phonetic, meaning, definition, collocations, synonyms, english, chinese]) => ({
+        word, phonetic, meaning, definition, collocations, synonyms, examples: `${english}\n${chinese}`,
+      }));
+      const CAMBRIDGE_WORD_IMPORTS = [
+        { key: CAMBRIDGE6_IMPORT_KEY, version: CAMBRIDGE6_IMPORT_VERSION, payloadField: "cambridge6ImportVersion", seed: CAMBRIDGE6_SEED },
+        { key: CAMBRIDGE7_IMPORT_KEY, version: CAMBRIDGE7_IMPORT_VERSION, payloadField: "cambridge7ImportVersion", seed: CAMBRIDGE7_SEED },
+        { key: CAMBRIDGE8_IMPORT_KEY, version: CAMBRIDGE8_IMPORT_VERSION, payloadField: "cambridge8ImportVersion", seed: CAMBRIDGE8_SEED },
+      ];
       let latestRequestId = 0;
       const state = {
         route: "home",
@@ -2486,7 +2646,7 @@
       function getCloudPayload() {
         return {
           words: state.words,
-          cambridge6ImportVersion: localStorage.getItem(CAMBRIDGE6_IMPORT_KEY) || "",
+          ...Object.fromEntries(CAMBRIDGE_WORD_IMPORTS.map(({ key, payloadField }) => [payloadField, localStorage.getItem(key) || ""])),
           writing: state.writing,
           writingTask1SeedVersion: localStorage.getItem(WRITING_TASK1_SEED_KEY) || "",
           writingTask2SeedVersion: localStorage.getItem(WRITING_TASK2_SEED_KEY) || "",
@@ -2712,16 +2872,16 @@
         if (!payload || typeof payload !== "object") return false;
         cloudHydrating = true;
         if (Array.isArray(payload.words)) {
-          const cloudWords = payload.words.map((item) => ({ ...item, collocations: String(item.collocations || ""), star: item.star > 0 ? 1 : 0 }));
-          if (payload.cambridge6ImportVersion !== CAMBRIDGE6_IMPORT_VERSION) {
-            appendSeedWords(cloudWords, CAMBRIDGE6_SEED);
-            localStorage.setItem(CAMBRIDGE6_IMPORT_KEY, CAMBRIDGE6_IMPORT_VERSION);
+          const cloudWords = payload.words.map((item) => ({ ...item, collocations: String(item.collocations || ""), star: Number.isInteger(item.star) ? Math.max(0, Math.min(5, item.star)) : 0 }));
+          const localWords = new Map(state.words.map((item) => [normaliseWord(item.word), item]));
+          for (const { seed, version, payloadField } of CAMBRIDGE_WORD_IMPORTS) {
+            if (payload[payloadField] === version) continue;
+            // Retain local edits to newly imported words missing from an older cloud library.
+            appendSeedWords(cloudWords, seed.map((card) => localWords.get(normaliseWord(card.word)) || card));
             wordsMigratedDuringHydration = true;
-          } else if (localStorage.getItem(CAMBRIDGE6_IMPORT_KEY) !== CAMBRIDGE6_IMPORT_VERSION) {
-            localStorage.setItem(CAMBRIDGE6_IMPORT_KEY, CAMBRIDGE6_IMPORT_VERSION);
           }
           state.words = cloudWords;
-          persistSavedWords();
+          persistSavedWords(CAMBRIDGE_WORD_IMPORTS);
         }
         if (payload.categorySettings) {
           const cloudUpdatedAt = Number(payload.categorySettingsUpdatedAt) || 0;
@@ -3395,23 +3555,26 @@
         } catch {}
         try {
           const cambridge5Pending = !localStorage.getItem(CAMBRIDGE5_IMPORT_KEY);
-          const cambridge6Pending = localStorage.getItem(CAMBRIDGE6_IMPORT_KEY) !== CAMBRIDGE6_IMPORT_VERSION;
-          let changed = false;
-          if (cambridge5Pending) changed = appendSeedWords(items, CAMBRIDGE5_SEED) || changed;
-          if (cambridge6Pending) changed = appendSeedWords(items, CAMBRIDGE6_SEED) || changed;
-          if (cambridge5Pending) localStorage.setItem(CAMBRIDGE5_IMPORT_KEY, "1");
-          if (cambridge6Pending) localStorage.setItem(CAMBRIDGE6_IMPORT_KEY, CAMBRIDGE6_IMPORT_VERSION);
-          if (changed || cambridge5Pending || cambridge6Pending) localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+          const pendingImports = CAMBRIDGE_WORD_IMPORTS.filter(({ key, version }) => localStorage.getItem(key) !== version);
+          if (cambridge5Pending) appendSeedWords(items, CAMBRIDGE5_SEED);
+          for (const { seed } of pendingImports) appendSeedWords(items, seed);
+          if (cambridge5Pending || pendingImports.length) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            if (cambridge5Pending) localStorage.setItem(CAMBRIDGE5_IMPORT_KEY, "1");
+            for (const { key, version } of pendingImports) localStorage.setItem(key, version);
+          }
         } catch {}
         return items;
       }
       function appendSeedWords(items, seed) {
         const existingWords = new Set(items.map((item) => normaliseWord(item.word)));
+        // Saved-order sorting uses createdAt, so each import must follow the previous library.
+        const firstCreatedAt = items.reduce((latest, item) => Math.max(latest, Number(item.createdAt) || 0), Date.now()) + 1;
         let added = false;
         seed.forEach((card, index) => {
           const key = normaliseWord(card.word);
           if (!key || existingWords.has(key)) return;
-          items.push({ id: createId(), createdAt: Date.now() + index, star: 0, ...card });
+          items.push({ id: createId(), star: 0, ...card, createdAt: firstCreatedAt + index });
           existingWords.add(key);
           added = true;
         });
@@ -3422,9 +3585,10 @@
           localStorage.removeItem(CAMBRIDGE5_IMPORT_KEY);
         } catch {}
       }
-      function persistSavedWords() {
+      function persistSavedWords(imports = []) {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state.words));
+          for (const { key, version } of imports) localStorage.setItem(key, version);
           scheduleCloudSave();
         } catch {
           setStatus("单词库保存失败，请检查浏览器本地存储权限。", "error");
